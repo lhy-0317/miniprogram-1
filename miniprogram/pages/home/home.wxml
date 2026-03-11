@@ -1,0 +1,52 @@
+<view class="home-container">
+  <view class="header">
+    <view class="header-left">
+      <t-icon name="check-circle-filled" size="40" color="white"></t-icon>
+      <text class="header-title">智惠本草</text>
+    </view>
+    <view class="header-right">
+      <t-icon name="notification" size="36" color="white"></t-icon>
+      <view class="avatar">
+        <text>用</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="content">
+    <view class="logo-section">
+      <view class="logo">
+        <t-icon name="leaf" size="80" color="white"></t-icon>
+      </view>
+      <text class="app-name">智惠本草</text>
+      <text class="app-slogan">智慧环保 · 传承本草</text>
+    </view>
+    
+    <view class="scan-section">
+      <view class="pulse-ring"></view>
+      <view class="scan-box">
+        <view class="scan-icon-box">
+          <t-icon name="scan" size="64" color="white"></t-icon>
+        </view>
+        <text class="scan-text">扫描设备二维码</text>
+        <text class="scan-sub">领取免费纸巾</text>
+      </view>
+    </view>
+    
+    <t-button theme="primary" size="large" block t-class="scan-btn" bind:tap="handleScan">
+      点击扫码领纸
+    </t-button>
+    
+    <view class="status-card">
+      <view class="status-dot {{deviceStatus === 'online' ? 'online' : 'offline'}}"></view>
+      <text class="status-text">{{statusText}}</text>
+    </view>
+  </view>
+  
+  <t-popup visible="{{loadingVisible}}" placement="center" show-overlay t-class="loading-popup">
+    <view class="loading-content">
+      <t-loading theme="circular" size="60" color="#4caf50"></t-loading>
+      <text class="loading-text">指令已发送</text>
+      <text class="loading-sub">等待设备出纸...</text>
+    </view>
+  </t-popup>
+</view>

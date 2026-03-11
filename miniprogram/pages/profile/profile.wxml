@@ -1,0 +1,87 @@
+<view class="profile-container">
+  <view class="header">
+    <view class="decoration-circle circle-1"></view>
+    <view class="decoration-circle circle-2"></view>
+    
+    <view class="header-content">
+      <view class="user-info">
+        <view class="avatar">
+          <text>用</text>
+        </view>
+        <view class="user-detail">
+          <text class="user-name">用户名称</text>
+          <text class="user-id">ID: 2024001001</text>
+        </view>
+        <t-icon name="settings" size="40" color="white" class="settings-icon"></t-icon>
+      </view>
+      
+      <view class="stats-grid">
+        <view class="stat-card">
+          <view class="stat-header">
+            <t-icon name="file-text" size="32" color="rgba(255,255,255,0.7)"></t-icon>
+            <text>已节约纸张</text>
+          </view>
+          <text class="stat-value">{{stats.savedPaper}}</text>
+          <text class="stat-unit">张</text>
+        </view>
+        
+        <view class="stat-card">
+          <view class="stat-header">
+            <t-icon name="check-circle-filled" size="32" color="rgba(255,255,255,0.7)"></t-icon>
+            <text>累计答题</text>
+          </view>
+          <text class="stat-value">{{stats.quizCount}}</text>
+          <text class="stat-unit">道</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="content">
+    <view class="coupon-section">
+      <view class="section-header">
+        <text class="section-title">我的优惠券</text>
+        <view class="filter-tabs">
+          <view class="filter-tab {{filterType === 'all' ? 'active' : ''}}" bind:tap="setFilter" data-type="all">全部</view>
+          <view class="filter-tab {{filterType === 'unused' ? 'active' : ''}}" bind:tap="setFilter" data-type="unused">未使用</view>
+          <view class="filter-tab {{filterType === 'expired' ? 'active' : ''}}" bind:tap="setFilter" data-type="expired">已过期</view>
+        </view>
+      </view>
+      
+      <view class="coupon-list">
+        <view wx:for="{{filteredCoupons}}" wx:key="id" class="coupon-item">
+          <view class="coupon-left">
+            <view class="coupon-amount">{{item.amount}}</view>
+            <view class="coupon-type">{{item.type}}</view>
+            <view class="coupon-expire">有效期至 {{item.expireDate}}</view>
+          </view>
+          <view class="coupon-right">
+            <t-button theme="primary" size="small" t-class="use-btn" disabled="{{item.status === 'expired'}}">
+              {{item.status === 'expired' ? '已过期' : '立即使用'}}
+            </t-button>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="menu-section">
+      <t-cell-group>
+        <t-cell title="使用记录" hover note-icon="chevron-right">
+          <t-icon slot="left-icon" name="time" size="40" color="#1976d2"></t-icon>
+        </t-cell>
+        <t-cell title="答题历史" hover note-icon="chevron-right">
+          <t-icon slot="left-icon" name="file-list" size="40" color="#7c3aed"></t-icon>
+        </t-cell>
+        <t-cell title="AR识别记录" hover note-icon="chevron-right">
+          <t-icon slot="left-icon" name="user" size="40" color="#2e7d32"></t-icon>
+        </t-cell>
+        <t-cell title="设置" hover note-icon="chevron-right">
+          <t-icon slot="left-icon" name="settings" size="40" color="#ea580c"></t-icon>
+        </t-cell>
+        <t-cell title="帮助与反馈" hover note-icon="chevron-right">
+          <t-icon slot="left-icon" name="help-circle" size="40" color="#6b7280"></t-icon>
+        </t-cell>
+      </t-cell-group>
+    </view>
+  </view>
+</view>

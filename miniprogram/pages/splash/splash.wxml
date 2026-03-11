@@ -1,0 +1,35 @@
+<view class="splash-container">
+  <image class="bg-image" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20traditional%20medicine%20herbs%20ginseng%20artistic%20elegant%20green%20and%20blue%20aesthetic&image_size=portrait_4_3" mode="aspectFill"></image>
+  <view class="overlay"></view>
+  
+  <view class="top-actions">
+    <t-button theme="default" variant="outline" size="small" shape="circle" t-class="close-btn" bind:tap="handleClose">
+      <t-icon name="close" size="20" color="white"></t-icon>
+    </t-button>
+  </view>
+  
+  <view class="countdown">
+    <view class="countdown-box">
+      <t-count-down time="{{5000}}" format="ss" t-class="countdown-text" auto-start bind:on-end="handleCountdownEnd"></t-count-down>
+      <text class="countdown-suffix">s 后自动跳过</text>
+    </view>
+  </view>
+  
+  <view class="content">
+    <t-tag theme="default" variant="light" size="small" t-class="ad-tag">中医药文化</t-tag>
+    <view class="title">
+      <text>传承千年智慧</text>
+      <text>探索本草奥秘</text>
+    </view>
+    <view class="desc">
+      从《神农本草经》到《本草纲目》，数千年的智慧结晶，让我们一起探索中医药的神奇世界。
+    </view>
+    <t-button theme="primary" size="large" block t-class="explore-btn" bind:tap="handleExplore">立即探索</t-button>
+    <view class="brand">
+      <view class="brand-icon">
+        <t-icon name="leaf" size="24" color="white"></t-icon>
+      </view>
+      <text class="brand-text">智惠本草</text>
+    </view>
+  </view>
+</view>

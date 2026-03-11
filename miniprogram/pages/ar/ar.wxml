@@ -1,0 +1,96 @@
+<view class="ar-container">
+  <view class="camera-preview">
+    <t-image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=camera%20view%20blurred%20background%20herbal%20pattern&image_size=portrait_4_3" mode="aspectFill" t-class="camera-bg" />
+    <view class="camera-overlay"></view>
+  </view>
+  
+  <view class="top-bar">
+    <t-button theme="default" variant="outline" size="small" shape="circle" t-class="nav-btn" bind:tap="goBack">
+      <t-icon name="chevron-left" size="40" color="white"></t-icon>
+    </t-button>
+    <text class="page-title">AR本草识图</text>
+    <t-button theme="default" variant="outline" size="small" shape="circle" t-class="nav-btn">
+      <t-icon name="help-circle" size="40" color="white"></t-icon>
+    </t-button>
+  </view>
+  
+  <view class="scan-state" wx:if="{{!recognized}}">
+    <view class="scan-frame-container">
+      <view class="pulse-ring"></view>
+      <view class="scan-frame">
+        <view class="corner top-left"></view>
+        <view class="corner top-right"></view>
+        <view class="corner bottom-left"></view>
+        <view class="corner bottom-right"></view>
+        <view class="scan-line"></view>
+        <view class="scan-hint">
+          <t-icon name="scan" size="100" color="#4ade80"></t-icon>
+          <text>扫描纸巾上的图案</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="hint-card">
+      <text class="hint-title">将药材图案放入框内</text>
+      <text class="hint-sub">系统将自动识别并展示3D模型</text>
+    </view>
+  </view>
+  
+  <view class="result-state" wx:if="{{recognized}}">
+    <view class="model-container">
+      <view class="model-box">
+        <t-image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=3D%20ginseng%20root%20herbal%20medicine%20realistic%20rendering&image_size=square" mode="aspectFit" t-class="model-image" />
+      </view>
+      <view class="gesture-hint">
+        <t-icon name="move" size="24" color="#4b5563"></t-icon>
+        <text>双指缩放 · 单指旋转</text>
+      </view>
+    </view>
+    
+    <view class="herb-info-card">
+      <view class="herb-header">
+        <view class="herb-icon">
+          <t-icon name="leaf" size="64" color="white"></t-icon>
+        </view>
+        <view class="herb-basic">
+          <text class="herb-name">{{herbInfo.name}}</text>
+          <text class="herb-latin">{{herbInfo.latin}}</text>
+        </view>
+      </view>
+      <view class="herb-desc">{{herbInfo.desc}}</view>
+      <view class="herb-props">
+        <view class="prop-item">
+          <text class="prop-label">性味</text>
+          <t-tag theme="success" variant="light" size="small">{{herbInfo.property}}</t-tag>
+        </view>
+        <view class="prop-item">
+          <text class="prop-label">归经</text>
+          <t-tag theme="primary" variant="light" size="small">{{herbInfo.meridian}}</t-tag>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="bottom-bar">
+    <view class="action-item">
+      <view class="action-btn">
+        <t-icon name="image" size="48" color="white"></t-icon>
+      </view>
+      <text>相册</text>
+    </view>
+    
+    <view class="action-item">
+      <view class="action-btn primary" bind:tap="handleRecognize">
+        <t-icon name="check-circle-filled" size="56" color="white"></t-icon>
+      </view>
+      <text>识别</text>
+    </view>
+    
+    <view class="action-item">
+      <view class="action-btn">
+        <t-icon name="file-list" size="48" color="white"></t-icon>
+      </view>
+      <text>历史</text>
+    </view>
+  </view>
+</view>

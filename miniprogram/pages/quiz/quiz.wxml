@@ -1,0 +1,64 @@
+<view class="quiz-container">
+  <view class="header">
+    <view class="header-left" bind:tap="goBack">
+      <t-icon name="chevron-left" size="40" color="white"></t-icon>
+      <text class="header-title">趣味答题</text>
+    </view>
+    <text class="progress-text">第 {{currentIndex + 1}} / {{questions.length}} 题</text>
+  </view>
+  
+  <view class="progress-bar">
+    <view class="progress-fill" style="width: {{(currentIndex + 1) / questions.length * 100}}%"></view>
+  </view>
+  
+  <view class="content">
+    <view class="question-card">
+      <t-tag theme="primary" variant="light" size="medium" t-class="question-tag">本草知识</t-tag>
+      <view class="question-image-box">
+        <t-image src="{{currentQuestion.image}}" mode="aspectFill" t-class="question-image" />
+      </view>
+      <view class="question-text">{{currentQuestion.question}}</view>
+      <view class="question-desc">{{currentQuestion.desc}}</view>
+    </view>
+    
+    <view class="options-list">
+      <view wx:for="{{currentQuestion.options}}" wx:key="index" 
+            class="option-item {{selectedIndex === index ? (isCorrect ? 'correct' : 'wrong') : ''}}"
+            bind:tap="selectOption" data-index="{{index}}">
+        <view class="option-letter">{{String.fromCharCode(65 + index)}}</view>
+        <text class="option-text">{{item}}</text>
+      </view>
+    </view>
+    
+    <view class="countdown-box">
+      <t-icon name="time" size="36" color="#f97316"></t-icon>
+      <t-count-down time="{{15000}}" format="ss" t-class="countdown-text" auto-start="{{!answered}}" bind:on-end="handleTimeUp"></t-count-down>
+      <text class="countdown-unit">秒</text>
+    </view>
+  </view>
+  
+  <t-popup visible="{{couponVisible}}" placement="center" show-overlay t-class="coupon-popup">
+    <view class="coupon-content">
+      <view class="coupon-success-icon">
+        <t-icon name="check-circle-filled" size="80" color="white"></t-icon>
+      </view>
+      <text class="coupon-title">恭喜答对！</text>
+      <text class="coupon-sub">获得一张免费领纸券</text>
+      
+      <view class="coupon-card">
+        <view class="coupon-left">
+          <text class="coupon-amount">免费</text>
+          <text class="coupon-type">领纸券</text>
+        </view>
+        <view class="coupon-right">
+          <text class="coupon-expire-label">有效期至</text>
+          <text class="coupon-expire">2026-04-01</text>
+        </view>
+      </view>
+      
+      <t-button theme="primary" size="large" block t-class="coupon-btn" bind:tap="closeCoupon">
+        开心收下
+      </t-button>
+    </view>
+  </t-popup>
+</view>

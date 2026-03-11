@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智惠本草 - 个人中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tdesign-mobile-vue@latest/dist/tdesign.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .herb-gradient {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+        }
+        
+        .blue-gradient {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
+        }
+        
+        .stat-card {
+            backdrop-filter: blur(10px);
+        }
+        
+        .coupon-card {
+            transition: all 0.3s ease;
+        }
+        
+        .coupon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item {
+            transition: background-color 0.2s ease;
+        }
+        
+        .menu-item:active {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="w-full h-screen flex flex-col">
+        <!-- 顶部用户信息区域 -->
+        <div class="herb-gradient pt-8 pb-16 px-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center mb-6">
+                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mr-4 shadow-lg">
+                        <span class="text-3xl font-bold text-green-700">用</span>
+                    </div>
+                    <div class="text-white">
+                        <h1 class="text-xl font-bold mb-1">用户名称</h1>
+                        <p class="text-green-100 text-sm">ID: 2024001001</p>
+                    </div>
+                    <div class="ml-auto">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- 统计数据卡片 -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="stat-card bg-white/20 rounded-2xl p-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                            </svg>
+                            <span class="text-green-100 text-sm">已节约纸张</span>
+                        </div>
+                        <div class="text-white text-3xl font-bold">128</div>
+                        <div class="text-green-100 text-xs">张</div>
+                    </div>
+                    
+                    <div class="stat-card bg-white/20 rounded-2xl p-4">
+                        <div class="flex items-center mb-2">
+                            <svg class="w-5 h-5 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <span class="text-green-100 text-sm">累计答题</span>
+                        </div>
+                        <div class="text-white text-3xl font-bold">56</div>
+                        <div class="text-green-100 text-xs">道</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主要内容区域 -->
+        <div class="flex-1 -mt-8 px-4 pb-4 overflow-y-auto">
+            <!-- 优惠券区域 -->
+            <div class="bg-white rounded-2xl shadow-lg p-5 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">我的优惠券</h2>
+                    <div class="flex items-center space-x-2">
+                        <button class="text-sm text-green-600 font-medium px-3 py-1 bg-green-50 rounded-full">全部</button>
+                        <button class="text-sm text-gray-500 px-3 py-1">未使用</button>
+                        <button class="text-sm text-gray-500 px-3 py-1">已过期</button>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <!-- 优惠券1 -->
+                    <div class="coupon-card bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border-2 border-dashed border-yellow-300 flex items-center">
+                        <div class="flex-1">
+                            <div class="flex items-baseline mb-1">
+                                <span class="text-3xl font-bold text-orange-600">免费</span>
+                                <span class="text-gray-600 ml-1">领纸券</span>
+                            </div>
+                            <div class="text-gray-500 text-sm">有效期至 2026-04-01</div>
+                        </div>
+                        <div class="ml-4">
+                            <button class="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                立即使用
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 优惠券2 -->
+                    <div class="coupon-card bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 border-2 border-dashed border-green-300 flex items-center">
+                        <div class="flex-1">
+                            <div class="flex items-baseline mb-1">
+                                <span class="text-3xl font-bold text-green-600">买2</span>
+                                <span class="text-gray-600 ml-1">送1</span>
+                            </div>
+                            <div class="text-gray-500 text-sm">有效期至 2026-03-15</div>
+                        </div>
+                        <div class="ml-4">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                立即使用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能菜单 -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
+                    <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-medium flex-1">使用记录</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+                
+                <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
+                    <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-medium flex-1">答题历史</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+                
+                <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
+                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-medium flex-1">AR识别记录</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+                
+                <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
+                    <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-medium flex-1">设置</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+                
+                <div class="menu-item flex items-center px-5 py-4">
+                    <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center mr-4">
+                        <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-gray-800 font-medium flex-1">帮助与反馈</span>
+                    <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="bg-white border-t border-gray-200 px-4 py-2 flex justify-around items-center">
+            <div class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+                <span class="text-xs">答题</span>
+            </div>
+            <div class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
+                <span class="text-xs">AR识别</span>
+            </div>
+            <div class="flex flex-col items-center text-green-600">
+                <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <span class="text-xs font-medium">我的</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

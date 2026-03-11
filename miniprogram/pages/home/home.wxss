@@ -1,0 +1,228 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f0fdf4, #eff6ff);
+}
+
+.header {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  padding: 24rpx 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-title {
+  color: white;
+  font-size: 36rpx;
+  font-weight: 500;
+  margin-left: 12rpx;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 72rpx;
+  height: 72rpx;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 24rpx;
+}
+
+.avatar text {
+  color: white;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48rpx;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+}
+
+.app-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.app-slogan {
+  display: block;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.scan-section {
+  position: relative;
+  margin-bottom: 64rpx;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 48rpx;
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.33);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.scan-box {
+  position: relative;
+  width: 480rpx;
+  height: 480rpx;
+  background-color: white;
+  border-radius: 48rpx;
+  border: 8rpx dashed #86efac;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.15);
+}
+
+.scan-icon-box {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.scan-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #4b5563;
+  margin-bottom: 8rpx;
+}
+
+.scan-sub {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.scan-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  padding: 28rpx 0;
+  margin-bottom: 48rpx;
+  box-shadow: 0 12rpx 36rpx rgba(76, 175, 80, 0.3);
+}
+
+.status-card {
+  background-color: white;
+  border-radius: 24rpx;
+  padding: 24rpx 40rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.08);
+}
+
+.status-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.status-dot.online {
+  background-color: #22c55e;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.status-dot.offline {
+  background-color: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.status-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+}
+
+.loading-popup {
+  background: transparent !important;
+}
+
+.loading-content {
+  background-color: white;
+  border-radius: 32rpx;
+  padding: 80rpx 100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #1f2937;
+  margin-top: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.loading-sub {
+  font-size: 26rpx;
+  color: #6b7280;
+}

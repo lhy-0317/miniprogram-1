@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智惠本草 - 趣味答题</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tdesign-mobile-vue@latest/dist/tdesign.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        .herb-gradient {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+        }
+        
+        .blue-gradient {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
+        }
+        
+        .option-card {
+            transition: all 0.3s ease;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .option-correct {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%) !important;
+            color: white !important;
+            border-color: #2e7d32 !important;
+        }
+        
+        .option-wrong {
+            background: linear-gradient(135deg, #c62828 0%, #e53935 100%) !important;
+            color: white !important;
+            border-color: #c62828 !important;
+        }
+        
+        .firework {
+            animation: firework 1s ease-out forwards;
+        }
+        
+        @keyframes firework {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .modal-bg {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="w-full h-screen flex flex-col">
+        <!-- 顶部状态栏 -->
+        <div class="blue-gradient text-white py-3 px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                <span class="font-medium">趣味答题</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium">第 1 / 5 题</span>
+            </div>
+        </div>
+        
+        <!-- 进度条 -->
+        <div class="bg-gray-200 h-2">
+            <div class="blue-gradient h-full w-1/5 transition-all duration-500"></div>
+        </div>
+        
+        <!-- 主要内容 -->
+        <div class="flex-1 flex flex-col p-6 bg-gradient-to-b from-blue-50 to-green-50">
+            <!-- 题目卡片 -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <div class="flex items-center mb-4">
+                    <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">本草知识</span>
+                </div>
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 mb-4">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ginseng%20root%20herbal%20medicine%20illustration&image_size=square" alt="人参" class="w-full h-40 object-cover rounded-lg mb-3">
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">图中的药材是什么？</h2>
+                <p class="text-gray-500 text-sm">这是一种珍贵的中药材，具有大补元气的功效。</p>
+            </div>
+            
+            <!-- 选项 -->
+            <div class="space-y-4 flex-1">
+                <div class="option-card bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-gray-600 font-bold">A</span>
+                        </div>
+                        <span class="text-gray-700 font-medium">人参</span>
+                    </div>
+                </div>
+                
+                <div class="option-card bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-gray-600 font-bold">B</span>
+                        </div>
+                        <span class="text-gray-700 font-medium">党参</span>
+                    </div>
+                </div>
+                
+                <div class="option-card bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-gray-600 font-bold">C</span>
+                        </div>
+                        <span class="text-gray-700 font-medium">黄芪</span>
+                    </div>
+                </div>
+                
+                <div class="option-card bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-gray-600 font-bold">D</span>
+                        </div>
+                        <span class="text-gray-700 font-medium">当归</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 倒计时 -->
+            <div class="mt-4 flex items-center justify-center">
+                <div class="flex items-center bg-white px-4 py-2 rounded-full shadow">
+                    <svg class="w-5 h-5 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                    </svg>
+                    <span class="text-orange-600 font-bold">15</span>
+                    <span class="text-gray-500 ml-1">秒</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 烟花效果层（隐藏） -->
+        <div class="fixed inset-0 pointer-events-none z-40 hidden">
+            <div class="firework absolute top-1/4 left-1/4 text-6xl">🎆</div>
+            <div class="firework absolute top-1/3 right-1/4 text-6xl" style="animation-delay: 0.2s">✨</div>
+            <div class="firework absolute top-1/2 left-1/2 text-6xl" style="animation-delay: 0.4s">🎉</div>
+            <div class="firework absolute bottom-1/3 right-1/3 text-6xl" style="animation-delay: 0.6s">🎊</div>
+        </div>
+        
+        <!-- 获得优惠券弹窗（隐藏） -->
+        <div class="fixed inset-0 bg-black/50 flex items-end justify-center z-50 hidden modal-bg">
+            <div class="bg-white w-full rounded-t-3xl p-6 modal-content">
+                <div class="w-16 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+                <div class="text-center">
+                    <div class="w-20 h-20 herb-gradient rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">恭喜答对！</h3>
+                    <p class="text-gray-500 mb-6">获得一张免费领纸券</p>
+                    
+                    <div class="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-2xl p-4 mb-6 border-2 border-dashed border-yellow-300">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-3xl font-bold text-orange-600">免费</div>
+                                <div class="text-gray-600 text-sm">领纸券</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-gray-500 text-sm">有效期至</div>
+                                <div class="text-gray-700 font-medium">2026-04-01</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full herb-gradient text-white font-bold py-4 rounded-xl text-lg">
+                        开心收下
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

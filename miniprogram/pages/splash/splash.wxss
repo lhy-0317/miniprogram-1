@@ -1,0 +1,139 @@
+.splash-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  z-index: 2;
+}
+
+.top-actions {
+  position: relative;
+  z-index: 10;
+  padding-top: 80rpx;
+  padding-right: 32rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close-btn {
+  background-color: rgba(0,0,0,0.5) !important;
+  border-color: transparent !important;
+  width: 80rpx;
+  height: 80rpx;
+  min-width: auto !important;
+  padding: 0 !important;
+}
+
+.countdown {
+  position: relative;
+  z-index: 10;
+  padding-right: 32rpx;
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.countdown-box {
+  background-color: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10rpx);
+  border-radius: 40rpx;
+  padding: 12rpx 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.countdown-text {
+  color: #4ade80;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.countdown-suffix {
+  color: white;
+  font-size: 24rpx;
+  margin-left: 8rpx;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  padding: 0 48rpx 80rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.ad-tag {
+  background-color: rgba(255,255,255,0.2) !important;
+  color: white !important;
+  margin-bottom: 24rpx;
+  align-self: flex-start;
+}
+
+.title {
+  color: white;
+  font-size: 56rpx;
+  font-weight: bold;
+  line-height: 1.4;
+  margin-bottom: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.desc {
+  color: rgba(255,255,255,0.8);
+  font-size: 28rpx;
+  line-height: 1.6;
+  margin-bottom: 48rpx;
+}
+
+.explore-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  padding: 24rpx 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 48rpx;
+}
+
+.brand-icon {
+  width: 64rpx;
+  height: 64rpx;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+}
+
+.brand-text {
+  color: rgba(255,255,255,0.8);
+  font-size: 28rpx;
+}
