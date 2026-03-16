@@ -41,27 +41,54 @@
         .menu-item:active {
             background-color: #f5f5f5;
         }
+        
+        .edit-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body class="bg-gray-50">
     <div class="w-full h-screen flex flex-col">
         <!-- 顶部用户信息区域 -->
-        <div class="herb-gradient pt-8 pb-16 px-6 relative overflow-hidden">
+        <div class="herb-gradient pt-10 pb-20 px-6 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
             <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
             
             <div class="relative z-10">
                 <div class="flex items-center mb-6">
-                    <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mr-4 shadow-lg">
-                        <span class="text-3xl font-bold text-green-700">用</span>
+                    <div class="relative mr-4">
+                        <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden">
+                            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20placeholder%20minimal&image_size=square" alt="头像" class="w-full h-full object-cover">
+                        </div>
+                        <div class="edit-badge">
+                            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83 1.83z"/>
+                            </svg>
+                        </div>
                     </div>
                     <div class="text-white">
-                        <h1 class="text-xl font-bold mb-1">用户名称</h1>
+                        <div class="flex items-center mb-1">
+                            <h1 class="text-xl font-bold">用户名称</h1>
+                            <svg class="w-7 h-7 text-white/70 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                            </svg>
+                        </div>
                         <p class="text-green-100 text-sm">ID: 2024001001</p>
                     </div>
                     <div class="ml-auto">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                        <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5z"/>
                         </svg>
                     </div>
                 </div>
@@ -70,7 +97,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="stat-card bg-white/20 rounded-2xl p-4">
                         <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
                             </svg>
                             <span class="text-green-100 text-sm">已节约纸张</span>
@@ -81,7 +108,7 @@
                     
                     <div class="stat-card bg-white/20 rounded-2xl p-4">
                         <div class="flex items-center mb-2">
-                            <svg class="w-5 h-5 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 text-green-100 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                             </svg>
                             <span class="text-green-100 text-sm">累计答题</span>
@@ -94,7 +121,7 @@
         </div>
         
         <!-- 主要内容区域 -->
-        <div class="flex-1 -mt-8 px-4 pb-4 overflow-y-auto">
+        <div class="flex-1 -mt-8 px-4 pb-4 overflow-y-auto relative z-10">
             <!-- 优惠券区域 -->
             <div class="bg-white rounded-2xl shadow-lg p-5 mb-4">
                 <div class="flex items-center justify-between mb-4">
@@ -158,7 +185,7 @@
                 <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
                     <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9 2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                         </svg>
                     </div>
                     <span class="text-gray-800 font-medium flex-1">答题历史</span>
@@ -182,7 +209,7 @@
                 <div class="menu-item flex items-center px-5 py-4 border-b border-gray-100">
                     <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                            <path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l-.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
                         </svg>
                     </div>
                     <span class="text-gray-800 font-medium flex-1">设置</span>
@@ -194,7 +221,7 @@
                 <div class="menu-item flex items-center px-5 py-4">
                     <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center mr-4">
                         <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9 2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
                         </svg>
                     </div>
                     <span class="text-gray-800 font-medium flex-1">帮助与反馈</span>
@@ -215,7 +242,7 @@
             </div>
             <div class="flex flex-col items-center text-gray-400">
                 <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9 2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                 </svg>
                 <span class="text-xs">答题</span>
             </div>

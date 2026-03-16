@@ -17,16 +17,92 @@
   align-items: center;
 }
 
+.header-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+}
+
 .header-title {
   color: white;
   font-size: 36rpx;
   font-weight: 500;
-  margin-left: 16rpx;
 }
 
 .content {
   flex: 1;
   padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #6b7280;
+  margin-top: 24rpx;
+}
+
+.start-dialog {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 32rpx;
+}
+
+.start-icon {
+  width: 200rpx;
+  height: 200rpx;
+  background: linear-gradient(135deg, #f0fdf4, #bbf7d0);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40rpx;
+}
+
+.start-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.start-desc {
+  font-size: 32rpx;
+  color: #6b7280;
+  margin-bottom: 32rpx;
+}
+
+.start-hint {
+  font-size: 28rpx;
+  color: #f59e0b;
+  margin-bottom: 64rpx;
+  text-align: center;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  padding: 24rpx 64rpx;
+}
+
+.quiz-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .stats-bar {
@@ -125,10 +201,13 @@
   align-items: center;
   transition: all 0.3s ease;
   position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .option-item:active {
   transform: scale(0.98);
+  background-color: #f9fafb;
 }
 
 .option-item.correct {
@@ -197,6 +276,20 @@
   margin-left: 16rpx;
   flex: 1;
   line-height: 1.6;
+}
+
+.next-btn-container {
+  margin-top: 48rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.next-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  padding: 24rpx 64rpx;
 }
 
 .coupon-popup {

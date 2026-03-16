@@ -305,6 +305,12 @@
   box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
 }
 
+.logo-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 40rpx;
+}
+
 .login-logo .app-name {
   display: block;
   font-size: 40rpx;
@@ -343,18 +349,97 @@
   border: none !important;
 }
 
-.login-hint {
+.login-btn.disabled {
+  background: #d1d5db !important;
+  color: #9ca3af !important;
+}
+
+.privacy-checkbox {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: #6b7280;
+}
+
+.checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 8rpx;
+  margin-right: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.checkbox.checked {
+  background-color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.checkbox-text {
+  color: #6b7280;
+  font-size: 24rpx;
 }
 
 .login-link {
   color: #4caf50;
   margin: 0 4rpx;
+}
+
+.privacy-popup {
+  background: transparent !important;
+}
+
+.privacy-content {
+  background-color: white;
+  border-radius: 32rpx;
+  width: 600rpx;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-header {
+  padding: 40rpx 40rpx 24rpx;
+  border-bottom: 2rpx solid #f3f4f6;
+}
+
+.privacy-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+  display: block;
+  text-align: center;
+}
+
+.privacy-scroll {
+  flex: 1;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 32rpx 40rpx;
+}
+
+.privacy-text {
+  font-size: 28rpx;
+  color: #4b5563;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.privacy-footer {
+  padding: 24rpx 40rpx 40rpx;
+  border-top: 2rpx solid #f3f4f6;
+}
+
+.privacy-btn {
+  width: 100%;
+  border-radius: 24rpx !important;
 }
 
 .avatar-image {

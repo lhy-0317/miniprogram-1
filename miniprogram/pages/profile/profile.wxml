@@ -50,27 +50,44 @@
     <view class="login-card">
       <view class="login-logo">
         <view class="logo">
-          <t-icon name="leaf" size="80" color="white"></t-icon>
+          <t-image src="/assets/icons/touxiang.png" t-class="logo-image"></t-image>
         </view>
         <text class="app-name">智惠本草</text>
         <text class="app-slogan">智慧环保 · 传承本草</text>
       </view>
       
       <view class="login-form">
-        <button class="login-btn" bindtap="handleLogin">
+        <button class="login-btn {{!agreedToPrivacy ? 'disabled' : ''}}" bindtap="handleLogin" disabled="{{!agreedToPrivacy}}">
           <t-icon name="wechat" size="32" color="white"></t-icon>
           <text style="margin-left: 12rpx;">微信一键登录</text>
         </button>
         
-        <view class="login-hint">
-          <text>登录即表示同意</text>
-          <view class="login-link">《用户协议》</view>
-          <text>和</text>
-          <view class="login-link">《隐私政策》</view>
+        <view class="privacy-checkbox">
+          <view class="checkbox {{agreedToPrivacy ? 'checked' : ''}}" bindtap="toggleAgreement">
+            <t-icon wx:if="{{agreedToPrivacy}}" name="check" size="20" color="white"></t-icon>
+          </view>
+          <text class="checkbox-text">我已阅读并同意</text>
+          <view class="login-link" bindtap="showUserAgreement">《用户协议》</view>
+          <text class="checkbox-text">和</text>
+          <view class="login-link" bindtap="showPrivacyPolicy">《隐私政策》</view>
         </view>
       </view>
     </view>
   </view>
+  
+  <t-popup visible="{{showPrivacyPopup}}" placement="center" show-overlay t-class="privacy-popup">
+    <view class="privacy-content">
+      <view class="privacy-header">
+        <text class="privacy-title">{{privacyTitle}}</text>
+      </view>
+      <scroll-view class="privacy-scroll" scroll-y>
+        <view class="privacy-text">{{privacyContent}}</view>
+      </scroll-view>
+      <view class="privacy-footer">
+        <t-button theme="default" size="large" t-class="privacy-btn" bindtap="closePrivacyPopup">关闭</t-button>
+      </view>
+    </view>
+  </t-popup>
   
   <view class="content" wx:if="{{isLoggedIn}}">
     <view class="coupon-section">
@@ -105,13 +122,13 @@
           <t-icon slot="left-icon" name="time" size="40" color="#1976d2"></t-icon>
         </t-cell>
         <t-cell title="答题历史" hover note-icon="chevron-right">
-          <t-icon slot="left-icon" name="file-list" size="40" color="#7c3aed"></t-icon>
+          <t-icon slot="left-icon" name="catalog" size="40" color="#7c3aed"></t-icon>
         </t-cell>
         <t-cell title="AR识别记录" hover note-icon="chevron-right">
           <t-icon slot="left-icon" name="user" size="40" color="#2e7d32"></t-icon>
         </t-cell>
         <t-cell title="设置" hover note-icon="chevron-right">
-          <t-icon slot="left-icon" name="settings" size="40" color="#ea580c"></t-icon>
+          <t-icon slot="left-icon" name="setting" size="40" color="#ea580c"></t-icon>
         </t-cell>
         <t-cell title="帮助与反馈" hover note-icon="chevron-right">
           <t-icon slot="left-icon" name="help-circle" size="40" color="#6b7280"></t-icon>

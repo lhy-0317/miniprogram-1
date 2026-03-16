@@ -17,10 +17,6 @@
             background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
         }
         
-        .blue-gradient {
-            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
-        }
-        
         .fade-in {
             animation: fadeIn 0.5s ease-out;
         }
@@ -58,21 +54,15 @@
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"></div>
         </div>
         
-        <!-- 右上角关闭按钮 -->
-        <div class="relative z-20 flex justify-end pt-12 pr-4">
-            <button class="w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-            </button>
-        </div>
-        
         <!-- 倒计时提示 -->
-        <div class="relative z-20 flex justify-end pr-4 mt-2">
-            <div class="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 flex items-center">
+        <div class="relative z-20 flex justify-end pt-12 pr-4">
+            <div class="bg-black/50 backdrop-blur-sm rounded-full px-4 py-2 flex items-center cursor-pointer">
                 <span class="text-white text-sm">
-                    <span class="font-bold text-green-400">5</span>s 后自动跳过
+                    <span class="font-bold text-green-400 text-xl">5</span>s 后自动跳过
                 </span>
+                <svg class="w-4 h-4 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
             </div>
         </div>
         

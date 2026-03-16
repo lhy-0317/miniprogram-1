@@ -15,7 +15,7 @@
   <view class="content">
     <view class="logo-section">
       <view class="logo">
-        <t-icon name="leaf" size="80" color="white"></t-icon>
+        <t-image src="/assets/icons/touxiang.png" t-class="logo-image"></t-image>
       </view>
       <text class="app-name">智惠本草</text>
       <text class="app-slogan">智慧环保 · 传承本草</text>

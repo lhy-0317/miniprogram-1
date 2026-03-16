@@ -73,6 +73,12 @@
   box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
 }
 
+.logo-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 40rpx;
+}
+
 .app-name {
   display: block;
   font-size: 40rpx;

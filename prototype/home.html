@@ -17,10 +17,6 @@
             background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
         }
         
-        .blue-gradient {
-            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
-        }
-        
         .scan-button {
             box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
             transition: all 0.3s ease;
@@ -50,15 +46,15 @@
 <body class="bg-gray-50">
     <div class="w-full h-screen flex flex-col">
         <!-- 顶部状态栏 -->
-        <div class="herb-gradient text-white py-3 px-4 flex justify-between items-center">
+        <div class="herb-gradient text-white pt-10 pb-4 px-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
                 <span class="font-medium text-lg">智惠本草</span>
             </div>
             <div class="flex items-center space-x-3">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg class="w-9 h-9" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
                 </svg>
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -71,10 +67,8 @@
         <div class="flex-1 flex flex-col items-center justify-center px-6 bg-gradient-to-b from-green-50 to-blue-50">
             <!-- Logo区域 -->
             <div class="text-center mb-10">
-                <div class="w-24 h-24 herb-gradient rounded-3xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                    <svg class="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17 8c.7 0 1.38.1 2.02.29L12 2.45 6.98 8.29C7.62 8.1 8.3 8 9 8c2.12 0 4.07.74 5.63 2l-1.42 1.42c-.29.29-.29.77 0 1.06.29.29.77.29 1.06 0L17 10.06l1.73 1.73c.29.29.77.29 1.06 0 .29-.29.29-.77 0-1.06L18.06 9c.31-.64.5-1.34.5-2.06C18.56 4.01 15.54 1 12 1S5.44 4.01 5.44 6.94C5.44 7.66 5.63 8.36 5.94 9l-2.29 2.29c-.29.29-.29.77 0 1.06.29.29.77.29 1.06 0L7 10.06l1.73 1.73c.29.29.77.29 1.06 0 .29-.29.29-.77 0-1.06L8.37 10C9.93 8.74 11.88 8 14 8z"/>
-                    </svg>
+                <div class="w-24 h-24 herb-gradient rounded-3xl mx-auto mb-4 flex items-center justify-center shadow-lg overflow-hidden">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20herbal%20medicine%20logo%20ginseng%20green%20elegant&image_size=square" alt="logo" class="w-full h-full object-cover">
                 </div>
                 <h1 class="text-2xl font-bold text-gray-800 mb-2">智惠本草</h1>
                 <p class="text-gray-500 text-sm">智慧环保 · 传承本草</p>
@@ -86,7 +80,7 @@
                 <div class="relative w-64 h-64 bg-white rounded-3xl shadow-2xl flex items-center justify-center border-4 border-dashed border-green-300">
                     <div class="text-center">
                         <div class="w-16 h-16 herb-gradient rounded-2xl mx-auto mb-4 flex items-center justify-center">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5z"/>
                             </svg>
                         </div>
@@ -118,7 +112,7 @@
             </div>
             <div class="flex flex-col items-center text-gray-400">
                 <svg class="w-6 h-6 mb-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9 2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                 </svg>
                 <span class="text-xs">答题</span>
             </div>
