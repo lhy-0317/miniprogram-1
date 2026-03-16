@@ -1,14 +1,24 @@
+interface Question {
+  id: number
+  question: string
+  options: string[]
+  correct: number
+  explanation: string
+}
+
 Page({
   data: {
     currentIndex: 0,
-    questions: [],
+    questions: [] as Question[],
     selectedIndex: -1,
     answered: false,
     isCorrect: false,
     correctCount: 0,
     totalQuestions: 5,
     showResult: false,
-    couponVisible: false
+    couponVisible: false,
+    loading: false,
+    startTime: 0
   },
 
   onLoad() {
@@ -16,14 +26,42 @@ Page({
   },
 
   initQuestions() {
-    const questions = this.getQuestionBank()
-    this.setData({
-      questions: questions.slice(0, 5),
-      totalQuestions: 5
+    this.setData({ loading: true })
+    
+    wx.cloud.callFunction({
+      name: 'getRandomQuestions',
+      data: {
+        count: 5
+      },
+      success: (res: any) => {
+        if (res.result.success && res.result.data.length > 0) {
+          this.setData({
+            questions: res.result.data,
+            totalQuestions: res.result.data.length,
+            loading: false,
+            startTime: Date.now()
+          })
+        } else {
+          this.loadLocalQuestions()
+        }
+      },
+      fail: () => {
+        this.loadLocalQuestions()
+      }
     })
   },
 
-  getQuestionBank() {
+  loadLocalQuestions() {
+    const questions = this.getQuestionBank()
+    this.setData({
+      questions: questions.slice(0, 5),
+      totalQuestions: Math.min(questions.length, 5),
+      loading: false,
+      startTime: Date.now()
+    })
+  },
+
+  getQuestionBank(): Question[] {
     return [
       {
         id: 1,
@@ -40,12 +78,13 @@ Page({
     ]
   },
 
-  addQuestion(question: any) {
+  addQuestion(question: Omit<Question, 'id'>): Question[] {
     const currentBank = this.getQuestionBank()
-    currentBank.push({
+    const newQuestion: Question = {
       id: currentBank.length + 1,
       ...question
-    })
+    }
+    currentBank.push(newQuestion)
     console.log('更新后的题库:', currentBank)
     return currentBank
   },
@@ -69,6 +108,7 @@ Page({
     const index = e.currentTarget.dataset.index
     const isCorrect = index === this.currentQuestion.correct
     let correctCount = this.data.correctCount
+    const answerTime = Date.now() - this.data.startTime
     
     if (isCorrect) {
       correctCount++
@@ -81,6 +121,8 @@ Page({
       correctCount
     })
     
+    this.submitQuizRecord(isCorrect, answerTime)
+    
     if (isCorrect) {
       wx.vibrateShort({ type: 'heavy' })
       setTimeout(() => {
@@ -92,6 +134,24 @@ Page({
         this.nextQuestion()
       }, 2000)
     }
+  },
+
+  submitQuizRecord(isCorrect: boolean, answerTime: number) {
+    wx.cloud.callFunction({
+      name: 'submitQuizRecord',
+      data: {
+        questionId: this.currentQuestion?.id || null,
+        questionIndex: this.data.currentIndex,
+        isCorrect,
+        answerTime
+      },
+      success: (res: any) => {
+        console.log('答题记录已提交', res.result)
+      },
+      fail: (err: any) => {
+        console.error('答题记录提交失败', err)
+      }
+    })
   },
 
   nextQuestion() {
