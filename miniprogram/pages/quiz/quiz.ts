@@ -1,35 +1,62 @@
 Page({
   data: {
     currentIndex: 0,
-    questions: [
-      {
-        question: '图中的药材是什么？',
-        desc: '这是一种珍贵的中药材，具有大补元气的功效。',
-        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ginseng%20root%20herbal%20medicine%20illustration&image_size=square',
-        options: ['人参', '党参', '黄芪', '当归'],
-        correct: 0
-      },
-      {
-        question: '以下哪种药材有"国老"之称？',
-        desc: '它能调和诸药，是最常用的中药材之一。',
-        image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=licorice%20root%20glycyrrhiza%20uralensis%20herbal%20medicine&image_size=square',
-        options: ['人参', '甘草', '枸杞', '黄芪'],
-        correct: 1
-      }
-    ],
+    questions: [],
     selectedIndex: -1,
     answered: false,
     isCorrect: false,
-    couponVisible: false,
-    startTime: 0
+    correctCount: 0,
+    totalQuestions: 5,
+    showResult: false,
+    couponVisible: false
   },
 
   onLoad() {
-    this.setData({ startTime: Date.now() })
+    this.initQuestions()
+  },
+
+  initQuestions() {
+    const questions = this.getQuestionBank()
+    this.setData({
+      questions: questions.slice(0, 5),
+      totalQuestions: 5
+    })
+  },
+
+  getQuestionBank() {
+    return [
+      {
+        id: 1,
+        question: '四季养生的原则包括?',
+        options: [
+          '春夏养阳',
+          '秋冬消暑',
+          '春夏养阴',
+          '秋冬养阳'
+        ],
+        correct: 0,
+        explanation: '中医四季养生原则为"春夏养阳，秋冬养阴"'
+      }
+    ]
+  },
+
+  addQuestion(question: any) {
+    const currentBank = this.getQuestionBank()
+    currentBank.push({
+      id: currentBank.length + 1,
+      ...question
+    })
+    console.log('更新后的题库:', currentBank)
+    return currentBank
   },
 
   get currentQuestion() {
     return this.data.questions[this.data.currentIndex]
+  },
+
+  get questionNumber() {
+    const numbers = ['第一题', '第二题', '第三题', '第四题', '第五题']
+    return numbers[this.data.currentIndex] || '答题完成'
   },
 
   goBack() {
@@ -41,11 +68,17 @@ Page({
     
     const index = e.currentTarget.dataset.index
     const isCorrect = index === this.currentQuestion.correct
+    let correctCount = this.data.correctCount
+    
+    if (isCorrect) {
+      correctCount++
+    }
     
     this.setData({
       selectedIndex: index,
       answered: true,
-      isCorrect
+      isCorrect,
+      correctCount
     })
     
     if (isCorrect) {
@@ -57,40 +90,8 @@ Page({
       wx.vibrateShort({ type: 'medium' })
       setTimeout(() => {
         this.nextQuestion()
-      }, 1500)
+      }, 2000)
     }
-    
-    this.submitResult(isCorrect)
-  },
-
-  handleTimeUp() {
-    if (this.data.answered) return
-    
-    this.setData({
-      answered: true,
-      selectedIndex: -1,
-      isCorrect: false
-    })
-    
-    setTimeout(() => {
-      this.nextQuestion()
-    }, 1500)
-    
-    this.submitResult(false)
-  },
-
-  submitResult(isCorrect: boolean) {
-    const duration = Date.now() - this.data.startTime
-    
-    wx.request({
-      url: '/api/quiz/submit',
-      method: 'POST',
-      data: {
-        questionIndex: this.data.currentIndex,
-        isCorrect,
-        duration
-      }
-    })
   },
 
   nextQuestion() {
@@ -99,24 +100,33 @@ Page({
         currentIndex: this.data.currentIndex + 1,
         selectedIndex: -1,
         answered: false,
-        isCorrect: false,
-        startTime: Date.now()
+        isCorrect: false
       })
     } else {
-      wx.showToast({
-        title: '答题完成！',
-        icon: 'success'
-      })
+      this.setData({ showResult: true })
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/home/home'
+        wx.showToast({
+          title: '答题完成！',
+          icon: 'success'
         })
-      }, 1500)
+      }, 500)
     }
   },
 
   closeCoupon() {
     this.setData({ couponVisible: false })
     this.nextQuestion()
+  },
+
+  restartQuiz() {
+    this.setData({
+      currentIndex: 0,
+      selectedIndex: -1,
+      answered: false,
+      isCorrect: false,
+      correctCount: 0,
+      showResult: false,
+      couponVisible: false
+    })
   }
 })

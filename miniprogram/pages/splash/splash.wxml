@@ -2,16 +2,11 @@
   <image class="bg-image" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20traditional%20medicine%20herbs%20ginseng%20artistic%20elegant%20green%20and%20blue%20aesthetic&image_size=portrait_4_3" mode="aspectFill"></image>
   <view class="overlay"></view>
   
-  <view class="top-actions">
-    <t-button theme="default" variant="outline" size="small" shape="circle" t-class="close-btn" bind:tap="handleClose">
-      <t-icon name="close" size="20" color="white"></t-icon>
-    </t-button>
-  </view>
-  
   <view class="countdown">
-    <view class="countdown-box">
+    <view class="countdown-box" bind:tap="handleSkip">
       <t-count-down time="{{5000}}" format="ss" t-class="countdown-text" auto-start bind:on-end="handleCountdownEnd"></t-count-down>
       <text class="countdown-suffix">s 后自动跳过</text>
+      <t-icon name="chevron-right" size="16" color="white" class="skip-icon"></t-icon>
     </view>
   </view>
   

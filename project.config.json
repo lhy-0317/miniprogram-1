@@ -2,6 +2,8 @@
   "description": "项目配置文件",
   "miniprogramRoot": "miniprogram/",
   "compileType": "miniprogram",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "cloudbaseRoot": "cloudbase/",
   "setting": {
     "useCompilerPlugins": [
       "typescript"
@@ -13,7 +15,7 @@
     },
     "coverView": false,
     "postcss": false,
-    "minified": false,
+    "minified": true,
     "enhance": true,
     "showShadowRootInWxmlPanel": false,
     "packNpmRelationList": [
@@ -51,5 +53,6 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wxfc1770ad0101c4f4"
+  "appid": "wx935c1756480d5f27",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

@@ -1,18 +1,27 @@
 <view class="profile-container">
-  <view class="header">
+  <view class="header" wx:if="{{isLoggedIn}}">
     <view class="decoration-circle circle-1"></view>
     <view class="decoration-circle circle-2"></view>
     
     <view class="header-content">
       <view class="user-info">
-        <view class="avatar">
-          <text>用</text>
+        <view class="avatar-wrapper" bind:tap="goToEditProfile">
+          <view class="avatar">
+            <t-image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill" t-class="avatar-image" />
+            <text wx:else>用</text>
+          </view>
+          <view class="edit-badge">
+            <t-icon name="edit" size="24" color="white"></t-icon>
+          </view>
         </view>
-        <view class="user-detail">
-          <text class="user-name">用户名称</text>
-          <text class="user-id">ID: 2024001001</text>
+        <view class="user-detail" bind:tap="goToEditProfile">
+          <view class="user-name-row">
+            <text class="user-name">{{userInfo && userInfo.nickName || '微信用户'}}</text>
+            <t-icon name="chevron-right" size="28" color="rgba(255,255,255,0.7)"></t-icon>
+          </view>
+          <text class="user-id">ID: {{userId}}</text>
         </view>
-        <t-icon name="settings" size="40" color="white" class="settings-icon"></t-icon>
+        <t-icon name="poweroff" size="40" color="white" class="settings-icon" bind:tap="handleLogout"></t-icon>
       </view>
       
       <view class="stats-grid">
@@ -37,7 +46,33 @@
     </view>
   </view>
   
-  <view class="content">
+  <view class="login-section" wx:if="{{!isLoggedIn}}">
+    <view class="login-card">
+      <view class="login-logo">
+        <view class="logo">
+          <t-icon name="leaf" size="80" color="white"></t-icon>
+        </view>
+        <text class="app-name">智惠本草</text>
+        <text class="app-slogan">智慧环保 · 传承本草</text>
+      </view>
+      
+      <view class="login-form">
+        <button class="login-btn" bindtap="handleLogin">
+          <t-icon name="wechat" size="32" color="white"></t-icon>
+          <text style="margin-left: 12rpx;">微信一键登录</text>
+        </button>
+        
+        <view class="login-hint">
+          <text>登录即表示同意</text>
+          <view class="login-link">《用户协议》</view>
+          <text>和</text>
+          <view class="login-link">《隐私政策》</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="content" wx:if="{{isLoggedIn}}">
     <view class="coupon-section">
       <view class="section-header">
         <text class="section-title">我的优惠券</text>

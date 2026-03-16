@@ -2,14 +2,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #eff6ff, #f0fdf4);
+  background-color: #f9fafb;
 }
 
 .header {
-  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
-  padding: 24rpx 32rpx;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  padding: 80rpx 32rpx 32rpx;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -20,75 +19,98 @@
 
 .header-title {
   color: white;
-  font-size: 32rpx;
+  font-size: 36rpx;
   font-weight: 500;
-  margin-left: 8rpx;
-}
-
-.progress-text {
-  color: white;
-  font-size: 28rpx;
-  font-weight: 500;
-}
-
-.progress-bar {
-  height: 8rpx;
-  background-color: #e5e7eb;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 50%, #90caf9 100%);
-  transition: width 0.5s ease;
+  margin-left: 16rpx;
 }
 
 .content {
   flex: 1;
-  padding: 48rpx;
-  display: flex;
-  flex-direction: column;
+  padding: 32rpx;
+}
+
+.stats-bar {
+  background-color: white;
+  border-radius: 24rpx;
+  padding: 24rpx 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  text-align: center;
+}
+
+.stats-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #374151;
 }
 
 .question-card {
   background-color: white;
   border-radius: 32rpx;
   padding: 48rpx;
-  margin-bottom: 48rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.08);
-}
-
-.question-tag {
   margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
 }
 
-.question-image-box {
-  background: linear-gradient(to right, #eff6ff, #f0fdf4);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-}
-
-.question-image {
-  width: 100%;
-  height: 320rpx;
-  border-radius: 16rpx;
+.question-number {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+  margin-bottom: 24rpx;
+  font-weight: 500;
 }
 
 .question-text {
   font-size: 40rpx;
   font-weight: bold;
   color: #1f2937;
+  line-height: 1.5;
+}
+
+.result-card {
+  background-color: white;
+  border-radius: 32rpx;
+  padding: 64rpx 48rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-icon {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.result-title {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #1f2937;
   margin-bottom: 16rpx;
 }
 
-.question-desc {
-  font-size: 28rpx;
+.result-score {
+  font-size: 32rpx;
   color: #6b7280;
-  line-height: 1.6;
+  margin-bottom: 48rpx;
+}
+
+.restart-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  padding: 24rpx 64rpx;
 }
 
 .options-list {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 24rpx;
@@ -96,12 +118,13 @@
 
 .option-item {
   background-color: white;
-  border: 4rpx solid #e5e7eb;
+  border: 3rpx solid #e5e7eb;
   border-radius: 24rpx;
   padding: 32rpx;
   display: flex;
   align-items: center;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .option-item:active {
@@ -109,69 +132,71 @@
 }
 
 .option-item.correct {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
-  border-color: #2e7d32;
+  border-color: #22c55e;
+  background-color: #f0fdf4;
 }
 
 .option-item.wrong {
-  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
-  border-color: #c62828;
+  border-color: #ef4444;
+  background-color: #fef2f2;
 }
 
-.option-letter {
-  width: 80rpx;
-  height: 80rpx;
-  background-color: #f3f4f6;
+.option-circle {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #d1d5db;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #4b5563;
-  margin-right: 32rpx;
+  margin-right: 24rpx;
   flex-shrink: 0;
 }
 
-.option-item.correct .option-letter,
-.option-item.wrong .option-letter {
-  background-color: rgba(255,255,255,0.2);
-  color: white;
+.option-item.correct .option-circle {
+  border-color: #22c55e;
+  background-color: #22c55e;
+}
+
+.option-item.wrong .option-circle {
+  border-color: #ef4444;
+  background-color: #ef4444;
 }
 
 .option-text {
+  flex: 1;
   font-size: 32rpx;
-  font-weight: 500;
   color: #374151;
+  line-height: 1.5;
 }
 
-.option-item.correct .option-text,
+.option-item.correct .option-text {
+  color: #16a34a;
+  font-weight: 500;
+}
+
 .option-item.wrong .option-text {
-  color: white;
+  color: #dc2626;
+  font-weight: 500;
 }
 
-.countdown-box {
+.option-icon {
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.explanation-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: white;
-  border-radius: 48rpx;
-  padding: 16rpx 32rpx;
-  align-self: center;
+  background-color: #fef3c7;
+  border-radius: 24rpx;
+  padding: 32rpx;
   margin-top: 32rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.06);
 }
 
-.countdown-text {
-  color: #f97316;
-  font-size: 36rpx;
-  font-weight: bold;
-  margin: 0 8rpx;
-}
-
-.countdown-unit {
-  color: #6b7280;
+.explanation-text {
   font-size: 28rpx;
+  color: #92400e;
+  margin-left: 16rpx;
+  flex: 1;
+  line-height: 1.6;
 }
 
 .coupon-popup {
@@ -180,9 +205,10 @@
 
 .coupon-content {
   background-color: white;
-  border-radius: 48rpx 48rpx 0 0;
-  padding: 48rpx;
-  width: 100%;
+  border-radius: 48rpx;
+  padding: 80rpx 64rpx;
+  width: 90%;
+  max-width: 600rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -215,16 +241,16 @@
 .coupon-card {
   background: linear-gradient(to right, #fef3c7, #fed7aa);
   border: 4rpx dashed #fbbf24;
-  border-radius: 32rpx;
-  padding: 40rpx;
+  border-radius: 24rpx;
+  padding: 32rpx;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 48rpx;
 }
 
 .coupon-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -233,6 +259,8 @@
   font-size: 56rpx;
   font-weight: bold;
   color: #ea580c;
+  line-height: 1;
+  margin-bottom: 8rpx;
 }
 
 .coupon-type {
@@ -249,13 +277,13 @@
 .coupon-expire-label {
   font-size: 24rpx;
   color: #6b7280;
-  margin-bottom: 8rpx;
+  margin-bottom: 4rpx;
 }
 
 .coupon-expire {
-  font-size: 28rpx;
-  font-weight: 500;
+  font-size: 26rpx;
   color: #374151;
+  font-weight: 500;
 }
 
 .coupon-btn {
@@ -263,5 +291,5 @@
   border-radius: 32rpx;
   font-size: 36rpx;
   font-weight: bold;
-  padding: 28rpx 0;
+  padding: 24rpx 0;
 }

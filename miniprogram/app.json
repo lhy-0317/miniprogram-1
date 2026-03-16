@@ -4,7 +4,8 @@
     "pages/home/home",
     "pages/quiz/quiz",
     "pages/ar/ar",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/edit-profile/edit-profile"
   ],
   "window": {
     "navigationBarTextStyle": "white",
@@ -52,7 +53,8 @@
     "t-tag": "tdesign-miniprogram/tag/tag",
     "t-loading": "tdesign-miniprogram/loading/loading",
     "t-popup": "tdesign-miniprogram/popup/popup",
-    "t-count-down": "tdesign-miniprogram/count-down/count-down"
+    "t-count-down": "tdesign-miniprogram/count-down/count-down",
+    "t-input": "tdesign-miniprogram/input/input"
   },
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"

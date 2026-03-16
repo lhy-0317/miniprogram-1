@@ -1,0 +1,49 @@
+<view class="edit-profile-container">
+  <view class="header">
+    <t-icon name="chevron-left" size="40" color="white" class="back-icon" bind:tap="goBack"></t-icon>
+    <text class="header-title">编辑资料</text>
+    <view class="header-placeholder"></view>
+  </view>
+  
+  <view class="content">
+    <view class="avatar-section">
+      <view class="avatar-wrapper" bind:tap="chooseAvatar">
+        <view class="avatar">
+          <t-image wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill" t-class="avatar-image" />
+          <view wx:else class="avatar-placeholder">
+            <t-icon name="camera" size="64" color="#9ca3af"></t-icon>
+          </view>
+        </view>
+        <view class="avatar-edit-badge">
+          <t-icon name="camera" size="32" color="white"></t-icon>
+        </view>
+      </view>
+      <text class="avatar-hint">点击更换头像</text>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">昵称</text>
+        <t-input value="{{nickName}}" placeholder="请输入昵称" t-class="nickname-input" bind:change="onNickNameChange" clearable></t-input>
+      </view>
+      <view class="save-btn-section">
+        <t-button theme="primary" size="large" block t-class="save-bottom-btn" bind:tap="handleSave">保存修改</t-button>
+      </view>
+    </view>
+    
+    <view class="tips-section">
+      <t-icon name="info-circle-filled" size="32" color="#f59e0b"></t-icon>
+      <text class="tips-text">温馨提示：头像和昵称仅在本小程序内显示</text>
+    </view>
+  </view>
+  
+  <t-popup visible="{{savePopupVisible}}" placement="center" show-overlay t-class="save-popup">
+    <view class="save-popup-content">
+      <view class="save-popup-icon success">
+        <t-icon name="check-circle-filled" size="80" color="white"></t-icon>
+      </view>
+      <text class="save-popup-title">保存成功</text>
+      <text class="save-popup-sub">您的资料已更新</text>
+    </view>
+  </t-popup>
+</view>

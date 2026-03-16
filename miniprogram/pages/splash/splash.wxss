@@ -24,29 +24,11 @@
   z-index: 2;
 }
 
-.top-actions {
+.countdown {
   position: relative;
   z-index: 10;
   padding-top: 80rpx;
   padding-right: 32rpx;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.close-btn {
-  background-color: rgba(0,0,0,0.5) !important;
-  border-color: transparent !important;
-  width: 80rpx;
-  height: 80rpx;
-  min-width: auto !important;
-  padding: 0 !important;
-}
-
-.countdown {
-  position: relative;
-  z-index: 10;
-  padding-right: 32rpx;
-  margin-top: 16rpx;
   display: flex;
   justify-content: flex-end;
 }
@@ -58,6 +40,12 @@
   padding: 12rpx 24rpx;
   display: flex;
   align-items: center;
+  transition: all 0.3s;
+}
+
+.countdown-box:active {
+  background-color: rgba(0,0,0,0.7);
+  transform: scale(0.95);
 }
 
 .countdown-text {
@@ -69,6 +57,10 @@
 .countdown-suffix {
   color: white;
   font-size: 24rpx;
+  margin-left: 8rpx;
+}
+
+.skip-icon {
   margin-left: 8rpx;
 }
 

@@ -4,36 +4,44 @@
       <t-icon name="chevron-left" size="40" color="white"></t-icon>
       <text class="header-title">趣味答题</text>
     </view>
-    <text class="progress-text">第 {{currentIndex + 1}} / {{questions.length}} 题</text>
-  </view>
-  
-  <view class="progress-bar">
-    <view class="progress-fill" style="width: {{(currentIndex + 1) / questions.length * 100}}%"></view>
   </view>
   
   <view class="content">
-    <view class="question-card">
-      <t-tag theme="primary" variant="light" size="medium" t-class="question-tag">本草知识</t-tag>
-      <view class="question-image-box">
-        <t-image src="{{currentQuestion.image}}" mode="aspectFill" t-class="question-image" />
-      </view>
-      <view class="question-text">{{currentQuestion.question}}</view>
-      <view class="question-desc">{{currentQuestion.desc}}</view>
+    <view class="stats-bar">
+      <text class="stats-text">您已连续答对 {{correctCount}}/{{totalQuestions}} 题</text>
     </view>
     
-    <view class="options-list">
+    <view class="question-card" wx:if="{{!showResult}}">
+      <text class="question-number">{{questionNumber}}</text>
+      <view class="question-text">{{currentQuestion.question}}</view>
+    </view>
+    
+    <view class="result-card" wx:if="{{showResult}}">
+      <view class="result-icon">
+        <t-icon name="trophy" size="80" color="#fbbf24"></t-icon>
+      </view>
+      <text class="result-title">答题完成！</text>
+      <text class="result-score">共答对 {{correctCount}}/{{totalQuestions}} 题</text>
+      <t-button theme="primary" size="large" t-class="restart-btn" bind:tap="restartQuiz">再来一次</t-button>
+    </view>
+    
+    <view class="options-list" wx:if="{{!showResult}}">
       <view wx:for="{{currentQuestion.options}}" wx:key="index" 
             class="option-item {{selectedIndex === index ? (isCorrect ? 'correct' : 'wrong') : ''}}"
             bind:tap="selectOption" data-index="{{index}}">
-        <view class="option-letter">{{String.fromCharCode(65 + index)}}</view>
+        <view class="option-circle"></view>
         <text class="option-text">{{item}}</text>
+        <t-icon wx:if="{{selectedIndex === index}}" 
+                name="{{isCorrect ? 'check-circle-filled' : 'close-circle-filled'}}" 
+                size="32" 
+                color="{{isCorrect ? '#22c55e' : '#ef4444'}}"
+                class="option-icon"></t-icon>
       </view>
     </view>
     
-    <view class="countdown-box">
-      <t-icon name="time" size="36" color="#f97316"></t-icon>
-      <t-count-down time="{{15000}}" format="ss" t-class="countdown-text" auto-start="{{!answered}}" bind:on-end="handleTimeUp"></t-count-down>
-      <text class="countdown-unit">秒</text>
+    <view class="explanation-box" wx:if="{{answered && !showResult}}">
+      <t-icon name="info-circle-filled" size="32" color="#f59e0b"></t-icon>
+      <text class="explanation-text">{{currentQuestion.explanation}}</text>
     </view>
   </view>
   

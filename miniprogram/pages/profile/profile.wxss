@@ -8,7 +8,7 @@
 .header {
   position: relative;
   background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  padding: 80rpx 48rpx 128rpx;
+  padding: 80rpx 48rpx 80rpx;
   overflow: hidden;
 }
 
@@ -43,6 +43,11 @@
   margin-bottom: 48rpx;
 }
 
+.avatar-wrapper {
+  position: relative;
+  margin-right: 32rpx;
+}
+
 .avatar {
   width: 160rpx;
   height: 160rpx;
@@ -51,7 +56,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 32rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.15);
 }
 
@@ -61,17 +65,38 @@
   color: #2e7d32;
 }
 
+.edit-badge {
+  position: absolute;
+  bottom: -8rpx;
+  right: -8rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid white;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+}
+
 .user-detail {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
+.user-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
 .user-name {
   color: white;
   font-size: 40rpx;
   font-weight: bold;
-  margin-bottom: 8rpx;
+  margin-right: 8rpx;
 }
 
 .user-id {
@@ -123,8 +148,10 @@
 
 .content {
   flex: 1;
-  margin-top: -64rpx;
+  margin-top: -32rpx;
   padding: 0 32rpx 32rpx;
+  position: relative;
+  z-index: 10;
 }
 
 .coupon-section {
@@ -241,4 +268,97 @@
   border-radius: 32rpx;
   overflow: hidden;
   box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+}
+
+.login-section {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #2e7d32 0%, #4caf50 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+}
+
+.login-card {
+  background-color: white;
+  border-radius: 48rpx;
+  padding: 80rpx 64rpx;
+  width: 100%;
+  max-width: 600rpx;
+  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.2);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 80rpx;
+}
+
+.login-logo .logo {
+  width: 160rpx;
+  height: 160rpx;
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+}
+
+.login-logo .app-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.login-logo .app-slogan {
+  display: block;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.login-form {
+  text-align: center;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%) !important;
+  border-radius: 32rpx !important;
+  font-size: 36rpx !important;
+  font-weight: bold !important;
+  padding: 28rpx 0 !important;
+  margin-bottom: 32rpx !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12rpx !important;
+  border: none !important;
+  line-height: normal !important;
+  color: white !important;
+}
+
+.login-btn::after {
+  border: none !important;
+}
+
+.login-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.login-link {
+  color: #4caf50;
+  margin: 0 4rpx;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 32rpx;
 }
