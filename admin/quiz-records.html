@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答题记录 - 智惠本草管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <style>
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
+            border-left: 3px solid #2e7d32;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">智惠本草</h1>
+                        <p class="text-xs text-gray-500">管理后台</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="index.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>仪表盘</span>
+                </a>
+                <a href="users.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </a>
+                <a href="coupons.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                    </svg>
+                    <span>优惠券管理</span>
+                </a>
+                <a href="quiz-records.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>答题记录</span>
+                </a>
+                <a href="questions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                    <span>题库管理</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-8 py-4">
+                <h2 class="text-2xl font-bold text-gray-800">答题记录</h2>
+            </header>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <p class="text-gray-500 text-sm">总答题数</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="statTotal">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <p class="text-gray-500 text-sm">正确数</p>
+                        <p class="text-2xl font-bold text-green-600 mt-1" id="statCorrect">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <p class="text-gray-500 text-sm">错误数</p>
+                        <p class="text-2xl font-bold text-red-600 mt-1" id="statWrong">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <p class="text-gray-500 text-sm">正确率</p>
+                        <p class="text-2xl font-bold text-blue-600 mt-1" id="statRate">-</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">题目</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">用户</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">答案</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">结果</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">答题时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordTableBody" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-6 flex justify-between items-center">
+                    <p class="text-sm text-gray-500">共 <span id="totalCount">0</span> 条记录</p>
+                    <div class="flex space-x-2">
+                        <button onclick="prevPage()" id="prevBtn" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">上一页</button>
+                        <button onclick="nextPage()" id="nextBtn" class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const app = cloudbase.init({
+            env: 'cloud1-6gqgdhv6f2059125'
+        })
+        
+        const db = app.database()
+        const auth = app.auth()
+        let currentPage = 0
+        const pageSize = 20
+        let totalRecords = 0
+        
+        async function initCloudBase() {
+            try {
+                const loginState = await auth.getLoginState()
+                if (!loginState) {
+                    await auth.signInAnonymously()
+                    console.log('匿名登录成功')
+                }
+            } catch (err) {
+                console.error('云开发初始化失败', err)
+            }
+        }
+        
+        function checkLogin() {
+            if (!sessionStorage.getItem('adminLoggedIn')) {
+                window.location.href = 'login.html'
+            }
+        }
+        
+        async function loadRecords() {
+            try {
+                const countResult = await db.collection('quiz_records').count()
+                totalRecords = countResult.total || 0
+                document.getElementById('totalCount').textContent = totalRecords
+                
+                const result = await db.collection('quiz_records')
+                    .orderBy('createTime', 'desc')
+                    .skip(currentPage * pageSize)
+                    .limit(pageSize)
+                    .get()
+                
+                const records = result && result.data ? result.data : []
+                renderRecords(records)
+                updateStats()
+                updatePagination()
+            } catch (err) {
+                console.error('加载答题记录失败', err)
+                document.getElementById('recordTableBody').innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">加载失败，请检查云开发配置</td></tr>'
+            }
+        }
+        
+        async function updateStats() {
+            try {
+                const allRecords = await db.collection('quiz_records').limit(1000).get()
+                const data = allRecords && allRecords.data ? allRecords.data : []
+                const total = data.length
+                const correct = data.filter(r => r.isCorrect).length
+                const wrong = total - correct
+                const rate = total > 0 ? Math.round(correct / total * 100) : 0
+                
+                document.getElementById('statTotal').textContent = total
+                document.getElementById('statCorrect').textContent = correct
+                document.getElementById('statWrong').textContent = wrong
+                document.getElementById('statRate').textContent = rate + '%'
+            } catch (err) {
+                console.error('加载统计数据失败', err)
+            }
+        }
+        
+        function renderRecords(records) {
+            const tbody = document.getElementById('recordTableBody')
+            
+            if (!records || records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">暂无答题记录</td></tr>'
+                return
+            }
+            
+            tbody.innerHTML = records.map(record => {
+                const options = ['A', 'B', 'C', 'D']
+                const userAnswer = record.userOptionIndex !== undefined ? options[record.userOptionIndex] : '-'
+                const correctAnswer = record.correctOptionIndex !== undefined ? options[record.correctOptionIndex] : '-'
+                
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <p class="text-sm text-gray-800 font-medium">${record.question || '未知题目'}</p>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500 font-mono">${(record._openid || '').slice(-8)}</td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm">
+                                <span class="${record.isCorrect ? 'text-green-600' : 'text-red-600 line-through'}">${userAnswer}</span>
+                                ${!record.isCorrect ? `<span class="text-green-600 ml-2">正确: ${correctAnswer}</span>` : ''}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${record.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                                ${record.isCorrect ? '正确' : '错误'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">${formatDateTime(record.createTime)}</td>
+                    </tr>
+                `
+            }).join('')
+        }
+        
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--
+                loadRecords()
+            }
+        }
+        
+        function nextPage() {
+            if ((currentPage + 1) * pageSize < totalRecords) {
+                currentPage++
+                loadRecords()
+            }
+        }
+        
+        function updatePagination() {
+            document.getElementById('prevBtn').disabled = currentPage === 0
+            document.getElementById('nextBtn').disabled = (currentPage + 1) * pageSize >= totalRecords
+        }
+        
+        function formatDateTime(date) {
+            if (!date) return '-'
+            const d = new Date(date)
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+        }
+        
+        async function init() {
+            checkLogin()
+            await initCloudBase()
+            await loadRecords()
+        }
+        init()
+    </script>
+</body>
+</html>

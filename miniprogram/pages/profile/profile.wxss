@@ -215,6 +215,23 @@
   border-color: #86efac;
 }
 
+.coupon-item.purple {
+  background: linear-gradient(to right, #f3e8ff, #e9d5ff);
+  border-color: #c084fc;
+}
+
+.coupon-item.green .coupon-amount {
+  color: #16a34a;
+}
+
+.coupon-item.purple .coupon-amount {
+  color: #7c3aed;
+}
+
+.coupon-item.purple .use-btn {
+  background-color: #7c3aed !important;
+}
+
 .coupon-item:active {
   transform: scale(0.98);
 }
@@ -231,10 +248,6 @@
   color: #ea580c;
   line-height: 1;
   margin-bottom: 8rpx;
-}
-
-.coupon-item.green .coupon-amount {
-  color: #16a34a;
 }
 
 .coupon-type {

@@ -14,7 +14,7 @@
     
     <view class="start-dialog" wx:if="{{showStartDialog && !loading}}">
       <view class="start-icon">
-        <t-icon name="question-circle-filled" size="120" color="#2e7d32"></t-icon>
+        <t-image src="/assets/icons/touxiang.png" t-class="start-icon-img" mode="aspectFit"></t-image>
       </view>
       <text class="start-title">趣味答题</text>
       <text class="start-desc">测试你的中医药知识</text>

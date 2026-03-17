@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>题库管理 - 智惠本草管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <style>
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
+            border-left: 3px solid #2e7d32;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">智惠本草</h1>
+                        <p class="text-xs text-gray-500">管理后台</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="index.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>仪表盘</span>
+                </a>
+                <a href="users.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </a>
+                <a href="coupons.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                    </svg>
+                    <span>优惠券管理</span>
+                </a>
+                <a href="quiz-records.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>答题记录</span>
+                </a>
+                <a href="questions.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                    <span>题库管理</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">题库管理</h2>
+                <button onclick="showAddModal()" class="px-4 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition">
+                    + 添加题目
+                </button>
+            </header>
+            
+            <div class="p-8">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">题目</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">选项</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">正确答案</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="questionTableBody" class="divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <h3 class="text-xl font-bold text-gray-800 mb-4" id="modalTitle">添加题目</h3>
+            <form id="questionForm" class="space-y-4">
+                <input type="hidden" id="questionId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">题目内容</label>
+                    <textarea id="questionText" rows="3" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        placeholder="请输入题目内容"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选项 A</label>
+                        <input type="text" id="optionA" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选项 B</label>
+                        <input type="text" id="optionB" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选项 C</label>
+                        <input type="text" id="optionC" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选项 D</label>
+                        <input type="text" id="optionD" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">正确答案</label>
+                    <select id="correctAnswer" required
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                        <option value="0">A</option>
+                        <option value="1">B</option>
+                        <option value="2">C</option>
+                        <option value="3">D</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">答案解析</label>
+                    <textarea id="explanation" rows="2"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                        placeholder="可选，输入答案解析"></textarea>
+                </div>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="closeAddModal()" class="flex-1 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">取消</button>
+                    <button type="submit" class="flex-1 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const app = cloudbase.init({
+            env: 'cloud1-6gqgdhv6f2059125'
+        })
+        
+        const db = app.database()
+        const auth = app.auth()
+        let editingId = null
+        
+        async function initCloudBase() {
+            try {
+                const loginState = await auth.getLoginState()
+                if (!loginState) {
+                    await auth.signInAnonymously()
+                    console.log('匿名登录成功')
+                }
+            } catch (err) {
+                console.error('云开发初始化失败', err)
+            }
+        }
+        
+        function checkLogin() {
+            if (!sessionStorage.getItem('adminLoggedIn')) {
+                window.location.href = 'login.html'
+            }
+        }
+        
+        async function loadQuestions() {
+            try {
+                const result = await db.collection('quiz_questions')
+                    .limit(100)
+                    .get()
+                
+                const questions = result && result.data ? result.data : []
+                renderQuestions(questions)
+            } catch (err) {
+                console.error('加载题目失败', err)
+                document.getElementById('questionTableBody').innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">加载失败，请检查云开发配置</td></tr>'
+            }
+        }
+        
+        function renderQuestions(questions) {
+            const tbody = document.getElementById('questionTableBody')
+            
+            if (!questions || questions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">暂无题目，请添加</td></tr>'
+                return
+            }
+            
+            const options = ['A', 'B', 'C', 'D']
+            
+            tbody.innerHTML = questions.map(q => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                        <p class="text-sm text-gray-800">${q.question || '无题目'}</p>
+                        ${q.explanation ? `<p class="text-xs text-gray-500 mt-1">解析: ${q.explanation}</p>` : ''}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">
+                        ${q.options ? q.options.map((opt, i) => `<span class="inline-block mr-2">${options[i]}. ${opt}</span>`).join('') : '-'}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                            ${options[q.correct] || '-'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <button onclick="editQuestion('${q._id}')" class="text-blue-600 hover:text-blue-700 text-sm font-medium mr-3">编辑</button>
+                        <button onclick="deleteQuestion('${q._id}')" class="text-red-600 hover:text-red-700 text-sm font-medium">删除</button>
+                    </td>
+                </tr>
+            `).join('')
+        }
+        
+        function showAddModal() {
+            editingId = null
+            document.getElementById('modalTitle').textContent = '添加题目'
+            document.getElementById('questionForm').reset()
+            document.getElementById('addModal').classList.remove('hidden')
+            document.getElementById('addModal').classList.add('flex')
+        }
+        
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden')
+            document.getElementById('addModal').classList.remove('flex')
+        }
+        
+        async function editQuestion(id) {
+            try {
+                const result = await db.collection('quiz_questions').doc(id).get()
+                const q = result.data[0]
+                
+                editingId = id
+                document.getElementById('modalTitle').textContent = '编辑题目'
+                document.getElementById('questionText').value = q.question || ''
+                document.getElementById('optionA').value = q.options ? q.options[0] : ''
+                document.getElementById('optionB').value = q.options ? q.options[1] : ''
+                document.getElementById('optionC').value = q.options ? q.options[2] : ''
+                document.getElementById('optionD').value = q.options ? q.options[3] : ''
+                document.getElementById('correctAnswer').value = q.correct || 0
+                document.getElementById('explanation').value = q.explanation || ''
+                
+                document.getElementById('addModal').classList.remove('hidden')
+                document.getElementById('addModal').classList.add('flex')
+            } catch (err) {
+                console.error('获取题目失败', err)
+                alert('获取题目失败')
+            }
+        }
+        
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            
+            const questionData = {
+                question: document.getElementById('questionText').value,
+                options: [
+                    document.getElementById('optionA').value,
+                    document.getElementById('optionB').value,
+                    document.getElementById('optionC').value,
+                    document.getElementById('optionD').value
+                ],
+                correct: parseInt(document.getElementById('correctAnswer').value),
+                explanation: document.getElementById('explanation').value,
+                updateTime: new Date()
+            }
+            
+            try {
+                if (editingId) {
+                    await db.collection('quiz_questions').doc(editingId).update({
+                        data: questionData
+                    })
+                    alert('题目更新成功！')
+                } else {
+                    questionData.createTime = new Date()
+                    await db.collection('quiz_questions').add({
+                        data: questionData
+                    })
+                    alert('题目添加成功！')
+                }
+                
+                closeAddModal()
+                loadQuestions()
+            } catch (err) {
+                console.error('保存失败', err)
+                alert('保存失败：' + err.message)
+            }
+        })
+        
+        async function deleteQuestion(id) {
+            if (!confirm('确定要删除这道题目吗？')) return
+            
+            try {
+                await db.collection('quiz_questions').doc(id).remove()
+                loadQuestions()
+            } catch (err) {
+                console.error('删除失败', err)
+                alert('删除失败')
+            }
+        }
+        
+        async function init() {
+            checkLogin()
+            await initCloudBase()
+            await loadQuestions()
+        }
+        init()
+    </script>
+</body>
+</html>

@@ -5,7 +5,8 @@
     "pages/quiz/quiz",
     "pages/ar/ar",
     "pages/profile/profile",
-    "pages/edit-profile/edit-profile"
+    "pages/edit-profile/edit-profile",
+    "pages/quiz-history/quiz-history"
   ],
   "window": {
     "navigationBarTextStyle": "white",

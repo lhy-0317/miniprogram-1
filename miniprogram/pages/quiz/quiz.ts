@@ -55,13 +55,24 @@ Page({
   },
 
   loadLocalQuestions() {
-    const questions = this.getQuestionBank()
+    const allQuestions = this.getQuestionBank()
+    const shuffled = this.shuffleArray([...allQuestions])
+    const selectedQuestions = shuffled.slice(0, Math.min(5, shuffled.length))
+    
     this.setData({
-      questions: questions.slice(0, 5),
-      totalQuestions: Math.min(questions.length, 5),
+      questions: selectedQuestions,
+      totalQuestions: selectedQuestions.length,
       loading: false
     })
     this.updateCurrentQuestion()
+  },
+
+  shuffleArray<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]
+    }
+    return array
   },
 
   updateCurrentQuestion() {
@@ -190,6 +201,7 @@ Page({
       wx.vibrateShort({ type: 'heavy' })
       
       if (correctCount % 5 === 0) {
+        this.grantCoupon()
         setTimeout(() => {
           this.setData({ couponVisible: true })
         }, 500)
@@ -201,23 +213,31 @@ Page({
 
   submitQuizRecord(isCorrect: boolean, answerTime: number, questionId: number | null = null) {
     try {
-      wx.cloud.callFunction({
-        name: 'submitQuizRecord',
+      const currentQuestion = this.data.currentQuestion
+      const db = wx.cloud.database()
+      
+      db.collection('quiz_records').add({
         data: {
           questionId: questionId || null,
           questionIndex: this.data.currentIndex,
+          question: currentQuestion?.question || '',
+          options: currentQuestion?.options || [],
+          userOptionIndex: this.data.selectedIndex,
+          correctOptionIndex: currentQuestion?.correct,
           isCorrect,
-          answerTime
+          answerTime,
+          explanation: currentQuestion?.explanation || '',
+          createTime: new Date()
         },
         success: (res: any) => {
-          console.log('答题记录已提交', res.result)
+          console.log('答题记录已保存', res)
         },
         fail: (err: any) => {
-          console.log('答题记录提交失败（不影响答题）', err)
+          console.log('答题记录保存失败（不影响答题）', err)
         }
       })
     } catch (err) {
-      console.log('云函数调用异常', err)
+      console.log('保存答题记录异常', err)
     }
   },
 
@@ -248,6 +268,10 @@ Page({
   },
 
   restartQuiz() {
+    const allQuestions = this.getQuestionBank()
+    const shuffled = this.shuffleArray([...allQuestions])
+    const selectedQuestions = shuffled.slice(0, Math.min(5, shuffled.length))
+    
     this.setData({
       currentIndex: 0,
       selectedIndex: -1,
@@ -257,8 +281,46 @@ Page({
       showResult: false,
       couponVisible: false,
       quizStarted: false,
-      showStartDialog: true
+      showStartDialog: true,
+      questions: selectedQuestions,
+      totalQuestions: selectedQuestions.length
     })
     this.updateCurrentQuestion()
+  },
+
+  grantCoupon() {
+    const db = wx.cloud.database()
+    const openid = wx.getStorageSync('openid')
+    
+    if (!openid) {
+      return
+    }
+    
+    const couponTypes = [
+      { amount: '免费', type: '领纸券', expireDays: 30 },
+      { amount: '买2送1', type: '优惠券', expireDays: 15 },
+      { amount: '8折', type: '购物券', expireDays: 7 }
+    ]
+    
+    const randomCoupon = couponTypes[Math.floor(Math.random() * couponTypes.length)]
+    const expireDate = new Date()
+    expireDate.setDate(expireDate.getDate() + randomCoupon.expireDays)
+    const formattedExpireDate = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')}`
+    
+    db.collection('coupons').add({
+      data: {
+        amount: randomCoupon.amount,
+        type: randomCoupon.type,
+        expireDate: formattedExpireDate,
+        status: 'unused',
+        createTime: new Date()
+      },
+      success: (res: any) => {
+        console.log('优惠券已发放', res)
+      },
+      fail: (err: any) => {
+        console.log('优惠券发放失败', err)
+      }
+    })
   }
 })

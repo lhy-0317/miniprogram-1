@@ -69,6 +69,13 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 40rpx;
+  overflow: hidden;
+}
+
+.start-icon-img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
 }
 
 .start-title {

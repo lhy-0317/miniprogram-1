@@ -182,6 +182,12 @@ Page({
     })
   },
 
+  goToQuizHistory() {
+    wx.navigateTo({
+      url: '/pages/quiz-history/quiz-history'
+    })
+  },
+
   handleLogin() {
     wx.showLoading({ title: '登录中...' })
     
@@ -217,7 +223,12 @@ Page({
     }).get({
       success: (res: any) => {
         if (res.data.length > 0) {
-          this.updateUserInfo(openid, userInfo, res.data[0]._id)
+          const existingUser = res.data[0]
+          const userToUse = {
+            nickName: existingUser.nickName || userInfo.nickName,
+            avatarUrl: existingUser.avatarUrl || userInfo.avatarUrl
+          }
+          this.completeLogin(openid, userToUse)
         } else {
           this.createNewUser(openid, userInfo)
         }
@@ -249,24 +260,6 @@ Page({
           title: '注册失败',
           icon: 'error'
         })
-      }
-    })
-  },
-
-  updateUserInfo(openid: string, userInfo: any, docId: string) {
-    const db = wx.cloud.database()
-    
-    db.collection('users').doc(docId).update({
-      data: {
-        nickName: userInfo.nickName,
-        avatarUrl: userInfo.avatarUrl,
-        updateTime: new Date()
-      },
-      success: () => {
-        this.completeLogin(openid, userInfo)
-      },
-      fail: () => {
-        this.completeLogin(openid, userInfo)
       }
     })
   },
@@ -364,12 +357,61 @@ Page({
     
     if (filterType === 'unused') {
       filtered = coupons.filter((c: any) => c.status === 'unused')
+    } else if (filterType === 'used') {
+      filtered = coupons.filter((c: any) => c.status === 'used')
     } else if (filterType === 'expired') {
       filtered = coupons.filter((c: any) => c.status === 'expired')
     }
     
     this.setData({
       filteredCoupons: filtered
+    })
+  },
+
+  useCoupon(e: any) {
+    const couponId = e.currentTarget.dataset.id
+    const status = e.currentTarget.dataset.status
+    
+    if (status === 'expired' || status === 'used') {
+      return
+    }
+    
+    wx.showModal({
+      title: '提示',
+      content: '确定要使用这张优惠券吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.confirmUseCoupon(couponId)
+        }
+      }
+    })
+  },
+
+  confirmUseCoupon(couponId: string) {
+    wx.showLoading({ title: '使用中...' })
+    
+    const db = wx.cloud.database()
+    
+    db.collection('coupons').doc(couponId).update({
+      data: {
+        status: 'used',
+        useTime: new Date()
+      },
+      success: () => {
+        wx.hideLoading()
+        wx.showToast({
+          title: '使用成功！',
+          icon: 'success'
+        })
+        this.loadCoupons()
+      },
+      fail: () => {
+        wx.hideLoading()
+        wx.showToast({
+          title: '使用失败',
+          icon: 'error'
+        })
+      }
     })
   },
 

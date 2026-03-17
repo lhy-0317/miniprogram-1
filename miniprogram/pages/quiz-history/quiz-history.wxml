@@ -1,0 +1,36 @@
+<view class="container">
+  <view wx:if="{{historyList.length > 0}}" class="history-list">
+    <view wx:for="{{historyList}}" wx:key="id" class="history-item">
+      <view class="history-header">
+        <view class="history-date">
+          <t-icon name="time" size="20" color="#999"></t-icon>
+          <text class="date-text">{{item.date}}</text>
+        </view>
+        <t-tag theme="{{item.isCorrect ? 'success' : 'danger'}}" variant="light" size="small">
+          {{item.isCorrect ? '正确' : '错误'}}
+        </t-tag>
+      </view>
+      <view class="history-question">
+        <text class="question-text">{{item.question}}</text>
+      </view>
+      <view class="history-answer">
+        <view class="answer-row">
+          <text class="answer-label">你的答案：</text>
+          <text class="answer-text {{!item.isCorrect ? 'wrong' : ''}}">{{item.userAnswer}}</text>
+        </view>
+        <view wx:if="{{!item.isCorrect}}" class="answer-row">
+          <text class="answer-label">正确答案：</text>
+          <text class="answer-text correct">{{item.correctAnswer}}</text>
+        </view>
+      </view>
+      <view wx:if="{{item.explanation}}" class="history-explanation">
+        <t-icon name="help-circle" size="16" color="#666"></t-icon>
+        <text class="explanation-text">{{item.explanation}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <view wx:else class="empty-container">
+    <t-empty description="暂无答题记录"></t-empty>
+  </view>
+</view>

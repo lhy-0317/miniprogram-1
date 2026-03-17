@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智惠本草 - 管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <style>
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
+            border-left: 3px solid #2e7d32;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">智惠本草</h1>
+                        <p class="text-xs text-gray-500">管理后台</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4 space-y-2">
+                <a href="index.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>仪表盘</span>
+                </a>
+                <a href="users.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </a>
+                <a href="coupons.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                    </svg>
+                    <span>优惠券管理</span>
+                </a>
+                <a href="quiz-records.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>答题记录</span>
+                </a>
+                <a href="questions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                    <span>题库管理</span>
+                </a>
+            </nav>
+            
+            <div class="absolute bottom-0 left-0 w-64 p-4 border-t bg-white">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700" id="adminName">管理员</span>
+                    </div>
+                    <button onclick="logout()" class="text-gray-500 hover:text-red-500 transition">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-8 py-4">
+                <h2 class="text-2xl font-bold text-gray-800">仪表盘</h2>
+            </header>
+            
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">总用户数</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-2" id="totalUsers">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">优惠券总数</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-2" id="totalCoupons">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">答题记录数</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-2" id="totalRecords">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-500 text-sm">题库题目数</p>
+                                <p class="text-3xl font-bold text-gray-800 mt-2" id="totalQuestions">-</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">最近注册用户</h3>
+                        <div class="space-y-4" id="recentUsers">
+                            <p class="text-gray-500 text-center py-4">加载中...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">最近发放优惠券</h3>
+                        <div class="space-y-4" id="recentCoupons">
+                            <p class="text-gray-500 text-center py-4">加载中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const app = cloudbase.init({
+            env: 'cloud1-6gqgdhv6f2059125'
+        })
+        
+        const db = app.database()
+        const auth = app.auth()
+        let cloudReady = false
+        
+        async function initCloudBase() {
+            try {
+                const loginState = await auth.getLoginState()
+                if (!loginState) {
+                    const result = await auth.signInAnonymously()
+                    console.log('匿名登录成功', result)
+                } else {
+                    console.log('已登录状态', loginState)
+                }
+                cloudReady = true
+                return true
+            } catch (err) {
+                console.error('云开发初始化失败', err)
+                alert('云开发初始化失败: ' + err.message + '\n\n请在云开发控制台开启匿名登录功能')
+                return false
+            }
+        }
+        
+        function checkLogin() {
+            if (!sessionStorage.getItem('adminLoggedIn')) {
+                window.location.href = 'login.html'
+            }
+            const username = sessionStorage.getItem('adminUsername')
+            if (username) {
+                document.getElementById('adminName').textContent = username
+            }
+        }
+        
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn')
+            sessionStorage.removeItem('adminUsername')
+            window.location.href = 'login.html'
+        }
+        
+        async function loadStats() {
+            if (!cloudReady) {
+                console.log('云开发未就绪，跳过加载统计数据')
+                return
+            }
+            try {
+                console.log('开始加载统计数据...')
+                
+                const usersCount = await db.collection('users').count()
+                console.log('用户数量:', usersCount)
+                document.getElementById('totalUsers').textContent = usersCount ? usersCount.total || 0 : 0
+                
+                const couponsCount = await db.collection('coupons').count()
+                console.log('优惠券数量:', couponsCount)
+                document.getElementById('totalCoupons').textContent = couponsCount ? couponsCount.total || 0 : 0
+                
+                const recordsCount = await db.collection('quiz_records').count()
+                console.log('答题记录数量:', recordsCount)
+                document.getElementById('totalRecords').textContent = recordsCount ? recordsCount.total || 0 : 0
+                
+                const questionsCount = await db.collection('quiz_questions').count()
+                console.log('题目数量:', questionsCount)
+                document.getElementById('totalQuestions').textContent = questionsCount ? questionsCount.total || 0 : 0
+            } catch (err) {
+                console.error('加载统计数据失败', err)
+                document.getElementById('totalUsers').textContent = '-'
+                document.getElementById('totalCoupons').textContent = '-'
+                document.getElementById('totalRecords').textContent = '-'
+                document.getElementById('totalQuestions').textContent = '-'
+            }
+        }
+        
+        async function loadRecentUsers() {
+            try {
+                const result = await db.collection('users')
+                    .orderBy('createTime', 'desc')
+                    .limit(5)
+                    .get()
+                
+                const container = document.getElementById('recentUsers')
+                if (!result || !result.data || result.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无用户</p>'
+                    return
+                }
+                
+                container.innerHTML = result.data.map(user => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                                ${(user.nickName || '用')[0]}
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">${user.nickName || '微信用户'}</p>
+                                <p class="text-xs text-gray-500">${formatDate(user.createTime)}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-600">答题 ${user.quizCount || 0} 道</p>
+                        </div>
+                    </div>
+                `).join('')
+            } catch (err) {
+                console.error('加载最近用户失败', err)
+            }
+        }
+        
+        async function loadRecentCoupons() {
+            try {
+                const result = await db.collection('coupons')
+                    .orderBy('createTime', 'desc')
+                    .limit(5)
+                    .get()
+                
+                const container = document.getElementById('recentCoupons')
+                if (!result || !result.data || result.data.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无优惠券</p>'
+                    return
+                }
+                
+                container.innerHTML = result.data.map(coupon => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                        <div>
+                            <p class="font-medium text-gray-800">${coupon.amount} ${coupon.type}</p>
+                            <p class="text-xs text-gray-500">${formatDate(coupon.createTime)}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${
+                            coupon.status === 'unused' ? 'bg-green-100 text-green-700' :
+                            coupon.status === 'used' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-700'
+                        }">
+                            ${coupon.status === 'unused' ? '未使用' : coupon.status === 'used' ? '已使用' : '已过期'}
+                        </span>
+                    </div>
+                `).join('')
+            } catch (err) {
+                console.error('加载最近优惠券失败', err)
+            }
+        }
+        
+        function formatDate(date) {
+            if (!date) return '-'
+            const d = new Date(date)
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+        }
+        
+        async function init() {
+            checkLogin()
+            await initCloudBase()
+            await loadStats()
+            await loadRecentUsers()
+            await loadRecentCoupons()
+        }
+        
+        init()
+    </script>
+</body>
+</html>

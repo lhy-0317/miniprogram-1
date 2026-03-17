@@ -96,20 +96,29 @@
         <view class="filter-tabs">
           <view class="filter-tab {{filterType === 'all' ? 'active' : ''}}" bind:tap="setFilter" data-type="all">全部</view>
           <view class="filter-tab {{filterType === 'unused' ? 'active' : ''}}" bind:tap="setFilter" data-type="unused">未使用</view>
+          <view class="filter-tab {{filterType === 'used' ? 'active' : ''}}" bind:tap="setFilter" data-type="used">已使用</view>
           <view class="filter-tab {{filterType === 'expired' ? 'active' : ''}}" bind:tap="setFilter" data-type="expired">已过期</view>
         </view>
       </view>
       
       <view class="coupon-list">
-        <view wx:for="{{filteredCoupons}}" wx:key="id" class="coupon-item">
+        <view wx:for="{{filteredCoupons}}" wx:key="id" class="coupon-item {{item.type === '领纸券' ? 'green' : (item.type === '购物券' ? 'purple' : '')}}">
           <view class="coupon-left">
             <view class="coupon-amount">{{item.amount}}</view>
             <view class="coupon-type">{{item.type}}</view>
             <view class="coupon-expire">有效期至 {{item.expireDate}}</view>
           </view>
           <view class="coupon-right">
-            <t-button theme="primary" size="small" t-class="use-btn" disabled="{{item.status === 'expired'}}">
-              {{item.status === 'expired' ? '已过期' : '立即使用'}}
+            <t-button 
+              theme="primary" 
+              size="small" 
+              t-class="use-btn" 
+              disabled="{{item.status === 'expired' || item.status === 'used'}}"
+              bindtap="useCoupon"
+              data-id="{{item.id}}"
+              data-status="{{item.status}}"
+            >
+              {{item.status === 'expired' ? '已过期' : (item.status === 'used' ? '已使用' : '立即使用')}}
             </t-button>
           </view>
         </view>
@@ -121,7 +130,7 @@
         <t-cell title="使用记录" hover note-icon="chevron-right">
           <t-icon slot="left-icon" name="time" size="40" color="#1976d2"></t-icon>
         </t-cell>
-        <t-cell title="答题历史" hover note-icon="chevron-right">
+        <t-cell title="答题历史" hover note-icon="chevron-right" bindtap="goToQuizHistory">
           <t-icon slot="left-icon" name="catalog" size="40" color="#7c3aed"></t-icon>
         </t-cell>
         <t-cell title="AR识别记录" hover note-icon="chevron-right">
