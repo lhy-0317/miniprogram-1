@@ -1,0 +1,103 @@
+<view class="feedback-container">
+  <view class="tabs">
+    <view class="tab {{activeTab === 'help' ? 'active' : ''}}" bindtap="switchTab" data-tab="help">常见问题</view>
+    <view class="tab {{activeTab === 'feedback' ? 'active' : ''}}" bindtap="switchTab" data-tab="feedback">意见反馈</view>
+  </view>
+
+  <view class="content-area" wx:if="{{activeTab === 'help'}}">
+    <t-collapse value="{{activeValues}}" bind:change="onCollapseChange">
+      <t-collapse-panel 
+        wx:for="{{faqList}}" 
+        wx:key="id"
+        header="{{item.question}}"
+        value="{{item.id}}"
+      >
+        <view class="faq-answer">{{item.answer}}</view>
+      </t-collapse-panel>
+    </t-collapse>
+
+    <view class="contact-section">
+      <view class="contact-title">其他问题？</view>
+      <view class="contact-info">
+        <view class="contact-item">
+          <t-icon name="service" size="40" color="#2e7d32"></t-icon>
+          <text>客服微信：zhihuibencao</text>
+        </view>
+        <view class="contact-item">
+          <t-icon name="mail" size="40" color="#2e7d32"></t-icon>
+          <text>邮箱：support@zhihuibencao.com</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="content-area" wx:if="{{activeTab === 'feedback'}}">
+    <view class="feedback-form">
+      <view class="form-item">
+        <view class="form-label">反馈类型</view>
+        <view class="type-selector">
+          <view 
+            class="type-item {{feedbackType === item.value ? 'active' : ''}}" 
+            wx:for="{{feedbackTypes}}" 
+            wx:key="value"
+            bindtap="selectFeedbackType"
+            data-value="{{item.value}}"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">问题描述</view>
+        <t-textarea 
+          value="{{feedbackContent}}"
+          placeholder="请详细描述您遇到的问题或建议..."
+          maxlength="500"
+          indicator
+          bind:change="onContentChange"
+          t-class="feedback-textarea"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">上传截图（选填）</view>
+        <view class="image-upload">
+          <view class="upload-item" wx:for="{{images}}" wx:key="*this">
+            <t-image src="{{item}}" mode="aspectFill" t-class="upload-image" />
+            <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">
+              <t-icon name="close" size="24" color="white"></t-icon>
+            </view>
+          </view>
+          <view class="upload-btn" wx:if="{{images.length < 3}}" bindtap="chooseImage">
+            <t-icon name="add" size="48" color="#999"></t-icon>
+            <text>添加图片</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">联系方式（选填）</view>
+        <input 
+          class="contact-input"
+          value="{{contactInfo}}"
+          placeholder="手机号或微信号，方便我们联系您"
+          bindinput="onContactInput"
+        />
+      </view>
+
+      <t-button 
+        theme="primary" 
+        size="large" 
+        block 
+        disabled="{{!feedbackContent}}"
+        bind:tap="submitFeedback"
+        t-class="submit-btn"
+      >
+        提交反馈
+      </t-button>
+    </view>
+  </view>
+
+  <t-message id="t-message" />
+</view>

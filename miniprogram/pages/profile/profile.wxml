@@ -127,19 +127,19 @@
     
     <view class="menu-section">
       <t-cell-group>
-        <t-cell title="使用记录" hover note-icon="chevron-right">
+        <t-cell title="使用记录" hover note-icon="chevron-right" bindtap="goToUsageRecords">
           <t-icon slot="left-icon" name="time" size="40" color="#1976d2"></t-icon>
         </t-cell>
         <t-cell title="答题历史" hover note-icon="chevron-right" bindtap="goToQuizHistory">
           <t-icon slot="left-icon" name="catalog" size="40" color="#7c3aed"></t-icon>
         </t-cell>
-        <t-cell title="AR识别记录" hover note-icon="chevron-right">
+        <t-cell title="AR识别记录" hover note-icon="chevron-right" bindtap="goToArRecords">
           <t-icon slot="left-icon" name="user" size="40" color="#2e7d32"></t-icon>
         </t-cell>
-        <t-cell title="设置" hover note-icon="chevron-right">
+        <t-cell title="设置" hover note-icon="chevron-right" bindtap="goToSettings">
           <t-icon slot="left-icon" name="setting" size="40" color="#ea580c"></t-icon>
         </t-cell>
-        <t-cell title="帮助与反馈" hover note-icon="chevron-right">
+        <t-cell title="帮助与反馈" hover note-icon="chevron-right" bindtap="goToFeedback">
           <t-icon slot="left-icon" name="help-circle" size="40" color="#6b7280"></t-icon>
         </t-cell>
       </t-cell-group>

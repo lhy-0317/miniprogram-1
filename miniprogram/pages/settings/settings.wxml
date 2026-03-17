@@ -1,0 +1,66 @@
+<view class="settings-container">
+  <view class="settings-section">
+    <view class="section-title">通知设置</view>
+    <t-cell-group>
+      <t-cell title="新消息通知" note="{{notificationEnabled ? '已开启' : '已关闭'}}">
+        <t-icon slot="left-icon" name="notification" size="40" color="#2e7d32"></t-icon>
+        <t-switch 
+          slot="note" 
+          value="{{notificationEnabled}}" 
+          bind:change="toggleNotification"
+        />
+      </t-cell>
+      <t-cell title="优惠券到期提醒" note="{{couponReminderEnabled ? '已开启' : '已关闭'}}">
+        <t-icon slot="left-icon" name="ticket" size="40" color="#ea580c"></t-icon>
+        <t-switch 
+          slot="note" 
+          value="{{couponReminderEnabled}}" 
+          bind:change="toggleCouponReminder"
+        />
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <view class="settings-section">
+    <view class="section-title">隐私设置</view>
+    <t-cell-group>
+      <t-cell title="隐私政策" hover note-icon="chevron-right" bind:tap="showPrivacyPolicy">
+        <t-icon slot="left-icon" name="lock-on" size="40" color="#6b7280"></t-icon>
+      </t-cell>
+      <t-cell title="用户协议" hover note-icon="chevron-right" bind:tap="showUserAgreement">
+        <t-icon slot="left-icon" name="file-text" size="40" color="#1976d2"></t-icon>
+      </t-cell>
+      <t-cell title="清除缓存" hover note="{{cacheSize}}" bind:tap="clearCache">
+        <t-icon slot="left-icon" name="delete" size="40" color="#dc2626"></t-icon>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <view class="settings-section">
+    <view class="section-title">关于</view>
+    <t-cell-group>
+      <t-cell title="版本号" note="{{version}}">
+        <t-icon slot="left-icon" name="info-circle" size="40" color="#7c3aed"></t-icon>
+      </t-cell>
+      <t-cell title="检查更新" hover bind:tap="checkUpdate">
+        <t-icon slot="left-icon" name="refresh" size="40" color="#059669"></t-icon>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <view class="account-section">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+
+  <t-dialog 
+    visible="{{showDialog}}" 
+    title="{{dialogTitle}}" 
+    content="{{dialogContent}}"
+    confirm-btn="确定"
+    cancel-btn="取消"
+    bind:confirm="onDialogConfirm"
+    bind:cancel="onDialogCancel"
+  />
+
+  <t-message id="t-message" />
+</view>

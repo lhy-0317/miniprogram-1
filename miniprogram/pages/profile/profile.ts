@@ -188,6 +188,30 @@ Page({
     })
   },
 
+  goToUsageRecords() {
+    wx.navigateTo({
+      url: '/pages/usage-records/usage-records'
+    })
+  },
+
+  goToArRecords() {
+    wx.navigateTo({
+      url: '/pages/ar-records/ar-records'
+    })
+  },
+
+  goToSettings() {
+    wx.navigateTo({
+      url: '/pages/settings/settings'
+    })
+  },
+
+  goToFeedback() {
+    wx.navigateTo({
+      url: '/pages/feedback/feedback'
+    })
+  },
+
   handleLogin() {
     wx.showLoading({ title: '登录中...' })
     

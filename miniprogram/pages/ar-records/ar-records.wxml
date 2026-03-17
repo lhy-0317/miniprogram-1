@@ -1,0 +1,49 @@
+<view class="ar-records-container">
+  <view class="stats-header">
+    <view class="stat-item">
+      <text class="stat-value">{{totalRecords}}</text>
+      <text class="stat-label">识别次数</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-value">{{uniqueHerbs}}</text>
+      <text class="stat-label">识别本草种类</text>
+    </view>
+  </view>
+
+  <view class="records-list" wx:if="{{records.length > 0}}">
+    <view class="record-card" wx:for="{{records}}" wx:key="_id">
+      <view class="card-header">
+        <t-image 
+          wx:if="{{item.imageUrl}}" 
+          src="{{item.imageUrl}}" 
+          mode="aspectFill"
+          t-class="record-image"
+        />
+        <view class="placeholder-image" wx:else>
+          <t-icon name="image" size="80" color="#ccc"></t-icon>
+        </view>
+      </view>
+      <view class="card-body">
+        <view class="herb-name">{{item.herbName || '未知本草'}}</view>
+        <view class="herb-info" wx:if="{{item.herbInfo}}">{{item.herbInfo}}</view>
+        <view class="card-footer">
+          <t-tag theme="success" variant="light" size="small">{{item.confidence || 95}}% 匹配</t-tag>
+          <text class="record-time">{{item.createTimeStr}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:if="{{!loading && records.length === 0}}">
+    <t-empty description="暂无AR识别记录">
+      <view slot="action" class="empty-action">
+        <button class="action-btn" bindtap="goToAr">去识别</button>
+      </view>
+    </t-empty>
+  </view>
+
+  <view class="loading-state" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40px" text="加载中..." />
+  </view>
+</view>

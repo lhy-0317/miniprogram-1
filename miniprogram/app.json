@@ -6,7 +6,11 @@
     "pages/ar/ar",
     "pages/profile/profile",
     "pages/edit-profile/edit-profile",
-    "pages/quiz-history/quiz-history"
+    "pages/quiz-history/quiz-history",
+    "pages/usage-records/usage-records",
+    "pages/ar-records/ar-records",
+    "pages/settings/settings",
+    "pages/feedback/feedback"
   ],
   "window": {
     "navigationBarTextStyle": "white",
@@ -55,7 +59,14 @@
     "t-loading": "tdesign-miniprogram/loading/loading",
     "t-popup": "tdesign-miniprogram/popup/popup",
     "t-count-down": "tdesign-miniprogram/count-down/count-down",
-    "t-input": "tdesign-miniprogram/input/input"
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-empty": "tdesign-miniprogram/empty/empty",
+    "t-switch": "tdesign-miniprogram/switch/switch",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog",
+    "t-message": "tdesign-miniprogram/message/message",
+    "t-textarea": "tdesign-miniprogram/textarea/textarea",
+    "t-collapse": "tdesign-miniprogram/collapse/collapse",
+    "t-collapse-panel": "tdesign-miniprogram/collapse-panel/collapse-panel"
   },
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"
