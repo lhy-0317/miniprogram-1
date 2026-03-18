@@ -34,3 +34,47 @@
 .logout-btn:active {
   background: #fef2f2;
 }
+
+.privacy-content {
+  width: 640rpx;
+  max-height: 80vh;
+  background: white;
+  border-radius: 24rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-header {
+  padding: 32rpx;
+  text-align: center;
+  border-bottom: 2rpx solid #eee;
+}
+
+.privacy-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.privacy-scroll {
+  flex: 1;
+  max-height: 60vh;
+  padding: 24rpx 32rpx;
+}
+
+.privacy-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.privacy-footer {
+  padding: 24rpx 32rpx;
+  border-top: 2rpx solid #eee;
+}
+
+.privacy-btn {
+  width: 100%;
+}

@@ -28,7 +28,7 @@
         <t-icon slot="left-icon" name="lock-on" size="40" color="#6b7280"></t-icon>
       </t-cell>
       <t-cell title="用户协议" hover note-icon="chevron-right" bind:tap="showUserAgreement">
-        <t-icon slot="left-icon" name="file-text" size="40" color="#1976d2"></t-icon>
+        <t-icon slot="left-icon" name="file-1" size="40" color="#1976d2"></t-icon>
       </t-cell>
       <t-cell title="清除缓存" hover note="{{cacheSize}}" bind:tap="clearCache">
         <t-icon slot="left-icon" name="delete" size="40" color="#dc2626"></t-icon>
@@ -61,6 +61,20 @@
     bind:confirm="onDialogConfirm"
     bind:cancel="onDialogCancel"
   />
+
+  <t-popup visible="{{showPrivacyPopup}}" placement="center" show-overlay t-class="privacy-popup">
+    <view class="privacy-content">
+      <view class="privacy-header">
+        <text class="privacy-title">{{privacyTitle}}</text>
+      </view>
+      <scroll-view class="privacy-scroll" scroll-y>
+        <view class="privacy-text">{{privacyContent}}</view>
+      </scroll-view>
+      <view class="privacy-footer">
+        <t-button theme="default" size="large" t-class="privacy-btn" bindtap="closePrivacyPopup">关闭</t-button>
+      </view>
+    </view>
+  </t-popup>
 
   <t-message id="t-message" />
 </view>

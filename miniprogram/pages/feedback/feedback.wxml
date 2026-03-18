@@ -21,11 +21,11 @@
       <view class="contact-info">
         <view class="contact-item">
           <t-icon name="service" size="40" color="#2e7d32"></t-icon>
-          <text>客服微信：zhihuibencao</text>
+          <text>客服微信：LHaYu_0306_</text>
         </view>
         <view class="contact-item">
           <t-icon name="mail" size="40" color="#2e7d32"></t-icon>
-          <text>邮箱：support@zhihuibencao.com</text>
+          <text>邮箱：2392143897@qq.com</text>
         </view>
       </view>
     </view>

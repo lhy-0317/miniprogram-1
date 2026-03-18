@@ -5,7 +5,9 @@
     "t-icon": "tdesign-miniprogram/icon/icon",
     "t-switch": "tdesign-miniprogram/switch/switch",
     "t-dialog": "tdesign-miniprogram/dialog/dialog",
-    "t-message": "tdesign-miniprogram/message/message"
+    "t-message": "tdesign-miniprogram/message/message",
+    "t-popup": "tdesign-miniprogram/popup/popup",
+    "t-button": "tdesign-miniprogram/button/button"
   },
   "navigationBarTitleText": "设置"
 }
