@@ -10,3 +10,6 @@ dist
 .idea
 .vscode
 .wxml
+.agents
+.trae
+skills-lock.json
