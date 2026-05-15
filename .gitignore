@@ -13,3 +13,4 @@ dist
 .agents
 .trae
 skills-lock.json
+.claude
