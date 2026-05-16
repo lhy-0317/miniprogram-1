@@ -123,7 +123,7 @@ npm install
 
 3. **配置云开发**
 - 登录 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)
-- 创建云开发环境（环境ID: `cloud1-6gqgdhv6f2059125`）
+- 创建云开发环境（环境ID: `cloud1-d7geimrfs008f978c`）
 - 在云开发控制台创建以下数据库集合：
   - `users` - 用户信息
   - `coupons` - 优惠券
