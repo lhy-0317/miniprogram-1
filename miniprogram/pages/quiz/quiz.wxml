@@ -18,7 +18,7 @@
       </view>
       <text class="start-title">趣味答题</text>
       <text class="start-desc">测试你的中医药知识</text>
-      <text class="start-hint">每答对5道题目可获得一张优惠券</text>
+      <text class="start-hint">限时 3 分钟，持续出题；答对 5 道即得一张随机优惠券并自动结束</text>
       <t-button theme="primary" size="large" t-class="start-btn" bind:tap="startQuiz">
         开始答题
       </t-button>
@@ -26,72 +26,156 @@
     
     <view class="quiz-area" wx:if="{{quizStarted && !loading}}">
       <view class="stats-bar">
-        <text class="stats-text">您已答对 {{correctCount}}/{{totalQuestions}} 题</text>
-      </view>
-      
-      <view class="question-card" wx:if="{{!showResult && questions.length > 0 && currentQuestion}}">
-        <text class="question-number">{{questionNumber}}</text>
-        <view class="question-text">{{currentQuestion.question}}</view>
-      </view>
-      
-      <view class="result-card" wx:if="{{showResult}}">
-        <view class="result-icon">
-          <t-icon name="trophy" size="80" color="#fbbf24"></t-icon>
+        <view class="stats-main">
+          <text class="stats-text">已答对 {{sessionCorrect}}/{{rewardEvery}} 题</text>
+          <text class="stats-sub">再答对 {{toNextCoupon}} 题可得一张券</text>
         </view>
-        <text class="result-title">答题完成！</text>
-        <text class="result-score">共答对 {{correctCount}}/{{totalQuestions}} 题</text>
-        <t-button theme="primary" size="large" t-class="restart-btn" bind:tap="restartQuiz">再来一次</t-button>
+        <view class="stats-right">
+          <view class="stats-timer {{timerWarning ? 'warning' : ''}}">
+            <t-icon name="time" size="26" color="{{timerWarning ? '#e34d59' : '#2e7d32'}}"></t-icon>
+            <text>{{remainingText}}</text>
+          </view>
+          <view class="stats-restart" bind:tap="finishRound">结束本轮</view>
+        </view>
       </view>
       
-      <view class="options-list" wx:if="{{!showResult && questions.length > 0 && currentQuestion}}">
-        <view wx:for="{{currentQuestion.options}}" wx:key="index" 
-              class="option-item {{selectedIndex === index ? (isCorrect ? 'correct' : 'wrong') : ''}}"
+      <view class="question-card" wx:if="{{quizStarted && currentQuestion}}">
+        <view class="question-meta">
+          <text class="question-number">第 {{totalAnswered + 1}} 题</text>
+          <text class="question-type {{isMulti ? 'type-multi' : ''}}" wx:if="{{isMulti}}">多选题</text>
+          <text class="question-type" wx:elif="{{currentQuestion.type === 'judge'}}">判断题</text>
+        </view>
+        <view class="question-text">{{currentQuestion.question}}</view>
+        <view class="fireworks" wx:if="{{celebrating}}">
+          <view
+            wx:for="{{particles}}"
+            wx:key="index"
+            class="fw-particle"
+            style="left: {{item.x}}rpx; top: {{item.y}}rpx; background: {{item.color}}; animation-delay: {{item.delay}}s; animation-duration: {{item.duration}}s;"
+          ></view>
+        </view>
+      </view>
+      
+      <view class="multi-hint" wx:if="{{isMulti && !answered && currentQuestion && !questionLoading}}">
+        <t-icon name="info-circle-filled" size="28" color="#f59e0b"></t-icon>
+        <text>多选题：选出所有正确选项后点「确认答案」</text>
+      </view>
+
+      <view class="options-list" wx:if="{{quizStarted && currentQuestion && !questionLoading}}">
+        <view wx:for="{{currentQuestion.options}}" wx:key="index"
+              class="option-item {{optionStates[index] || ''}}"
               bind:tap="selectOption" data-index="{{index}}">
-          <view class="option-circle"></view>
+          <view class="option-circle {{optionStates[index] === 'picked' ? 'circle-picked' : ''}}"></view>
           <text class="option-text">{{item}}</text>
-          <t-icon wx:if="{{selectedIndex === index}}" 
-                  name="{{isCorrect ? 'check-circle-filled' : 'close-circle-filled'}}" 
-                  size="32" 
-                  color="{{isCorrect ? '#22c55e' : '#ef4444'}}"
+          <t-icon wx:if="{{optionStates[index] === 'correct'}}"
+                  name="check-circle-filled"
+                  size="32"
+                  color="#22c55e"
+                  class="option-icon"></t-icon>
+          <t-icon wx:elif="{{optionStates[index] === 'wrong'}}"
+                  name="close-circle-filled"
+                  size="32"
+                  color="#ef4444"
+                  class="option-icon"></t-icon>
+          <t-icon wx:elif="{{optionStates[index] === 'picked'}}"
+                  name="check"
+                  size="32"
+                  color="#2e7d32"
                   class="option-icon"></t-icon>
         </view>
       </view>
-      
-      <view class="explanation-box" wx:if="{{answered && !showResult && questions.length > 0 && currentQuestion}}">
+
+      <view class="next-btn-container" wx:if="{{isMulti && !answered && currentQuestion && !questionLoading}}">
+        <t-button theme="primary" size="large" t-class="next-btn" bind:tap="confirmMultiAnswer">
+          确认答案
+        </t-button>
+      </view>
+
+      <view class="explanation-box" wx:if="{{answered && currentQuestion && explanation}}">
         <t-icon name="info-circle-filled" size="32" color="#f59e0b"></t-icon>
-        <text class="explanation-text">{{currentQuestion.explanation}}</text>
+        <text class="explanation-text">{{explanation}}</text>
       </view>
       
-      <view class="next-btn-container" wx:if="{{answered && !showResult && currentIndex < totalQuestions - 1}}">
-        <t-button theme="primary" size="large" t-class="next-btn" bind:tap="nextQuestion">
+      <view class="next-btn-container" wx:if="{{answered}}">
+        <t-button theme="primary" size="large" t-class="next-btn" bind:tap="loadNextQuestion">
           下一题
         </t-button>
       </view>
-      
-      <view class="next-btn-container" wx:if="{{answered && !showResult && currentIndex == totalQuestions - 1}}">
-        <t-button theme="primary" size="large" t-class="next-btn" bind:tap="showResultPage">
-          查看结果
-        </t-button>
+
+      <view class="question-loading" wx:if="{{questionLoading}}">
+        <t-icon name="loading" size="48" color="#2e7d32"></t-icon>
+        <text class="loading-text">出题中...</text>
       </view>
     </view>
   </view>
   
+  <!-- 本轮成绩卡 -->
+  <t-popup visible="{{summaryVisible}}" placement="center" show-overlay t-class="summary-popup">
+    <view class="summary-card">
+      <view class="summary-head">
+        <view class="summary-badge">
+          <t-icon name="trophy" size="44" color="white"></t-icon>
+        </view>
+        <text class="summary-title">{{roundReason === 'expired' ? '时间到' : '本轮结束'}}</text>
+        <text class="summary-subtitle">{{roundReason === 'expired' ? '3 分钟时间已用完' : (roundReason === 'reached' ? '已达成目标，本轮自动结束' : '本轮已手动结束')}} · 共作答 {{summary.answered}} 题</text>
+      </view>
+
+      <view class="summary-score">
+        <text class="summary-score-num">{{summary.correct}}</text>
+        <text class="summary-score-unit">题答对</text>
+      </view>
+
+      <view class="summary-grid">
+        <view class="summary-cell">
+          <text class="cell-value">{{summary.correct}}</text>
+          <text class="cell-label">答对</text>
+        </view>
+        <view class="summary-cell">
+          <text class="cell-value">{{summary.wrong}}</text>
+          <text class="cell-label">答错</text>
+        </view>
+        <view class="summary-cell">
+          <text class="cell-value">{{summary.rate === null ? '-' : summary.rate + '%'}}</text>
+          <text class="cell-label">正确率</text>
+        </view>
+        <view class="summary-cell">
+          <text class="cell-value">{{summary.coupons}}</text>
+          <text class="cell-label">获得券</text>
+        </view>
+      </view>
+
+      <view class="summary-tip">
+        <t-icon name="info-circle" size="28" color="#f59e0b"></t-icon>
+        <text>每轮限时 3 分钟，答对 {{summary.rewardEvery}} 道可随机获得一张优惠券</text>
+      </view>
+
+      <view class="summary-actions">
+        <t-button theme="light" size="large" t-class="summary-btn-ghost" bind:tap="backToStart">
+          先歇会儿
+        </t-button>
+        <t-button theme="primary" size="large" t-class="summary-btn" bind:tap="startNewRound">
+          再来一轮
+        </t-button>
+      </view>
+    </view>
+  </t-popup>
+
   <t-popup visible="{{couponVisible}}" placement="center" show-overlay t-class="coupon-popup">
     <view class="coupon-content">
       <view class="coupon-success-icon">
         <t-icon name="check-circle-filled" size="80" color="white"></t-icon>
       </view>
       <text class="coupon-title">恭喜答对！</text>
-      <text class="coupon-sub">已答对5题，获得一张免费领纸券</text>
-      
+      <text class="coupon-sub">本次已累计答对 {{sessionCorrect}} 题，获得一张券</text>
+
       <view class="coupon-card">
         <view class="coupon-left">
-          <text class="coupon-amount">免费</text>
-          <text class="coupon-type">领纸券</text>
+          <text class="coupon-amount">{{couponInfo.amount || '优惠券'}}</text>
+          <text class="coupon-type">{{couponInfo.desc || '优惠券'}}</text>
         </view>
         <view class="coupon-right">
           <text class="coupon-expire-label">有效期至</text>
-          <text class="coupon-expire">2026-04-01</text>
+          <text class="coupon-expire">{{couponInfo.expireDate || '-'}}</text>
         </view>
       </view>
       

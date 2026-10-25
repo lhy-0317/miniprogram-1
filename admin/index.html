@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>智惠本草 - 管理后台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <script src="js/admin-api.js"></script>
     <style>
         .sidebar-item.active {
             background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
@@ -60,6 +60,24 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                     </svg>
                     <span>题库管理</span>
+                </a>
+                            <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                    </svg>
+                    <span>问题反馈</span>
                 </a>
             </nav>
             
@@ -166,162 +184,109 @@
     </div>
     
     <script>
-        const app = cloudbase.init({
-            env: 'cloud1-d7geimrfs008f978c'
-        })
-        
-        const db = app.database()
-        const auth = app.auth()
-        let cloudReady = false
-        
-        async function initCloudBase() {
-            try {
-                const loginState = await auth.getLoginState()
-                if (!loginState) {
-                    const result = await auth.signInAnonymously()
-                    console.log('匿名登录成功', result)
-                } else {
-                    console.log('已登录状态', loginState)
-                }
-                cloudReady = true
-                return true
-            } catch (err) {
-                console.error('云开发初始化失败', err)
-                alert('云开发初始化失败: ' + err.message + '\n\n请在云开发控制台开启匿名登录功能')
-                return false
-            }
+    // 依赖 js/admin-api.js 提供的 window.AdminAPI（本页不再声明 API_BASE，
+    // 否则会与其全局声明冲突导致整页脚本解析失败）
+    const { get, escapeHtml, formatDate } = window.AdminAPI;
+
+    function checkLogin() {
+      if (!sessionStorage.getItem('adminToken')) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const username = sessionStorage.getItem('adminUsername');
+      if (username) {
+        document.getElementById('adminName').textContent = username;
+      }
+    }
+
+    function showCardError(id, msg) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<p class="text-red-600 text-center py-4 text-sm">加载失败：${escapeHtml(msg)}</p>`;
+    }
+
+    async function loadStats() {
+      try {
+        const data = await get('/api/admin/dashboard/stats');
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        document.getElementById('totalUsers').textContent = data.data.totalUsers || 0;
+        document.getElementById('totalCoupons').textContent = data.data.totalCoupons || 0;
+        document.getElementById('totalRecords').textContent = data.data.totalRecords || 0;
+        document.getElementById('totalQuestions').textContent = data.data.totalQuestions || 0;
+      } catch (err) {
+        ['totalUsers', 'totalCoupons', 'totalRecords', 'totalQuestions'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = '-';
+        });
+        console.error('加载统计数据失败', err);
+        alert('统计数据加载失败：' + (err && err.message ? err.message : err));
+      }
+    }
+
+    async function loadRecentUsers() {
+      try {
+        const data = await get('/api/admin/users?pageSize=5');
+        const container = document.getElementById('recentUsers');
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        if (!data.data.list || data.data.list.length === 0) {
+          container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无用户</p>';
+          return;
         }
-        
-        function checkLogin() {
-            if (!sessionStorage.getItem('adminLoggedIn')) {
-                window.location.href = 'login.html'
-            }
-            const username = sessionStorage.getItem('adminUsername')
-            if (username) {
-                document.getElementById('adminName').textContent = username
-            }
+        container.innerHTML = data.data.list.map(user => `
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                ${escapeHtml((user.nickName || '用')[0])}
+              </div>
+              <div>
+                <p class="font-medium text-gray-800">${escapeHtml(user.nickName || '微信用户')}</p>
+                <p class="text-xs text-gray-500">${formatDate(user.createTime)}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-sm text-gray-600">答题 ${user.quizCount || 0} 道</p>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('加载最近用户失败', err);
+        showCardError('recentUsers', err && err.message ? err.message : err);
+      }
+    }
+
+    async function loadRecentCoupons() {
+      try {
+        const data = await get('/api/admin/coupons?pageSize=5');
+        const container = document.getElementById('recentCoupons');
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        if (!data.data.list || data.data.list.length === 0) {
+          container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无优惠券</p>';
+          return;
         }
-        
-        function logout() {
-            sessionStorage.removeItem('adminLoggedIn')
-            sessionStorage.removeItem('adminUsername')
-            window.location.href = 'login.html'
-        }
-        
-        async function loadStats() {
-            if (!cloudReady) {
-                console.log('云开发未就绪，跳过加载统计数据')
-                return
-            }
-            try {
-                console.log('开始加载统计数据...')
-                
-                const usersCount = await db.collection('users').count()
-                console.log('用户数量:', usersCount)
-                document.getElementById('totalUsers').textContent = usersCount ? usersCount.total || 0 : 0
-                
-                const couponsCount = await db.collection('coupons').count()
-                console.log('优惠券数量:', couponsCount)
-                document.getElementById('totalCoupons').textContent = couponsCount ? couponsCount.total || 0 : 0
-                
-                const recordsCount = await db.collection('quiz_records').count()
-                console.log('答题记录数量:', recordsCount)
-                document.getElementById('totalRecords').textContent = recordsCount ? recordsCount.total || 0 : 0
-                
-                const questionsCount = await db.collection('quiz_questions').count()
-                console.log('题目数量:', questionsCount)
-                document.getElementById('totalQuestions').textContent = questionsCount ? questionsCount.total || 0 : 0
-            } catch (err) {
-                console.error('加载统计数据失败', err)
-                document.getElementById('totalUsers').textContent = '-'
-                document.getElementById('totalCoupons').textContent = '-'
-                document.getElementById('totalRecords').textContent = '-'
-                document.getElementById('totalQuestions').textContent = '-'
-            }
-        }
-        
-        async function loadRecentUsers() {
-            try {
-                const result = await db.collection('users')
-                    .orderBy('createTime', 'desc')
-                    .limit(5)
-                    .get()
-                
-                const container = document.getElementById('recentUsers')
-                if (!result || !result.data || result.data.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无用户</p>'
-                    return
-                }
-                
-                container.innerHTML = result.data.map(user => `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
-                                ${(user.nickName || '用')[0]}
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800">${user.nickName || '微信用户'}</p>
-                                <p class="text-xs text-gray-500">${formatDate(user.createTime)}</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-sm text-gray-600">答题 ${user.quizCount || 0} 道</p>
-                        </div>
-                    </div>
-                `).join('')
-            } catch (err) {
-                console.error('加载最近用户失败', err)
-            }
-        }
-        
-        async function loadRecentCoupons() {
-            try {
-                const result = await db.collection('coupons')
-                    .orderBy('createTime', 'desc')
-                    .limit(5)
-                    .get()
-                
-                const container = document.getElementById('recentCoupons')
-                if (!result || !result.data || result.data.length === 0) {
-                    container.innerHTML = '<p class="text-gray-500 text-center py-4">暂无优惠券</p>'
-                    return
-                }
-                
-                container.innerHTML = result.data.map(coupon => `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                        <div>
-                            <p class="font-medium text-gray-800">${coupon.amount} ${coupon.type}</p>
-                            <p class="text-xs text-gray-500">${formatDate(coupon.createTime)}</p>
-                        </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${
-                            coupon.status === 'unused' ? 'bg-green-100 text-green-700' :
-                            coupon.status === 'used' ? 'bg-blue-100 text-blue-700' :
-                            'bg-gray-100 text-gray-700'
-                        }">
-                            ${coupon.status === 'unused' ? '未使用' : coupon.status === 'used' ? '已使用' : '已过期'}
-                        </span>
-                    </div>
-                `).join('')
-            } catch (err) {
-                console.error('加载最近优惠券失败', err)
-            }
-        }
-        
-        function formatDate(date) {
-            if (!date) return '-'
-            const d = new Date(date)
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-        }
-        
-        async function init() {
-            checkLogin()
-            await initCloudBase()
-            await loadStats()
-            await loadRecentUsers()
-            await loadRecentCoupons()
-        }
-        
-        init()
+        container.innerHTML = data.data.list.map(coupon => `
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div>
+              <p class="font-medium text-gray-800">${escapeHtml(coupon.amount)} ${escapeHtml(coupon.type)}</p>
+              <p class="text-xs text-gray-500">${formatDate(coupon.createTime)}</p>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-medium ${
+              coupon.status === 'unused' ? 'bg-green-100 text-green-700' :
+              coupon.status === 'used' ? 'bg-blue-100 text-blue-700' :
+              'bg-gray-100 text-gray-700'
+            }">
+              ${coupon.status === 'unused' ? '未使用' : coupon.status === 'used' ? '已使用' : '已过期'}
+            </span>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('加载最近优惠券失败', err);
+        showCardError('recentCoupons', err && err.message ? err.message : err);
+      }
+    }
+
+    checkLogin();
+    loadStats();
+    loadRecentUsers();
+    loadRecentCoupons();
     </script>
 </body>
 </html>

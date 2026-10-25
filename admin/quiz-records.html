@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>答题记录 - 智惠本草管理后台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <script src="js/admin-api.js"></script>
     <style>
         .sidebar-item.active {
             background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
@@ -60,6 +60,24 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                     </svg>
                     <span>题库管理</span>
+                </a>
+                            <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                    </svg>
+                    <span>问题反馈</span>
                 </a>
             </nav>
         </aside>
@@ -120,141 +138,83 @@
     </div>
     
     <script>
-        const app = cloudbase.init({
-            env: 'cloud1-d7geimrfs008f978c'
-        })
-        
-        const db = app.database()
-        const auth = app.auth()
-        let currentPage = 0
-        const pageSize = 20
-        let totalRecords = 0
-        
-        async function initCloudBase() {
-            try {
-                const loginState = await auth.getLoginState()
-                if (!loginState) {
-                    await auth.signInAnonymously()
-                    console.log('匿名登录成功')
-                }
-            } catch (err) {
-                console.error('云开发初始化失败', err)
-            }
-        }
-        
-        function checkLogin() {
-            if (!sessionStorage.getItem('adminLoggedIn')) {
-                window.location.href = 'login.html'
-            }
-        }
-        
-        async function loadRecords() {
-            try {
-                const countResult = await db.collection('quiz_records').count()
-                totalRecords = countResult.total || 0
-                document.getElementById('totalCount').textContent = totalRecords
-                
-                const result = await db.collection('quiz_records')
-                    .orderBy('createTime', 'desc')
-                    .skip(currentPage * pageSize)
-                    .limit(pageSize)
-                    .get()
-                
-                const records = result && result.data ? result.data : []
-                renderRecords(records)
-                updateStats()
-                updatePagination()
-            } catch (err) {
-                console.error('加载答题记录失败', err)
-                document.getElementById('recordTableBody').innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">加载失败，请检查云开发配置</td></tr>'
-            }
-        }
-        
-        async function updateStats() {
-            try {
-                const allRecords = await db.collection('quiz_records').limit(1000).get()
-                const data = allRecords && allRecords.data ? allRecords.data : []
-                const total = data.length
-                const correct = data.filter(r => r.isCorrect).length
-                const wrong = total - correct
-                const rate = total > 0 ? Math.round(correct / total * 100) : 0
-                
-                document.getElementById('statTotal').textContent = total
-                document.getElementById('statCorrect').textContent = correct
-                document.getElementById('statWrong').textContent = wrong
-                document.getElementById('statRate').textContent = rate + '%'
-            } catch (err) {
-                console.error('加载统计数据失败', err)
-            }
-        }
-        
-        function renderRecords(records) {
-            const tbody = document.getElementById('recordTableBody')
-            
-            if (!records || records.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">暂无答题记录</td></tr>'
-                return
-            }
-            
-            tbody.innerHTML = records.map(record => {
-                const options = ['A', 'B', 'C', 'D']
-                const userAnswer = record.userOptionIndex !== undefined ? options[record.userOptionIndex] : '-'
-                const correctAnswer = record.correctOptionIndex !== undefined ? options[record.correctOptionIndex] : '-'
-                
-                return `
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <p class="text-sm text-gray-800 font-medium">${record.question || '未知题目'}</p>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500 font-mono">${(record._openid || '').slice(-8)}</td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm">
-                                <span class="${record.isCorrect ? 'text-green-600' : 'text-red-600 line-through'}">${userAnswer}</span>
-                                ${!record.isCorrect ? `<span class="text-green-600 ml-2">正确: ${correctAnswer}</span>` : ''}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium ${record.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                                ${record.isCorrect ? '正确' : '错误'}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">${formatDateTime(record.createTime)}</td>
-                    </tr>
-                `
-            }).join('')
-        }
-        
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--
-                loadRecords()
-            }
-        }
-        
-        function nextPage() {
-            if ((currentPage + 1) * pageSize < totalRecords) {
-                currentPage++
-                loadRecords()
-            }
-        }
-        
-        function updatePagination() {
-            document.getElementById('prevBtn').disabled = currentPage === 0
-            document.getElementById('nextBtn').disabled = (currentPage + 1) * pageSize >= totalRecords
-        }
-        
-        function formatDateTime(date) {
-            if (!date) return '-'
-            const d = new Date(date)
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-        }
-        
-        async function init() {
-            checkLogin()
-            await initCloudBase()
-            await loadRecords()
-        }
-        init()
+    // 依赖 js/admin-api.js（本页不声明 API_BASE，避免全局重复声明导致脚本解析失败）
+    const { get, escapeHtml, formatDateTime, renderError } = window.AdminAPI;
+
+    let currentPage = 1;
+    const pageSize = 20;
+    let totalRecords = 0;
+
+    async function loadRecords() {
+      try {
+        const data = await get(`/api/admin/quiz-records?page=${currentPage}&pageSize=${pageSize}`);
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        const records = data.data.list || [];
+        totalRecords = data.data.total || 0;
+        document.getElementById('totalCount').textContent = totalRecords;
+        renderRecords(records);
+        updatePagination();
+      } catch (err) {
+        renderError('recordTableBody', err, 5);
+      }
+    }
+
+    /** 顶部统计卡改为全局口径（原先只统计当前页 20 条，翻页数字就变） */
+    async function loadStats() {
+      try {
+        const data = await get('/api/admin/quiz-records/stats');
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        document.getElementById('statTotal').textContent = data.data.total || 0;
+        document.getElementById('statCorrect').textContent = data.data.correct || 0;
+        document.getElementById('statWrong').textContent = data.data.wrong || 0;
+        document.getElementById('statRate').textContent = data.data.rate === null ? '-' : data.data.rate + '%';
+      } catch (err) {
+        ['statTotal', 'statCorrect', 'statWrong', 'statRate'].forEach(id => {
+          document.getElementById(id).textContent = '-';
+        });
+      }
+    }
+
+    function renderRecords(records) {
+      const tbody = document.getElementById('recordTableBody');
+      if (!records || records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">暂无答题记录</td></tr>';
+        return;
+      }
+      const options = ['A', 'B', 'C', 'D'];
+      const toLetters = v => Array.isArray(v) && v.length
+        ? v.map(i => options[i] || '?').join('、')
+        : (v !== undefined && v !== null ? (options[v] || '-') : '-');
+
+      tbody.innerHTML = records.map(record => {
+        const userAnswer = toLetters(record.userOptionIndices ?? record.userOptionIndex);
+        const correctAnswer = toLetters(record.correctOptionIndices ?? record.correctOptionIndex);
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4"><p class="text-sm text-gray-800 font-medium">${escapeHtml(record.question || '未知题目')}</p></td>
+            <td class="px-6 py-4 text-sm text-gray-500 font-mono">${escapeHtml(String(record.openid || '').slice(-8) || '-')}</td>
+            <td class="px-6 py-4">
+              <div class="text-sm">
+                <span class="${record.isCorrect ? 'text-green-600' : 'text-red-600 line-through'}">${escapeHtml(userAnswer)}</span>
+                ${!record.isCorrect ? '<span class="text-green-600 ml-2">正确: ' + escapeHtml(correctAnswer) + '</span>' : ''}
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium ${record.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${record.isCorrect ? '正确' : '错误'}</span></td>
+            <td class="px-6 py-4 text-sm text-gray-500">${formatDateTime(record.createTime)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function prevPage() { if (currentPage > 1) { currentPage--; loadRecords(); } }
+    function nextPage() { if (currentPage * pageSize < totalRecords) { currentPage++; loadRecords(); } }
+    function updatePagination() {
+      document.getElementById('prevBtn').disabled = currentPage === 1;
+      document.getElementById('nextBtn').disabled = currentPage * pageSize >= totalRecords;
+    }
+
+    loadStats();
+    loadRecords();
     </script>
 </body>
 </html>

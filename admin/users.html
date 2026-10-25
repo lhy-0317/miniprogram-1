@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户管理 - 智惠本草管理后台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <script src="js/admin-api.js"></script>
     <style>
         .sidebar-item.active {
             background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
@@ -61,6 +61,24 @@
                     </svg>
                     <span>题库管理</span>
                 </a>
+                            <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                    </svg>
+                    <span>问题反馈</span>
+                </a>
             </nav>
         </aside>
         
@@ -114,184 +132,116 @@
     </div>
     
     <script>
-        const app = cloudbase.init({
-            env: 'cloud1-d7geimrfs008f978c'
-        })
-        
-        const db = app.database()
-        const auth = app.auth()
-        let currentPage = 0
-        const pageSize = 10
-        let totalUsers = 0
-        
-        async function initCloudBase() {
-            try {
-                const loginState = await auth.getLoginState()
-                if (!loginState) {
-                    await auth.signInAnonymously()
-                    console.log('匿名登录成功')
-                }
-            } catch (err) {
-                console.error('云开发初始化失败', err)
-            }
-        }
-        
-        function checkLogin() {
-            if (!sessionStorage.getItem('adminLoggedIn')) {
-                window.location.href = 'login.html'
-            }
-        }
-        
-        async function loadUsers() {
-            try {
-                const countResult = await db.collection('users').count()
-                totalUsers = countResult.total || 0
-                document.getElementById('totalCount').textContent = totalUsers
-                
-                const result = await db.collection('users')
-                    .orderBy('createTime', 'desc')
-                    .skip(currentPage * pageSize)
-                    .limit(pageSize)
-                    .get()
-                
-                const users = result && result.data ? result.data : []
-                renderUsers(users)
-                updatePagination()
-            } catch (err) {
-                console.error('加载用户失败', err)
-                document.getElementById('userTableBody').innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">加载失败，请检查云开发配置</td></tr>'
-            }
-        }
-        
-        function renderUsers(users) {
-            const tbody = document.getElementById('userTableBody')
-            
-            if (!users || users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">暂无用户</td></tr>'
-                return
-            }
-            
-            tbody.innerHTML = users.map(user => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
-                                ${(user.nickName || '用')[0]}
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800">${user.nickName || '微信用户'}</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500 font-mono">${(user._openid || '').slice(-8)}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${user.quizCount || 0} 道</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${user.savedPaper || 0} 张</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${formatDate(user.createTime)}</td>
-                    <td class="px-6 py-4">
-                        <button onclick="viewUser('${user._id}')" class="text-green-600 hover:text-green-700 text-sm font-medium">查看</button>
-                    </td>
-                </tr>
-            `).join('')
-        }
-        
-        async function viewUser(userId) {
-            try {
-                const result = await db.collection('users').doc(userId).get()
-                const user = result.data[0]
-                
-                const detail = document.getElementById('userDetail')
-                detail.innerHTML = `
-                    <div class="flex items-center space-x-4 mb-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                            ${(user.nickName || '用')[0]}
-                        </div>
-                        <div>
-                            <p class="font-bold text-lg text-gray-800">${user.nickName || '微信用户'}</p>
-                            <p class="text-sm text-gray-500">ID: ${user._id}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">OpenID:</span>
-                            <span class="text-gray-800 font-mono text-sm">${user._openid || '-'}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">答题数:</span>
-                            <span class="text-gray-800">${user.quizCount || 0} 道</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">节约纸张:</span>
-                            <span class="text-gray-800">${user.savedPaper || 0} 张</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">注册时间:</span>
-                            <span class="text-gray-800">${formatDateTime(user.createTime)}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">更新时间:</span>
-                            <span class="text-gray-800">${formatDateTime(user.updateTime)}</span>
-                        </div>
-                    </div>
-                `
-                
-                document.getElementById('userModal').classList.remove('hidden')
-                document.getElementById('userModal').classList.add('flex')
-            } catch (err) {
-                console.error('获取用户详情失败', err)
-            }
-        }
-        
-        function closeModal() {
-            document.getElementById('userModal').classList.add('hidden')
-            document.getElementById('userModal').classList.remove('flex')
-        }
-        
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--
-                loadUsers()
-            }
-        }
-        
-        function nextPage() {
-            if ((currentPage + 1) * pageSize < totalUsers) {
-                currentPage++
-                loadUsers()
-            }
-        }
-        
-        function updatePagination() {
-            document.getElementById('prevBtn').disabled = currentPage === 0
-            document.getElementById('nextBtn').disabled = (currentPage + 1) * pageSize >= totalUsers
-        }
-        
-        function formatDate(date) {
-            if (!date) return '-'
-            const d = new Date(date)
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-        }
-        
-        function formatDateTime(date) {
-            if (!date) return '-'
-            const d = new Date(date)
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-        }
-        
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase()
-            const rows = document.querySelectorAll('#userTableBody tr')
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase()
-                row.style.display = text.includes(keyword) ? '' : 'none'
-            })
-        })
-        
-        async function init() {
-            checkLogin()
-            await initCloudBase()
-            await loadUsers()
-        }
-        init()
+    // 依赖 js/admin-api.js（本页不声明 API_BASE，避免全局重复声明导致脚本解析失败）
+    const { get, escapeHtml, formatDate, formatDateTime, renderError } = window.AdminAPI;
+
+    let currentPage = 1;
+    const pageSize = 10;
+    let totalUsers = 0;
+    let searchKeyword = '';
+    let searchTimer = null;
+
+    async function loadUsers() {
+      try {
+        const q = `/api/admin/users?page=${currentPage}&pageSize=${pageSize}`
+          + (searchKeyword ? `&search=${encodeURIComponent(searchKeyword)}` : '');
+        const data = await get(q);
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+
+        // 统一字段名 list（后端同时返回 users 兼容别名）
+        const users = data.data.list || [];
+        totalUsers = data.data.total || 0;
+        document.getElementById('totalCount').textContent = totalUsers;
+        renderUsers(users);
+        updatePagination();
+      } catch (err) {
+        renderError('userTableBody', err, 6);
+      }
+    }
+
+    function renderUsers(users) {
+      const tbody = document.getElementById('userTableBody');
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">暂无用户</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map(user => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold">
+                ${escapeHtml((user.nickName || '用')[0])}
+              </div>
+              <div><p class="font-medium text-gray-800">${escapeHtml(user.nickName || '微信用户')}</p></div>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-500 font-mono">${escapeHtml(String(user.openid || '').slice(-8) || '-')}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">${user.quizCount || 0} 道</td>
+          <td class="px-6 py-4 text-sm text-gray-600">${user.savedPaper || 0} 张</td>
+          <td class="px-6 py-4 text-sm text-gray-500">${formatDate(user.createTime)}</td>
+          <td class="px-6 py-4">
+            <button onclick="viewUser('${user._id}')" class="text-green-600 hover:text-green-700 text-sm font-medium">查看</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function viewUser(userId) {
+      const modal = document.getElementById('userModal');
+      const detail = document.getElementById('userDetail');
+      try {
+        const data = await get('/api/admin/users/' + userId);
+        if (!data || !data.success) { alert((data && data.message) || '获取用户详情失败'); return; }
+
+        // 后端返回形状为 { user: {...}, coupons: [], records: [] }
+        const user = data.data.user || {};
+        detail.innerHTML = `
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+              ${escapeHtml((user.nickName || '用')[0])}
+            </div>
+            <div>
+              <p class="font-bold text-lg text-gray-800">${escapeHtml(user.nickName || '微信用户')}</p>
+              <p class="text-sm text-gray-500">ID: ${escapeHtml(user._id || userId)}</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between"><span class="text-gray-500">OpenID:</span><span class="text-gray-800 font-mono text-sm">${escapeHtml(user.openid || '-')}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">答题数:</span><span class="text-gray-800">${user.quizCount || 0} 道</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">节约纸张:</span><span class="text-gray-800">${user.savedPaper || 0} 张</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">注册时间:</span><span class="text-gray-800">${formatDateTime(user.createTime)}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">优惠券:</span><span class="text-gray-800">${(data.data.coupons || []).length} 张</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">答题记录:</span><span class="text-gray-800">${(data.data.records || []).length} 条</span></div>
+          </div>
+        `;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } catch (err) {
+        alert('获取用户详情失败：' + (err && err.message ? err.message : err));
+      }
+    }
+
+    function closeModal() { document.getElementById('userModal').classList.add('hidden'); document.getElementById('userModal').classList.remove('flex'); }
+
+    function prevPage() { if (currentPage > 1) { currentPage--; loadUsers(); } }
+    function nextPage() { if (currentPage * pageSize < totalUsers) { currentPage++; loadUsers(); } }
+    function updatePagination() {
+      document.getElementById('prevBtn').disabled = currentPage === 1;
+      document.getElementById('nextBtn').disabled = currentPage * pageSize >= totalUsers;
+    }
+
+    // 搜索改为服务端查询（原实现只过滤当前页 10 条，后续页的用户搜不到）
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      const value = e.target.value.trim();
+      searchTimer = setTimeout(() => {
+        searchKeyword = value;
+        currentPage = 1;
+        loadUsers();
+      }, 300);
+    });
+
+    loadUsers();
     </script>
 </body>
 </html>

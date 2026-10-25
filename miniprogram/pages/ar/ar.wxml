@@ -1,6 +1,6 @@
 <view class="ar-container">
   <view class="camera-preview">
-    <t-image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=camera%20view%20blurred%20background%20herbal%20pattern&image_size=portrait_4_3" mode="aspectFill" t-class="camera-bg" />
+    <t-image src="/assets/images/ar-camera.png" mode="aspectFill" t-class="camera-bg" />
     <view class="camera-overlay"></view>
   </view>
   
@@ -24,7 +24,7 @@
         <view class="corner bottom-right"></view>
         <view class="scan-line"></view>
         <view class="scan-hint">
-          <t-icon name="scan" size="100" color="#4ade80"></t-icon>
+          <t-icon name="scan" size="100" color="#64b5f6"></t-icon>
           <text>扫描纸巾上的图案</text>
         </view>
       </view>
@@ -39,7 +39,7 @@
   <view class="result-state" wx:if="{{recognized}}">
     <view class="model-container">
       <view class="model-box">
-        <t-image src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=3D%20ginseng%20root%20herbal%20medicine%20realistic%20rendering&image_size=square" mode="aspectFit" t-class="model-image" />
+        <t-image src="/assets/images/ar-herb.png" mode="aspectFit" t-class="model-image" />
       </view>
       <view class="gesture-hint">
         <t-icon name="move" size="24" color="#4b5563"></t-icon>

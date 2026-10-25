@@ -13,14 +13,8 @@
   </view>
   
   <view class="content">
-    <view class="logo-section">
-      <view class="logo">
-        <t-image src="/assets/icons/touxiang.png" t-class="logo-image"></t-image>
-      </view>
-      <text class="app-name">智惠本草</text>
-      <text class="app-slogan">智慧环保 · 传承本草</text>
-    </view>
-    
+    <text class="content-slogan">智慧环保 · 传承本草</text>
+
     <view class="scan-section">
       <view class="pulse-ring"></view>
       <view class="scan-box">
@@ -47,6 +41,39 @@
       <t-loading theme="circular" size="60" color="#4caf50"></t-loading>
       <text class="loading-text">指令已发送</text>
       <text class="loading-sub">等待设备出纸...</text>
+    </view>
+  </t-popup>
+
+  <t-popup visible="{{showCouponPicker}}" placement="bottom" show-overlay t-class="coupon-popup">
+    <view class="coupon-panel">
+      <text class="coupon-panel-title">选择领纸方式</text>
+      <text class="coupon-panel-sub">你有 {{availableCoupons.length}} 张可用券</text>
+
+      <view class="coupon-option coupon-option-free" bind:tap="useCoupon" data-id="">
+        <view class="coupon-option-left">
+          <text class="coupon-option-amount">付费</text>
+          <text class="coupon-option-desc">不使用优惠券</text>
+        </view>
+      </view>
+
+      <view
+        wx:for="{{availableCoupons}}"
+        wx:key="id"
+        class="coupon-option coupon-option-usable"
+        bind:tap="useCoupon"
+        data-id="{{item.id}}"
+      >
+        <view class="coupon-option-left">
+          <text class="coupon-option-amount">{{item.amount}}</text>
+          <text class="coupon-option-desc">{{item.desc}}</text>
+        </view>
+        <view class="coupon-option-right">
+          <text class="coupon-option-expiry">有效期至 {{item.expireDate}}</text>
+          <t-icon name="chevron-right" size="32" color="#2e7d32"></t-icon>
+        </view>
+      </view>
+
+      <view class="coupon-cancel" bind:tap="closeCouponPicker">取消</view>
     </view>
   </t-popup>
 </view>

@@ -2,11 +2,12 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: var(--bg-page);
 }
 
 .header {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  /* 品牌色带用纯色，渐变只留给主按钮 */
+  background: var(--brand);
   padding: 80rpx 32rpx 32rpx;
   display: flex;
   align-items: center;
@@ -24,8 +25,8 @@
 }
 
 .header-title {
-  color: white;
-  font-size: 36rpx;
+  color: var(--text-inverse);
+  font-size: var(--fs-title);
   font-weight: 500;
 }
 
@@ -46,8 +47,8 @@
 }
 
 .loading-text {
-  font-size: 28rpx;
-  color: #6b7280;
+  font-size: var(--fs-body);
+  color: var(--text-tertiary);
   margin-top: 24rpx;
 }
 
@@ -63,7 +64,7 @@
 .start-icon {
   width: 200rpx;
   height: 200rpx;
-  background: linear-gradient(135deg, #f0fdf4, #bbf7d0);
+  background: var(--brand-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -79,29 +80,31 @@
 }
 
 .start-title {
-  font-size: 48rpx;
+  /* 古籍风衬线：PRD「雅」 */
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 16rpx;
 }
 
 .start-desc {
-  font-size: 32rpx;
-  color: #6b7280;
+  font-size: var(--fs-subtitle);
+  color: var(--text-tertiary);
   margin-bottom: 32rpx;
 }
 
 .start-hint {
-  font-size: 28rpx;
-  color: #f59e0b;
+  font-size: var(--fs-body);
+  color: var(--warning);
   margin-bottom: 64rpx;
   text-align: center;
 }
 
 .start-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  border-radius: 32rpx;
-  font-size: 36rpx;
+  background: var(--brand-gradient);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-title);
   font-weight: bold;
   padding: 24rpx 64rpx;
 }
@@ -113,49 +116,129 @@
 }
 
 .stats-bar {
-  background-color: white;
-  border-radius: 24rpx;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-md);
   padding: 24rpx 32rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
   text-align: center;
 }
 
 .stats-text {
-  font-size: 32rpx;
+  font-size: var(--fs-subtitle);
   font-weight: 500;
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .question-card {
-  background-color: white;
-  border-radius: 32rpx;
+  position: relative;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
   padding: 48rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
+}
+
+.question-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
 }
 
 .question-number {
-  display: block;
-  font-size: 28rpx;
-  color: #6b7280;
-  margin-bottom: 24rpx;
+  font-size: var(--fs-body);
+  color: var(--text-tertiary);
   font-weight: 500;
 }
 
+.question-type {
+  font-size: 22rpx;
+  color: var(--brand);
+  background: rgba(46, 125, 50, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-weight: 500;
+}
+
+.question-type.type-multi {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.multi-hint {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 28rpx;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: var(--radius-md);
+  margin-bottom: 24rpx;
+}
+
+.multi-hint text {
+  font-size: 24rpx;
+  color: #b45309;
+}
+
+/* 多选题选中未提交态 */
+.option-item.picked {
+  border-color: var(--brand);
+  background-color: rgba(46, 125, 50, 0.06);
+}
+
+.option-circle.picked {
+  border-color: var(--brand);
+  background-color: var(--brand);
+}
+
 .question-text {
-  font-size: 40rpx;
+  /* 题干用衬线，呼应「本草纲目古籍风」的 PRD 定位 */
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
   font-weight: bold;
-  color: #1f2937;
-  line-height: 1.5;
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ===== 答对烟花（纯 WXSS，无 Canvas 依赖） ===== */
+.fireworks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.fw-particle {
+  position: absolute;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  opacity: 0;
+  animation: fw-pop 0.9s ease-out forwards;
+}
+
+@keyframes fw-pop {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.4) translateY(-30rpx);
+    opacity: 0;
+  }
 }
 
 .result-card {
-  background-color: white;
-  border-radius: 32rpx;
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
   padding: 64rpx 48rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -164,7 +247,7 @@
 .result-icon {
   width: 160rpx;
   height: 160rpx;
-  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  background: var(--reward-bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -173,22 +256,23 @@
 }
 
 .result-title {
-  font-size: 44rpx;
+  font-family: var(--font-serif);
+  font-size: var(--fs-display);
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 16rpx;
 }
 
 .result-score {
-  font-size: 32rpx;
-  color: #6b7280;
+  font-size: var(--fs-subtitle);
+  color: var(--text-tertiary);
   margin-bottom: 48rpx;
 }
 
 .restart-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  border-radius: 32rpx;
-  font-size: 36rpx;
+  background: var(--brand-gradient);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-title);
   font-weight: bold;
   padding: 24rpx 64rpx;
 }
@@ -200,9 +284,9 @@
 }
 
 .option-item {
-  background-color: white;
-  border: 3rpx solid #e5e7eb;
-  border-radius: 24rpx;
+  background-color: var(--bg-card);
+  border: 3rpx solid var(--border);
+  border-radius: var(--radius-md);
   padding: 32rpx;
   display: flex;
   align-items: center;
@@ -214,52 +298,53 @@
 
 .option-item:active {
   transform: scale(0.98);
-  background-color: #f9fafb;
+  background-color: var(--bg-page);
 }
 
+/* 答对/答错用语义色，与品牌绿按钮明确区分 */
 .option-item.correct {
-  border-color: #22c55e;
-  background-color: #f0fdf4;
+  border-color: var(--success);
+  background-color: var(--success-bg);
 }
 
 .option-item.wrong {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+  border-color: var(--danger);
+  background-color: var(--danger-bg);
 }
 
 .option-circle {
   width: 40rpx;
   height: 40rpx;
-  border: 3rpx solid #d1d5db;
+  border: 3rpx solid var(--border-strong);
   border-radius: 50%;
   margin-right: 24rpx;
   flex-shrink: 0;
 }
 
 .option-item.correct .option-circle {
-  border-color: #22c55e;
-  background-color: #22c55e;
+  border-color: var(--success);
+  background-color: var(--success);
 }
 
 .option-item.wrong .option-circle {
-  border-color: #ef4444;
-  background-color: #ef4444;
+  border-color: var(--danger);
+  background-color: var(--danger);
 }
 
 .option-text {
   flex: 1;
-  font-size: 32rpx;
-  color: #374151;
+  font-size: var(--fs-subtitle);
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
 .option-item.correct .option-text {
-  color: #16a34a;
+  color: var(--brand-ink);
   font-weight: 500;
 }
 
 .option-item.wrong .option-text {
-  color: #dc2626;
+  color: var(--danger-ink);
   font-weight: 500;
 }
 
@@ -271,18 +356,20 @@
 .explanation-box {
   display: flex;
   align-items: center;
-  background-color: #fef3c7;
-  border-radius: 24rpx;
+  background-color: var(--reward-bg);
+  border-radius: var(--radius-md);
   padding: 32rpx;
   margin-top: 32rpx;
 }
 
 .explanation-text {
-  font-size: 28rpx;
-  color: #92400e;
+  /* 解析是古籍小知识，衬线最贴切 */
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  color: var(--reward-ink);
   margin-left: 16rpx;
   flex: 1;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 .next-btn-container {
@@ -292,9 +379,9 @@
 }
 
 .next-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  border-radius: 32rpx;
-  font-size: 36rpx;
+  background: var(--brand-gradient);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-title);
   font-weight: bold;
   padding: 24rpx 64rpx;
 }
@@ -304,7 +391,7 @@
 }
 
 .coupon-content {
-  background-color: white;
+  background-color: var(--bg-card);
   border-radius: 48rpx;
   padding: 80rpx 64rpx;
   width: 90%;
@@ -317,7 +404,7 @@
 .coupon-success-icon {
   width: 160rpx;
   height: 160rpx;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -326,22 +413,23 @@
 }
 
 .coupon-title {
-  font-size: 44rpx;
+  font-size: var(--fs-display);
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 16rpx;
 }
 
 .coupon-sub {
-  font-size: 28rpx;
-  color: #6b7280;
+  font-size: var(--fs-body);
+  color: var(--text-tertiary);
   margin-bottom: 48rpx;
 }
 
+/* 券卡是激励时刻，保留金色渐变 */
 .coupon-card {
-  background: linear-gradient(to right, #fef3c7, #fed7aa);
-  border: 4rpx dashed #fbbf24;
-  border-radius: 24rpx;
+  background: linear-gradient(to right, var(--reward-bg), #fed7aa);
+  border: 4rpx dashed var(--reward);
+  border-radius: var(--radius-md);
   padding: 32rpx;
   width: 100%;
   display: flex;
@@ -356,16 +444,16 @@
 }
 
 .coupon-amount {
-  font-size: 56rpx;
+  font-size: var(--fs-hero);
   font-weight: bold;
-  color: #ea580c;
+  color: var(--reward-deep);
   line-height: 1;
   margin-bottom: 8rpx;
 }
 
 .coupon-type {
-  font-size: 28rpx;
-  color: #4b5563;
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
 }
 
 .coupon-right {
@@ -375,21 +463,212 @@
 }
 
 .coupon-expire-label {
-  font-size: 24rpx;
-  color: #6b7280;
+  font-size: var(--fs-caption);
+  color: var(--text-tertiary);
   margin-bottom: 4rpx;
 }
 
 .coupon-expire {
-  font-size: 26rpx;
-  color: #374151;
+  font-size: var(--fs-small);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .coupon-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  border-radius: 32rpx;
-  font-size: 36rpx;
+  background: var(--brand-gradient);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-title);
   font-weight: bold;
   padding: 24rpx 0;
+}
+
+/* ===== 会话式答题：进度条与出题中提示 ===== */
+.stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.stats-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.stats-sub {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.stats-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
+}
+
+/* 本轮倒计时 */
+.stats-timer {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(46, 125, 50, 0.08);
+}
+
+.stats-timer text {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--brand);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 最后 30 秒高亮提醒 */
+.stats-timer.warning {
+  background: rgba(227, 77, 89, 0.1);
+}
+
+.stats-timer.warning text {
+  color: #e34d59;
+}
+
+.stats-restart {
+  font-size: 24rpx;
+  color: var(--brand);
+  padding: 8rpx 20rpx;
+  border: 2rpx solid var(--brand);
+  border-radius: 999rpx;
+  flex-shrink: 0;
+}
+
+.question-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 60rpx 0;
+}
+
+/* ===== 本轮成绩卡 ===== */
+.summary-popup {
+  background: transparent !important;
+}
+
+.summary-card {
+  width: 620rpx;
+  background: white;
+  border-radius: 40rpx;
+  padding: 48rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.summary-badge {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: var(--brand-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+}
+
+.summary-title {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.summary-subtitle {
+  font-size: 26rpx;
+  color: var(--text-tertiary);
+}
+
+.summary-score {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin: 32rpx 0 24rpx;
+}
+
+.summary-score-num {
+  font-size: 96rpx;
+  font-weight: bold;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.summary-score-unit {
+  font-size: 28rpx;
+  color: var(--text-secondary);
+}
+
+.summary-grid {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-top: 2rpx solid var(--border);
+  border-bottom: 2rpx solid var(--border);
+}
+
+.summary-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.cell-value {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.cell-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.summary-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10rpx;
+  margin: 24rpx 0 8rpx;
+  padding: 20rpx 24rpx;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: var(--radius-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.summary-tip text {
+  font-size: 22rpx;
+  color: #b45309;
+  line-height: 1.5;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 20rpx;
+  width: 100%;
+  margin-top: 24rpx;
+}
+
+.summary-btn-ghost,
+.summary-btn {
+  flex: 1;
 }

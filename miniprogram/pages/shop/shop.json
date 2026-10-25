@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "自助购纸",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-popup": "tdesign-miniprogram/popup/popup",
+    "t-empty": "tdesign-miniprogram/empty/empty"
+  }
+}

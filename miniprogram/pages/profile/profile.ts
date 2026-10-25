@@ -1,18 +1,24 @@
-const app = getApp<IAppOption>()
+const app = getApp<IAppOption>();
+import { api } from '../../utils/api';
 
 Page({
   data: {
     isLoggedIn: false,
-    userInfo: {},
+    userInfo: {} as any,
     userId: '',
     openid: '',
     filterType: 'all',
     stats: {
       savedPaper: 0,
-      quizCount: 0
+      quizCount: 0,
+      totalQuizRecords: 0,
+      unusedCoupons: 0,
     },
-    coupons: [],
-    filteredCoupons: [],
+    coupons: [] as any[],
+    filteredCoupons: [] as any[],
+    // 登录卡中独立选择的微信头像（临时路径）与昵称，登录时一并保存
+    wxProfileAvatar: '',
+    wxProfileNickname: '',
     agreedToPrivacy: false,
     showPrivacyPopup: false,
     privacyTitle: '',
@@ -27,8 +33,8 @@ Page({
 二、用户信息
 为了提供更好的服务，我们会收集必要的用户信息，包括但不限于：
 1. 微信昵称和头像（可选）
-2. 答题记录和使用记录
-3. 优惠券领取和使用记录
+2. 答题记录和订单记录
+3. 优惠券领取和订单记录
 
 三、用户责任
 用户在使用本小程序时，应当遵守相关法律法规，不得从事违法活动。
@@ -78,371 +84,251 @@ Page({
 七、政策更新
 我们可能会适时更新本隐私政策，更新后的政策将在小程序内公布。
 
-如有疑问，请通过小程序内的反馈渠道联系我们。`
+如有疑问，请通过小程序内的反馈渠道联系我们。`,
   },
 
   onLoad() {
-    this.checkLoginStatus()
+    this.checkLoginStatus();
   },
 
   onShow() {
-    this.refreshUserInfo()
+    if (this.data.isLoggedIn) {
+      this.loadData();
+    }
   },
 
-  refreshUserInfo() {
-    const openid = wx.getStorageSync('openid')
-    const userInfo = wx.getStorageSync('userInfo')
-    
-    if (openid && userInfo) {
+  /**
+ * 检查登录状态。
+ *
+ * 修复：原先无本地资料时会静默调用 handleLogin 直接建档登录，
+ * 用户没有任何确认动作。现改为停留在登录卡（含用户协议/隐私政策
+ * 勾选），用户主动点击「微信一键登录」并勾选协议后才执行登录。
+ */
+checkLoginStatus() {
+    const userInfo = wx.getStorageSync('userInfo');
+
+    if (userInfo && userInfo.nickName) {
       this.setData({
         isLoggedIn: true,
-        openid,
         userInfo,
-        userId: openid.slice(-8)
-      })
-      this.loadUserFromDatabase()
-      this.loadUserStats()
-      this.loadCoupons()
+      });
+      this.loadData();
+    } else {
+      // 未确认授权：停留在登录卡，等待用户主动点击登录按钮
+      this.setData({ isLoggedIn: false });
     }
-    this.updateFilteredCoupons()
   },
 
-  checkLoginStatus() {
-    this.refreshUserInfo()
-  },
+  async loadData() {
+    try {
+      const [profileRes, statsRes, couponsRes] = await Promise.all([
+        api.get('/api/user/profile', undefined, { silent: true }),
+        api.get('/api/user/stats'),
+        api.get('/api/coupons'),
+      ]);
 
-  loadUserFromDatabase() {
-    const db = wx.cloud.database()
-    
-    db.collection('users').where({
-      _openid: this.data.openid
-    }).get({
-      success: (res: any) => {
-        if (res.data.length > 0) {
-          const user = res.data[0]
-          const currentUserInfo = this.data.userInfo
-          
-          let avatarUrl = user.avatarUrl || currentUserInfo.avatarUrl
-          
-          const updatedUserInfo = {
-            nickName: user.nickName || currentUserInfo.nickName,
-            avatarUrl: avatarUrl
-          }
-          
-          this.setData({
-            userInfo: updatedUserInfo
-          })
-          
-          wx.setStorageSync('userInfo', updatedUserInfo)
-          
-          if (app && app.globalData) {
-            app.globalData.userInfo = updatedUserInfo
-          }
-          
-          if (avatarUrl && avatarUrl.startsWith('cloud://')) {
-            this.getAvatarTempUrl(avatarUrl)
-          }
+      // 修复：原实现只刷 stats/coupons，编辑资料页返回后头像昵称仍是旧值。
+      // 以服务端为准同步 userInfo（数据库是唯一事实源），页面立即反映最新资料。
+      if (profileRes.success && profileRes.data) {
+        const userInfo = {
+          nickName: profileRes.data.nickName,
+          avatarUrl: profileRes.data.avatarUrl,
+        };
+        wx.setStorageSync('userInfo', userInfo);
+        if (app && app.globalData) {
+          app.globalData.userInfo = userInfo;
         }
+        this.setData({
+          userInfo,
+          userId: profileRes.data.id ? String(profileRes.data.id).slice(-8) : this.data.userId,
+        });
       }
-    })
+
+      if (statsRes.success) {
+        this.setData({ stats: statsRes.data });
+      }
+
+      if (couponsRes.success) {
+        this.setData({ coupons: couponsRes.data.coupons });
+        this.updateFilteredCoupons();
+      }
+    } catch {
+      // Silently fail on load
+    }
   },
 
-  getAvatarTempUrl(fileID: string) {
-    wx.cloud.getTempFileURL({
-      fileList: [fileID],
-      success: (res: any) => {
-        if (res.fileList && res.fileList.length > 0) {
-          const tempFileURL = res.fileList[0].tempFileURL
-          const currentUserInfo = this.data.userInfo
-          const updatedUserInfo = {
-            ...currentUserInfo,
-            avatarUrl: tempFileURL
+  /**
+ * 加载用户资料与券包。
+ *
+ * 云开发架构下无需显式登录：云函数 getWXContext().OPENID 即身份，
+ * 因此这里直接拉取资料即可，不存在 401 与「登录已过期」提示。
+ */
+  async handleLogin() {
+    wx.showLoading({ title: '加载中...' });
+
+    try {
+      const res = await api.get('/api/user/profile');
+
+      if (res.success) {
+        const id = res.data.id;
+        let { nickName, avatarUrl } = res.data;
+
+        // 登录卡中独立选择的头像/昵称：头像先上传云存储换 fileID，再随登录一并保存。
+        // 两项均为空（用户未选择）时不动原有资料。
+        try {
+          const patch: any = {};
+          if (this.data.wxProfileNickname) patch.nickName = this.data.wxProfileNickname;
+          if (this.data.wxProfileAvatar) {
+            const fileId = await this.uploadWxAvatar(this.data.wxProfileAvatar);
+            if (fileId) patch.avatarUrl = fileId;
           }
-          
-          this.setData({
-            userInfo: updatedUserInfo
-          })
-          
-          wx.setStorageSync('userInfo', updatedUserInfo)
-          
-          if (app && app.globalData) {
-            app.globalData.userInfo = updatedUserInfo
+
+          if (patch.nickName || patch.avatarUrl) {
+            const saved = await api.put('/api/user/profile', patch);
+            if (saved.success) {
+              nickName = saved.data.nickName || nickName;
+              avatarUrl = saved.data.avatarUrl || avatarUrl;
+              this.setData({ wxProfileAvatar: '', wxProfileNickname: '' });
+            }
           }
+        } catch {
+          // 资料保存失败不阻塞登录，保持服务端原资料
         }
-      },
-      fail: () => {
-        console.error('获取头像临时链接失败')
+
+        const userInfo = { nickName, avatarUrl };
+
+        wx.setStorageSync('userInfo', userInfo);
+
+        if (app && app.globalData) {
+          app.globalData.userInfo = userInfo;
+        }
+
+        this.setData({
+          isLoggedIn: true,
+          userInfo,
+          userId: id ? String(id).slice(-8) : '',
+        });
+
+        wx.hideLoading();
+        this.loadData();
       }
-    })
+    } catch {
+      wx.hideLoading();
+      wx.showToast({ title: '加载失败，请重试', icon: 'none' });
+    }
   },
 
   goToEditProfile() {
-    wx.navigateTo({
-      url: '/pages/edit-profile/edit-profile'
-    })
+    wx.navigateTo({ url: '/pages/edit-profile/edit-profile' });
+  },
+
+  /**
+   * 头像选择（官方 open-type=chooseAvatar 回调）。
+   *
+   * e.detail.avatarUrl 是本地临时路径，可直接用于页面展示，
+   * 但不能直接入库——登录时先上传到云存储换取 fileID 再保存。
+   */
+  onChooseWxAvatar(e: any) {
+    const { avatarUrl } = e.detail || {};
+    if (avatarUrl) {
+      this.setData({ wxProfileAvatar: avatarUrl });
+    }
+  },
+
+  /**
+   * 昵称输入失焦（官方 type=nickname）。
+   *
+   * 聚焦时键盘上方会展示微信昵称，用户点选即填入。
+   * 基础库 2.24.4 起微信会对内容做安全检测，未通过会清空输入，
+   * 因此以 blur 时的值为准，不做本地缓存覆盖。
+   */
+  onWxNicknameBlur(e: any) {
+    const value = (e.detail && e.detail.value) || '';
+    this.setData({ wxProfileNickname: value.trim() });
+  },
+
+  /** 将头像临时路径上传云存储，返回 fileID（失败返回空串） */
+  uploadWxAvatar(tempPath: string): Promise<string> {
+    return new Promise((resolve) => {
+      const ext = (tempPath.split('.').pop() || 'png').split('?')[0];
+      const rand = Math.random().toString(36).slice(2, 10);
+      const cloudPath = `avatars/${Date.now()}_${rand}.${ext}`;
+
+      wx.cloud.uploadFile({
+        cloudPath,
+        filePath: tempPath,
+        success: (res: any) => resolve(res.fileID || ''),
+        fail: () => resolve(''),
+      });
+    });
   },
 
   goToQuizHistory() {
-    wx.navigateTo({
-      url: '/pages/quiz-history/quiz-history'
-    })
+    wx.navigateTo({ url: '/pages/quiz-history/quiz-history' });
   },
 
-  goToUsageRecords() {
-    wx.navigateTo({
-      url: '/pages/usage-records/usage-records'
-    })
+  goToOrderRecords() {
+    wx.navigateTo({ url: '/pages/order-records/order-records' });
   },
 
   goToArRecords() {
-    wx.navigateTo({
-      url: '/pages/ar-records/ar-records'
-    })
+    wx.navigateTo({ url: '/pages/ar-records/ar-records' });
   },
 
   goToSettings() {
-    wx.navigateTo({
-      url: '/pages/settings/settings'
-    })
+    wx.navigateTo({ url: '/pages/settings/settings' });
   },
 
   goToFeedback() {
-    wx.navigateTo({
-      url: '/pages/feedback/feedback'
-    })
-  },
-
-  handleLogin() {
-    wx.showLoading({ title: '登录中...' })
-    
-    wx.cloud.callFunction({
-      name: 'login',
-      success: (res: any) => {
-        const openid = res.result.openid
-        
-        const userInfo = {
-          nickName: '微信用户',
-          avatarUrl: ''
-        }
-        
-        this.registerOrUpdateUser(openid, userInfo)
-      },
-      fail: (err) => {
-        wx.hideLoading()
-        console.error('登录失败', err)
-        wx.showToast({
-          title: '登录失败',
-          icon: 'error'
-        })
-      }
-    })
-  },
-
-  registerOrUpdateUser(openid: string, userInfo: any) {
-    const db = wx.cloud.database()
-    const usersCollection = db.collection('users')
-    
-    usersCollection.where({
-      _openid: openid
-    }).get({
-      success: (res: any) => {
-        if (res.data.length > 0) {
-          const existingUser = res.data[0]
-          const userToUse = {
-            nickName: existingUser.nickName || userInfo.nickName,
-            avatarUrl: existingUser.avatarUrl || userInfo.avatarUrl
-          }
-          this.completeLogin(openid, userToUse)
-        } else {
-          this.createNewUser(openid, userInfo)
-        }
-      },
-      fail: () => {
-        this.createNewUser(openid, userInfo)
-      }
-    })
-  },
-
-  createNewUser(openid: string, userInfo: any) {
-    const db = wx.cloud.database()
-    
-    db.collection('users').add({
-      data: {
-        nickName: userInfo.nickName,
-        avatarUrl: userInfo.avatarUrl,
-        savedPaper: 0,
-        quizCount: 0,
-        createTime: new Date(),
-        updateTime: new Date()
-      },
-      success: () => {
-        this.completeLogin(openid, userInfo)
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({
-          title: '注册失败',
-          icon: 'error'
-        })
-      }
-    })
-  },
-
-  completeLogin(openid: string, userInfo: any) {
-    wx.setStorageSync('openid', openid)
-    wx.setStorageSync('userInfo', userInfo)
-    
-    if (app && app.globalData) {
-      app.globalData.openid = openid
-      app.globalData.userInfo = userInfo
-    }
-    
-    this.setData({
-      isLoggedIn: true,
-      openid,
-      userInfo,
-      userId: openid.slice(-8)
-    })
-    
-    wx.hideLoading()
-    wx.showToast({
-      title: '登录成功',
-      icon: 'success'
-    })
-    
-    this.loadUserData()
-  },
-
-  loadUserData() {
-    this.loadUserStats()
-    this.loadCoupons()
-  },
-
-  loadUserStats() {
-    const db = wx.cloud.database()
-    
-    db.collection('users').where({
-      _openid: this.data.openid
-    }).get({
-      success: (res: any) => {
-        if (res.data.length > 0) {
-          this.setData({
-            stats: {
-              savedPaper: res.data[0].savedPaper || 0,
-              quizCount: res.data[0].quizCount || 0
-            }
-          })
-        }
-      },
-      fail: () => {
-        console.error('加载用户数据失败')
-      }
-    })
-  },
-
-  loadCoupons() {
-    const db = wx.cloud.database()
-    
-    db.collection('coupons').where({
-      _openid: this.data.openid
-    }).orderBy('createTime', 'desc').get({
-      success: (res: any) => {
-        this.setData({
-          coupons: res.data.map((item: any) => ({
-            id: item._id,
-            amount: item.amount,
-            type: item.type,
-            expireDate: item.expireDate,
-            status: item.status
-          }))
-        })
-        this.updateFilteredCoupons()
-      },
-      fail: () => {
-        this.setData({
-          coupons: [
-            {
-              id: '1',
-              amount: '免费',
-              type: '领纸券',
-              expireDate: '2026-04-01',
-              status: 'unused'
-            }
-          ]
-        })
-        this.updateFilteredCoupons()
-      }
-    })
+    wx.navigateTo({ url: '/pages/feedback/feedback' });
   },
 
   updateFilteredCoupons() {
-    const { filterType, coupons } = this.data
-    let filtered = coupons
-    
+    const { filterType, coupons } = this.data;
+    let filtered = coupons;
+
     if (filterType === 'unused') {
-      filtered = coupons.filter((c: any) => c.status === 'unused')
+      filtered = coupons.filter((c: any) => c.status === 'unused');
     } else if (filterType === 'used') {
-      filtered = coupons.filter((c: any) => c.status === 'used')
+      filtered = coupons.filter((c: any) => c.status === 'used');
     } else if (filterType === 'expired') {
-      filtered = coupons.filter((c: any) => c.status === 'expired')
+      filtered = coupons.filter((c: any) => c.status === 'expired');
     }
-    
-    this.setData({
-      filteredCoupons: filtered
-    })
+
+    this.setData({ filteredCoupons: filtered });
   },
 
-  useCoupon(e: any) {
-    const couponId = e.currentTarget.dataset.id
-    const status = e.currentTarget.dataset.status
-    
-    if (status === 'expired' || status === 'used') {
-      return
-    }
-    
+  async useCoupon(e: any) {
+    const status = e.currentTarget.dataset.status;
+
+    if (status === 'expired' || status === 'used') return;
+
+    // 修复 P1#5：原先此处直接调用核销接口，只把券标记为已用，
+    // 却不创建任何订单 —— 等于白扔一张券。
+    // 券的实际核销应在扫码下单时由 orderService 原子完成，
+    // 因此这里引导用户去首页扫码取纸。
     wx.showModal({
-      title: '提示',
-      content: '确定要使用这张优惠券吗？',
+      title: '使用优惠券',
+      content: '优惠券可在自助购纸下单时抵扣，现在去选购吗？',
+      confirmText: '去商店',
+      cancelText: '再想想',
       success: (res) => {
         if (res.confirm) {
-          this.confirmUseCoupon(couponId)
+          wx.switchTab({
+            url: '/pages/shop/shop',
+            fail: () => {
+              wx.showToast({ title: '跳转失败，请手动点击底部商店', icon: 'none' });
+            },
+          });
         }
-      }
-    })
-  },
-
-  confirmUseCoupon(couponId: string) {
-    wx.showLoading({ title: '使用中...' })
-    
-    const db = wx.cloud.database()
-    
-    db.collection('coupons').doc(couponId).update({
-      data: {
-        status: 'used',
-        useTime: new Date()
       },
-      success: () => {
-        wx.hideLoading()
-        wx.showToast({
-          title: '使用成功！',
-          icon: 'success'
-        })
-        this.loadCoupons()
-      },
-      fail: () => {
-        wx.hideLoading()
-        wx.showToast({
-          title: '使用失败',
-          icon: 'error'
-        })
-      }
-    })
+    });
   },
 
   setFilter(e: any) {
-    const type = e.currentTarget.dataset.type
-    this.setData({ filterType: type })
-    this.updateFilteredCoupons()
+    const type = e.currentTarget.dataset.type;
+    this.setData({ filterType: type });
+    this.updateFilteredCoupons();
   },
 
   handleLogout() {
@@ -451,51 +337,52 @@ Page({
       content: '确定要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
-          wx.removeStorageSync('openid')
-          wx.removeStorageSync('userInfo')
-          
+          // 云开发下身份由 OPENID 隐式携带，无 token 可清。
+          // 此处仅清除本地缓存资料，账号数据与券不受影响。
+          api.clearToken();
+          wx.removeStorageSync('userInfo');
+
           if (app && app.globalData) {
-            app.globalData.openid = null
-            app.globalData.userInfo = null
+            app.globalData.userInfo = null;
           }
-          
+
           this.setData({
             isLoggedIn: false,
             userInfo: {},
             openid: '',
             userId: '',
-            agreedToPrivacy: false
-          })
+            agreedToPrivacy: false,
+            coupons: [],
+            filteredCoupons: [],
+            stats: { savedPaper: 0, quizCount: 0, totalQuizRecords: 0, unusedCoupons: 0 },
+          });
+          // 退出后停留在登录卡，由用户主动决定是否重新登录（不再自动重登）
         }
-      }
-    })
+      },
+    });
   },
 
   toggleAgreement() {
-    this.setData({
-      agreedToPrivacy: !this.data.agreedToPrivacy
-    })
+    this.setData({ agreedToPrivacy: !this.data.agreedToPrivacy });
   },
 
   showUserAgreement() {
     this.setData({
       showPrivacyPopup: true,
       privacyTitle: '用户服务协议',
-      privacyContent: this.data.userAgreementContent
-    })
+      privacyContent: this.data.userAgreementContent,
+    });
   },
 
   showPrivacyPolicy() {
     this.setData({
       showPrivacyPopup: true,
       privacyTitle: '隐私政策',
-      privacyContent: this.data.privacyPolicyContent
-    })
+      privacyContent: this.data.privacyPolicyContent,
+    });
   },
 
   closePrivacyPopup() {
-    this.setData({
-      showPrivacyPopup: false
-    })
-  }
-})
+    this.setData({ showPrivacyPopup: false });
+  },
+});

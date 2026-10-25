@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题反馈 - 智惠本草管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/admin-api.js"></script>
+    <style>
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
+            border-left: 3px solid #2e7d32;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: #e34d59;
+            color: #fff;
+            font-size: 11px;
+            line-height: 1;
+        }
+        .stat-card { cursor: pointer; transition: box-shadow .2s, transform .2s; }
+        .stat-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+        .stat-card.selected { outline: 2px solid #2e7d32; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0">
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">智惠本草</h1>
+                        <p class="text-xs text-gray-500">管理后台</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-2">
+                <a href="index.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>仪表盘</span>
+                </a>
+                <a href="users.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-6-3.5z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </a>
+                <a href="coupons.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                    </svg>
+                    <span>优惠券管理</span>
+                </a>
+                <a href="quiz-records.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>答题记录</span>
+                </a>
+                <a href="questions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                    <span>题库管理</span>
+                </a>
+                <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item active flex items-center justify-between px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <span class="flex items-center space-x-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                        </svg>
+                        <span>问题反馈</span>
+                    </span>
+                    <span id="pendingBadge" class="badge hidden">0</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">问题反馈</h2>
+                <div class="text-sm text-gray-500">
+                    当前登录：<span id="adminName" class="text-gray-700 font-medium">admin</span>
+                    <button onclick="AdminAPI.logout()" class="ml-4 text-red-600 hover:text-red-700">退出</button>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-4">
+                <!-- 统计卡（点击即按状态筛选） -->
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" data-status="" onclick="filterByStatus('')">
+                        <p class="text-gray-500 text-sm">全部反馈</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="statTotal">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" data-status="pending" onclick="filterByStatus('pending')">
+                        <p class="text-gray-500 text-sm">待处理</p>
+                        <p class="text-2xl font-bold text-red-600 mt-1" id="statPending">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" data-status="processing" onclick="filterByStatus('processing')">
+                        <p class="text-gray-500 text-sm">处理中</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1" id="statProcessing">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" data-status="resolved" onclick="filterByStatus('resolved')">
+                        <p class="text-gray-500 text-sm">已解决</p>
+                        <p class="text-2xl font-bold text-green-600 mt-1" id="statResolved">-</p>
+                    </div>
+                </div>
+
+                <!-- 筛选 -->
+                <div class="bg-white rounded-2xl shadow-sm p-4 flex flex-wrap items-end gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">状态</label>
+                        <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            <option value="">全部</option>
+                            <option value="pending">待处理</option>
+                            <option value="processing">处理中</option>
+                            <option value="resolved">已解决</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">类型</label>
+                        <select id="filterType" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            <option value="">全部</option>
+                            <option value="suggestion">建议</option>
+                            <option value="bug">故障</option>
+                            <option value="question">咨询</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">关键字</label>
+                        <input id="filterKeyword" type="text" placeholder="搜索反馈内容"
+                            class="w-44 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                            onkeydown="if (event.key === 'Enter') { event.preventDefault(); applyFilter(); }">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">开始日期</label>
+                        <input id="filterStart" type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">结束日期</label>
+                        <input id="filterEnd" type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    </div>
+                    <button onclick="applyFilter()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition">查询</button>
+                    <button onclick="resetFilter()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition">重置</button>
+                    <span id="filterSummary" class="ml-auto text-xs text-gray-500"></span>
+                </div>
+
+                <!-- 列表 -->
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">类型</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">反馈内容</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">用户</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">联系方式</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">提交时间</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">状态</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbackTableBody" class="divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">加载中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-6 py-3 bg-gray-50 flex items-center justify-between text-sm">
+                        <span id="pageInfo" class="text-gray-500"></span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changePage(-1)" id="prevBtn"
+                                class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40">上一页</button>
+                            <button onclick="changePage(1)" id="nextBtn"
+                                class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 反馈详情 / 处理弹窗 -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">反馈详情</h3>
+                    <p class="text-xs text-gray-500 mt-1" id="detailMeta"></p>
+                </div>
+                <span id="detailStatusTag" class="px-3 py-1 rounded-full text-xs font-medium"></span>
+            </div>
+
+            <div id="detailBody" class="space-y-4"></div>
+
+            <div class="mt-6 pt-5 border-t space-y-3">
+                <h4 class="font-medium text-gray-800">处理</h4>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">状态</label>
+                    <select id="replyStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="resolved">已解决</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">回复内容（≤500 字，留空表示仅改状态）</label>
+                    <textarea id="replyText" rows="3" placeholder="填写给用户的回复说明（可稍后用于站内展示）"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg"></textarea>
+                </div>
+                <div id="detailError" class="hidden px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"></div>
+            </div>
+
+            <div class="flex space-x-3 pt-5">
+                <button type="button" onclick="deleteCurrent()" class="px-5 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button type="button" onclick="closeDetail()" class="flex-1 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">关闭</button>
+                <button type="button" onclick="saveHandling()" id="saveBtn" class="flex-1 py-2 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition">保存处理</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 依赖 js/admin-api.js（本页不声明 API_BASE，避免全局重复声明导致整页脚本解析失败）
+    const { get, put, del, escapeHtml, formatDateTime, renderError } = window.AdminAPI;
+
+    const PAGE_SIZE = 20;
+    const STATUS_STYLE = {
+      pending: { cls: 'bg-red-100 text-red-700', text: '待处理' },
+      processing: { cls: 'bg-amber-100 text-amber-700', text: '处理中' },
+      resolved: { cls: 'bg-green-100 text-green-700', text: '已解决' },
+    };
+    const TYPE_STYLE = {
+      suggestion: { cls: 'bg-blue-50 text-blue-600', text: '建议' },
+      bug: { cls: 'bg-red-50 text-red-600', text: '故障' },
+      question: { cls: 'bg-indigo-50 text-indigo-600', text: '咨询' },
+      other: { cls: 'bg-gray-100 text-gray-600', text: '其他' },
+    };
+
+    let currentPage = 1;
+    let totalItems = 0;
+    let currentId = null;
+    let currentList = [];
+
+    function statusTag(status) {
+      const s = STATUS_STYLE[status] || STATUS_STYLE.pending;
+      return `<span class="px-3 py-1 rounded-full text-xs font-medium ${s.cls}">${s.text}</span>`;
+    }
+
+    function buildQuery(page) {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filterStatus').value;
+      const type = document.getElementById('filterType').value;
+      const keyword = document.getElementById('filterKeyword').value.trim();
+      const startDate = document.getElementById('filterStart').value;
+      const endDate = document.getElementById('filterEnd').value;
+      if (status) params.set('status', status);
+      if (type) params.set('type', type);
+      if (keyword) params.set('keyword', keyword);
+      if (startDate) params.set('startDate', startDate);
+      if (endDate) params.set('endDate', endDate);
+      params.set('page', String(page || 1));
+      params.set('pageSize', String(PAGE_SIZE));
+      return params.toString();
+    }
+
+    function applyFilter() {
+      currentPage = 1;
+      loadFeedback();
+    }
+
+    function resetFilter() {
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterType').value = '';
+      document.getElementById('filterKeyword').value = '';
+      document.getElementById('filterStart').value = '';
+      document.getElementById('filterEnd').value = '';
+      document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('selected'));
+      currentPage = 1;
+      loadFeedback();
+      loadStats();
+    }
+
+    /** 点击统计卡按状态筛选 */
+    function filterByStatus(status) {
+      document.getElementById('filterStatus').value = status;
+      document.querySelectorAll('.stat-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.status === status);
+      });
+      currentPage = 1;
+      loadFeedback();
+    }
+
+    function changePage(delta) {
+      const next = currentPage + delta;
+      const totalPages = Math.max(Math.ceil(totalItems / PAGE_SIZE), 1);
+      if (next < 1 || next > totalPages) return;
+      currentPage = next;
+      loadFeedback();
+    }
+
+    async function loadFeedback() {
+      try {
+        const data = await get('/api/admin/feedback?' + buildQuery(currentPage));
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+
+        currentList = data.data.list || [];
+        totalItems = data.data.total || 0;
+        renderList(currentList);
+        renderPaging();
+      } catch (err) {
+        renderError('feedbackTableBody', err, 7);
+      }
+    }
+
+    function renderList(items) {
+      const tbody = document.getElementById('feedbackTableBody');
+      if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">暂无反馈</td></tr>';
+        return;
+      }
+      tbody.innerHTML = items.map((f, i) => {
+        const t = TYPE_STYLE[f.type] || TYPE_STYLE.other;
+        const summary = f.content.length > 40 ? f.content.slice(0, 40) + '…' : f.content;
+        return `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4"><span class="px-2 py-1 rounded text-xs ${t.cls}">${t.text}</span></td>
+          <td class="px-6 py-4">
+            <p class="text-sm text-gray-800">${escapeHtml(summary)}</p>
+            ${f.imageCount ? `<p class="text-xs text-gray-400 mt-1">附 ${f.imageCount} 张图片</p>` : ''}
+            ${f.reply ? '<p class="text-xs text-green-600 mt-1">已回复</p>' : ''}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-500 font-mono">${escapeHtml(String(f.openid || '').slice(-8) || '-')}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">${f.contact ? escapeHtml(f.contact) : '-'}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">${formatDateTime(f.createTime)}</td>
+          <td class="px-6 py-4">${statusTag(f.status)}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button onclick="openDetail(${i})" class="text-green-600 hover:text-green-700 text-sm font-medium mr-3">查看</button>
+            <button onclick="deleteItem('${f._id}')" class="text-red-600 hover:text-red-700 text-sm font-medium">删除</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderPaging() {
+      const totalPages = Math.max(Math.ceil(totalItems / PAGE_SIZE), 1);
+      const hasFilter = ['filterStatus', 'filterType', 'filterKeyword', 'filterStart', 'filterEnd']
+        .some(id => document.getElementById(id).value);
+      document.getElementById('pageInfo').textContent =
+        `共 ${totalItems} 条 · 第 ${currentPage}/${totalPages} 页` + (hasFilter ? ' · 已应用筛选条件' : '');
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+      document.getElementById('filterSummary').textContent = hasFilter ? '已应用筛选条件' : '';
+    }
+
+    async function loadStats() {
+      try {
+        const data = await get('/api/admin/feedback/stats');
+        if (!data || !data.success) return;
+        document.getElementById('statTotal').textContent = data.data.total || 0;
+        document.getElementById('statPending').textContent = data.data.pending || 0;
+        document.getElementById('statProcessing').textContent = data.data.processing || 0;
+        document.getElementById('statResolved').textContent = data.data.resolved || 0;
+
+        // 侧边栏待处理徽标
+        const badge = document.getElementById('pendingBadge');
+        const pending = data.data.pending || 0;
+        badge.textContent = pending > 99 ? '99+' : String(pending);
+        badge.classList.toggle('hidden', pending === 0);
+      } catch (err) {
+        console.error('加载反馈统计失败', err);
+      }
+    }
+
+    function showDetailError(msg) {
+      const el = document.getElementById('detailError');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideDetailError() {
+      document.getElementById('detailError').classList.add('hidden');
+    }
+
+    /** 打开详情：展示完整内容、图片、提交者与处理区 */
+    async function openDetail(index) {
+      const item = currentList[index];
+      if (!item) return;
+      currentId = item._id;
+      hideDetailError();
+
+      const modal = document.getElementById('detailModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      const t = TYPE_STYLE[item.type] || TYPE_STYLE.other;
+      document.getElementById('detailMeta').textContent =
+        `${t.text} · 提交于 ${formatDateTime(item.createTime)}`;
+
+      // 详情区状态标签：直接改 class 与文本，避免替换 outerHTML
+      const tag = document.getElementById('detailStatusTag');
+      const s = STATUS_STYLE[item.status] || STATUS_STYLE.pending;
+      tag.className = `px-3 py-1 rounded-full text-xs font-medium ${s.cls}`;
+      tag.textContent = s.text;
+
+      document.getElementById('detailBody').innerHTML = '<p class="text-gray-500 text-sm">加载详情中...</p>';
+      document.getElementById('replyStatus').value = item.status || 'pending';
+      document.getElementById('replyText').value = item.reply || '';
+
+      try {
+        const data = await get('/api/admin/feedback/' + item._id);
+        if (!data || !data.success) throw new Error((data && data.message) || '加载失败');
+        const f = data.data.feedback || {};
+        const submitter = data.data.submitter;
+        const imageUrls = data.data.imageUrls || [];
+
+        document.getElementById('detailBody').innerHTML = `
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="px-2 py-1 rounded ${t.cls}">${t.text}</span>
+            <span class="px-2 py-1 rounded bg-gray-100 text-gray-600">${escapeHtml(f.statusText || '')}</span>
+            ${f.replyTime ? `<span class="px-2 py-1 rounded bg-green-50 text-green-600">回复于 ${formatDateTime(f.replyTime)}</span>` : ''}
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500 mb-1">反馈内容</p>
+            <div class="px-4 py-3 bg-gray-50 rounded-xl text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">${escapeHtml(f.content || '')}</div>
+          </div>
+
+          ${imageUrls.length ? `
+          <div>
+            <p class="text-sm text-gray-500 mb-1">图片（${imageUrls.length}）</p>
+            <div class="flex flex-wrap gap-3">
+              ${imageUrls.map(url => `<img src="${escapeHtml(url)}" class="w-28 h-28 object-cover rounded-lg border" alt="反馈图片">`).join('')}
+            </div>
+          </div>` : ''}
+
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="flex justify-between"><span class="text-gray-500">联系方式</span><span class="text-gray-800">${escapeHtml(f.contact || '未填写')}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">OpenID</span><span class="text-gray-800 font-mono text-xs">${escapeHtml(f.openid || '-')}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">提交用户</span><span class="text-gray-800">${escapeHtml(submitter ? submitter.nickName : '未注册用户')}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">最近更新</span><span class="text-gray-800">${formatDateTime(f.updateTime)}</span></div>
+          </div>
+
+          ${f.reply ? `
+          <div>
+            <p class="text-sm text-gray-500 mb-1">已有回复</p>
+            <div class="px-4 py-3 bg-green-50 rounded-xl text-sm text-green-800 whitespace-pre-wrap">${escapeHtml(f.reply)}</div>
+          </div>` : ''}
+        `;
+      } catch (err) {
+        document.getElementById('detailBody').innerHTML =
+          `<p class="text-red-600 text-sm">详情加载失败：${escapeHtml(err && err.message ? err.message : err)}</p>`;
+      }
+    }
+
+    function closeDetail() {
+      const modal = document.getElementById('detailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentId = null;
+    }
+
+    /** 保存处理：状态 + 回复 */
+    async function saveHandling() {
+      if (!currentId) return;
+      hideDetailError();
+
+      const status = document.getElementById('replyStatus').value;
+      const reply = document.getElementById('replyText').value.trim();
+      if (reply.length > 500) { showDetailError('回复不能超过 500 字'); return; }
+
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.textContent = '保存中...';
+      try {
+        const res = await put('/api/admin/feedback/' + currentId, { status, reply });
+        if (!res) return;
+        if (!res.success) { showDetailError(res.message || '保存失败'); return; }
+        closeDetail();
+        await Promise.all([loadFeedback(), loadStats()]);
+        alert('处理已保存');
+      } catch (err) {
+        showDetailError(err && err.message ? err.message : String(err));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '保存处理';
+      }
+    }
+
+    async function deleteItem(id) {
+      if (!confirm('确定删除这条反馈吗？删除后不可恢复。')) return;
+      try {
+        const res = await del('/api/admin/feedback/' + id);
+        if (!res) return;
+        if (!res.success) { alert('删除失败：' + (res.message || '未知错误')); return; }
+        await Promise.all([loadFeedback(), loadStats()]);
+      } catch (err) {
+        alert('删除失败：' + (err && err.message ? err.message : err));
+      }
+    }
+
+    function deleteCurrent() {
+      if (currentId) deleteItem(currentId);
+    }
+
+    const username = sessionStorage.getItem('adminUsername');
+    if (username) document.getElementById('adminName').textContent = username;
+
+    loadStats();
+    loadFeedback();
+    </script>
+</body>
+</html>

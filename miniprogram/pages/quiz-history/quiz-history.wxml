@@ -1,6 +1,7 @@
 <view class="container">
   <view wx:if="{{historyList.length > 0}}" class="history-list">
-    <view wx:for="{{historyList}}" wx:key="id" class="history-item">
+    <view wx:for="{{historyList}}" wx:key="id" class="history-item"
+          bind:tap="openDetail" data-index="{{index}}" hover-class="history-item-hover">
       <view class="history-header">
         <view class="history-date">
           <t-icon name="time" size="20" color="#999"></t-icon>
@@ -10,9 +11,11 @@
           {{item.isCorrect ? '正确' : '错误'}}
         </t-tag>
       </view>
+
       <view class="history-question">
         <text class="question-text">{{item.question}}</text>
       </view>
+
       <view class="history-answer">
         <view class="answer-row">
           <text class="answer-label">你的答案：</text>
@@ -23,14 +26,90 @@
           <text class="answer-text correct">{{item.correctAnswer}}</text>
         </view>
       </view>
-      <view wx:if="{{item.explanation}}" class="history-explanation">
-        <t-icon name="help-circle" size="16" color="#666"></t-icon>
-        <text class="explanation-text">{{item.explanation}}</text>
+
+      <view class="history-footer">
+        <view class="history-chips">
+          <text class="chip">{{item.typeText}}</text>
+          <text class="chip">{{item.difficultyText}}</text>
+          <text wx:if="{{item.durationText}}" class="chip">{{item.durationText}}</text>
+        </view>
+        <view class="history-more">
+          <text>查看详情</text>
+          <t-icon name="chevron-right" size="28" color="#2e7d32"></t-icon>
+        </view>
       </view>
     </view>
   </view>
-  
+
   <view wx:else class="empty-container">
     <t-empty description="暂无答题记录"></t-empty>
   </view>
+
+  <!-- 答题详情卡片（放大展示） -->
+  <t-popup visible="{{detailVisible}}" placement="center" show-overlay t-class="detail-popup">
+    <view class="detail-card" catch:tap="noop" wx:if="{{detail}}">
+      <view class="detail-head">
+        <view class="detail-head-left">
+          <text class="detail-title">答题详情</text>
+          <text class="detail-time">{{detail.timeText}}</text>
+        </view>
+        <t-tag theme="{{detail.isCorrect ? 'success' : 'danger'}}" variant="light" size="medium">
+          {{detail.isCorrect ? '回答正确' : '回答错误'}}
+        </t-tag>
+      </view>
+
+      <scroll-view class="detail-body" scroll-y>
+        <view class="detail-chips">
+          <text class="chip">{{detail.typeText}}</text>
+          <text class="chip chip-diff-{{detail.difficultyKey}}">{{detail.difficultyText}}</text>
+          <text wx:if="{{detail.category}}" class="chip">{{detail.category}}</text>
+          <text wx:if="{{detail.durationText}}" class="chip">用时 {{detail.durationText}}</text>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-label">题目</text>
+          <text class="detail-question">{{detail.question}}</text>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-label">选项</text>
+          <view class="detail-option {{item.state}}"
+                wx:for="{{detail.options}}" wx:key="letter">
+            <view class="detail-option-letter">{{item.letter}}</view>
+            <text class="detail-option-text">{{item.text}}</text>
+            <view class="detail-option-flags">
+              <text wx:if="{{item.picked}}" class="flag flag-picked">你选的</text>
+              <t-icon wx:if="{{item.state === 'correct'}}" name="check-circle-filled" size="32" color="#22c55e"></t-icon>
+              <t-icon wx:elif="{{item.state === 'wrong'}}" name="close-circle-filled" size="32" color="#ef4444"></t-icon>
+            </view>
+          </view>
+        </view>
+
+        <view class="detail-section detail-answers">
+          <view class="detail-answer-row">
+            <text class="detail-label">你的答案</text>
+            <text class="detail-answer-value {{detail.isCorrect ? 'ok' : 'bad'}}">{{detail.userAnswer}}</text>
+          </view>
+          <view class="detail-answer-row">
+            <text class="detail-label">正确答案</text>
+            <text class="detail-answer-value ok">{{detail.correctAnswer}}</text>
+          </view>
+        </view>
+
+        <view class="detail-section" wx:if="{{detail.explanation}}">
+          <text class="detail-label">解析</text>
+          <view class="detail-explanation">
+            <t-icon name="help-circle" size="28" color="#b45309"></t-icon>
+            <text>{{detail.explanation}}</text>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="detail-actions">
+        <t-button theme="primary" size="large" block t-class="detail-close-btn" bind:tap="closeDetail">
+          关闭
+        </t-button>
+      </view>
+    </view>
+  </t-popup>
 </view>

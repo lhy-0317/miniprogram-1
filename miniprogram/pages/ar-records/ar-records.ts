@@ -1,76 +1,57 @@
+import { api } from '../../utils/api';
+
 Page({
   data: {
     records: [] as any[],
     totalRecords: 0,
     uniqueHerbs: 0,
-    loading: true
+    loading: true,
   },
 
   onLoad() {
-    this.loadRecords()
+    this.loadRecords();
   },
 
   onShow() {
-    this.loadRecords()
+    this.loadRecords();
   },
 
-  loadRecords() {
-    this.setData({ loading: true })
+  /**
+   * 修复：原实现调用 stats 后把结果硬编码为空（records: []），
+   * 页面恒为空。现改为读取 userService 的 ar-records action。
+   *
+   * 注意：ar_records 当前无写入方（AR 页为占位实现），
+   * 因此正常情况下展示空态与「去识别」引导 —— 这是诚实的行为；
+   * 将来 AR 页真正写入识别记录后，此页无需再改。
+   */
+  async loadRecords() {
+    this.setData({ loading: true });
 
-    const db = wx.cloud.database()
-    const openid = wx.getStorageSync('openid')
+    try {
+      const res = await api.get('/api/user/ar-records');
 
-    if (!openid) {
-      this.setData({ loading: false })
-      return
-    }
-
-    db.collection('ar_records').where({
-      _openid: openid
-    }).orderBy('createTime', 'desc').limit(50).get({
-      success: (res: any) => {
-        const records = res.data.map((item: any) => ({
-          ...item,
-          createTimeStr: this.formatTime(item.createTime)
-        }))
-
-        const uniqueHerbsSet = new Set()
-        records.forEach((item: any) => {
-          if (item.herbName) {
-            uniqueHerbsSet.add(item.herbName)
-          }
-        })
+      if (res.success) {
+        const records = res.data.records || [];
+        const uniqueHerbs = new Set(records.map((r: any) => r.herbName)).size;
 
         this.setData({
           records,
-          totalRecords: records.length,
-          uniqueHerbs: uniqueHerbsSet.size,
-          loading: false
-        })
-      },
-      fail: () => {
-        this.setData({
-          records: [],
-          loading: false
-        })
+          totalRecords: res.data.total || records.length,
+          uniqueHerbs,
+          loading: false,
+        });
       }
-    })
-  },
-
-  formatTime(date: Date | string): string {
-    if (!date) return ''
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
-    const hour = String(d.getHours()).padStart(2, '0')
-    const minute = String(d.getMinutes()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hour}:${minute}`
+    } catch {
+      this.setData({ records: [], totalRecords: 0, uniqueHerbs: 0, loading: false });
+    }
   },
 
   goToAr() {
     wx.switchTab({
-      url: '/pages/ar/ar'
-    })
-  }
-})
+      url: '/pages/ar/ar',
+      fail: () => {
+        wx.showToast({ title: '跳转失败，请点击底部AR识别', icon: 'none' });
+      },
+    });
+  },
+});

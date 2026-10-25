@@ -77,7 +77,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 32rpx;
   animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
@@ -97,7 +97,7 @@
   position: relative;
   width: 480rpx;
   height: 480rpx;
-  border: 8rpx solid #4ade80;
+  border: 8rpx solid var(--digital-blue-bright);
   border-radius: 32rpx;
   display: flex;
   align-items: center;
@@ -109,7 +109,7 @@
   position: absolute;
   width: 96rpx;
   height: 96rpx;
-  border-color: #4ade80;
+  border-color: var(--digital-blue-bright);
   border-width: 8rpx;
 }
 
@@ -150,7 +150,7 @@
   left: 32rpx;
   right: 32rpx;
   height: 8rpx;
-  background: linear-gradient(to right, transparent, #4ade80, transparent);
+  background: linear-gradient(to right, transparent, var(--digital-blue-bright), transparent);
   animation: scan 2s ease-in-out infinite;
 }
 
@@ -240,11 +240,11 @@
   padding: 12rpx 32rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-elevated);
 }
 
 .gesture-hint text {
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 24rpx;
   margin-left: 8rpx;
 }
@@ -256,7 +256,7 @@
   padding: 40rpx;
   width: 100%;
   max-width: 600rpx;
-  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-elevated);
 }
 
 .herb-header {
@@ -268,7 +268,7 @@
 .herb-icon {
   width: 128rpx;
   height: 128rpx;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 24rpx;
   display: flex;
   align-items: center;
@@ -286,26 +286,26 @@
 .herb-name {
   font-size: 40rpx;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
 .herb-latin {
   font-size: 28rpx;
-  color: #22c55e;
+  color: var(--digital-blue);
   font-weight: 500;
 }
 
 .herb-desc {
   font-size: 28rpx;
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.7;
   margin-bottom: 32rpx;
 }
 
 .herb-props {
   padding-top: 32rpx;
-  border-top: 2rpx solid #f3f4f6;
+  border-top: 2rpx solid var(--bg-ghost);
   display: flex;
   justify-content: space-between;
 }
@@ -317,7 +317,7 @@
 
 .prop-label {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin-right: 16rpx;
 }
 
@@ -351,8 +351,8 @@
 .action-btn.primary {
   width: 128rpx;
   height: 128rpx;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
-  box-shadow: 0 12rpx 36rpx rgba(76,175,80,0.4);
+  background: var(--brand-gradient);
+  box-shadow: var(--shadow-brand);
 }
 
 .action-item text {

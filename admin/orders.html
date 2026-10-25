@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 智惠本草管理后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/admin-api.js"></script>
+    <style>
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
+            border-left: 3px solid #2e7d32;
+        }
+        .stat-card { cursor: pointer; transition: box-shadow .2s, transform .2s; }
+        .stat-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+        .stat-card.selected { outline: 2px solid #2e7d32; }
+        .status-tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-white shadow-lg flex-shrink-0 overflow-y-auto">
+            <div class="p-6 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-600 to-green-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-gray-800">智惠本草</h1>
+                        <p class="text-xs text-gray-500">管理后台</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="p-4 space-y-2">
+                <a href="index.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>仪表盘</span>
+                </a>
+                <a href="users.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-6-3.5z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </a>
+                <a href="coupons.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/>
+                    </svg>
+                    <span>优惠券管理</span>
+                </a>
+                <a href="quiz-records.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>答题记录</span>
+                </a>
+                <a href="questions.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                    </svg>
+                    <span>题库管理</span>
+                </a>
+                <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item active flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                    </svg>
+                    <span>问题反馈</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-800">订单管理</h2>
+                <div class="text-sm text-gray-500">
+                    当前登录：<span id="adminName" class="text-gray-700 font-medium">admin</span>
+                    <button onclick="AdminAPI.logout()" class="ml-4 text-red-600 hover:text-red-700">退出</button>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-4">
+                <!-- 状态统计（点击即筛选） -->
+                <div class="grid grid-cols-5 gap-4">
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" onclick="filterByStatus('')">
+                        <p class="text-gray-500 text-sm">全部订单</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="statAll">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" onclick="filterByStatus('pending')">
+                        <p class="text-gray-500 text-sm">待付款</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1" id="statPending">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" onclick="filterByStatus('paid')">
+                        <p class="text-gray-500 text-sm">已付款</p>
+                        <p class="text-2xl font-bold text-blue-600 mt-1" id="statPaid">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" onclick="filterByStatus('completed')">
+                        <p class="text-gray-500 text-sm">已完成</p>
+                        <p class="text-2xl font-bold text-green-600 mt-1" id="statCompleted">-</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm stat-card" onclick="filterByStatus('cancelled')">
+                        <p class="text-gray-500 text-sm">已取消</p>
+                        <p class="text-2xl font-bold text-gray-500 mt-1" id="statCancelled">-</p>
+                    </div>
+                </div>
+
+                <!-- 筛选 -->
+                <div class="bg-white rounded-2xl shadow-sm p-4 flex flex-wrap items-end gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">订单状态</label>
+                        <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            <option value="">全部</option>
+                            <option value="pending">待付款</option>
+                            <option value="paid">已付款</option>
+                            <option value="completed">已完成</option>
+                            <option value="cancelled">已取消</option>
+                            <option value="failed">已失败</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">订单类型</label>
+                        <select id="filterType" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                            <option value="">全部</option>
+                            <option value="shop">商店订单</option>
+                            <option value="paper">取纸订单</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">关键字</label>
+                        <input id="filterKeyword" type="text" placeholder="订单号 / 商品 / 用户"
+                            class="w-48 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                            onkeydown="if (event.key === 'Enter') { event.preventDefault(); applyFilter(); }">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">下单开始</label>
+                        <input id="filterStart" type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">下单结束</label>
+                        <input id="filterEnd" type="date" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    </div>
+                    <button onclick="applyFilter()" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition">查询</button>
+                    <button onclick="resetFilter()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition">重置</button>
+                </div>
+
+                <!-- 列表 -->
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">订单编号</th>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">下单用户</th>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">商品明细</th>
+                                    <th class="px-4 py-4 text-right text-sm font-medium text-gray-500">金额</th>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">支付状态</th>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">下单时间</th>
+                                    <th class="px-4 py-4 text-left text-sm font-medium text-gray-500">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTableBody" class="divide-y divide-gray-200">
+                                <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-6 py-3 bg-gray-50 flex items-center justify-between text-sm">
+                        <span id="pageInfo" class="text-gray-500"></span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changePage(-1)" id="prevBtn"
+                                class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40">上一页</button>
+                            <button onclick="changePage(1)" id="nextBtn"
+                                class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-40">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 订单详情弹窗 -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-3xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">订单详情</h3>
+                    <p class="text-xs text-gray-500 mt-1" id="detailMeta"></p>
+                </div>
+                <span id="detailStatusTag" class="status-tag"></span>
+            </div>
+
+            <div id="detailBody" class="space-y-5"></div>
+
+            <div id="detailError" class="hidden mt-4 px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"></div>
+
+            <div class="flex flex-wrap gap-3 pt-6">
+                <button onclick="actOnOrder('paid')" id="btnPaid"
+                    class="hidden px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">确认收款</button>
+                <button onclick="actOnOrder('completed')" id="btnCompleted"
+                    class="hidden px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">标记完成</button>
+                <button onclick="actOnOrder('cancelled')" id="btnCancelled"
+                    class="hidden px-5 py-2 bg-red-50 border border-red-200 text-red-600 rounded-lg hover:bg-red-100 transition">取消订单</button>
+                <button onclick="closeDetail()" class="flex-1 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 依赖 js/admin-api.js（本页不声明 API_BASE，避免全局重复声明导致整页脚本解析失败）
+    const { get, put, escapeHtml, formatDateTime, renderError } = window.AdminAPI;
+
+    const PAGE_SIZE = 20;
+    const STATUS_STYLE = {
+      pending: { cls: 'bg-amber-100 text-amber-700', text: '待付款' },
+      paid: { cls: 'bg-blue-100 text-blue-700', text: '已付款' },
+      completed: { cls: 'bg-green-100 text-green-700', text: '已完成' },
+      cancelled: { cls: 'bg-gray-100 text-gray-600', text: '已取消' },
+      failed: { cls: 'bg-red-100 text-red-700', text: '已失败' },
+    };
+    const PAY_CHANNEL_TEXT = { sandbox: '体验版模拟支付', wxpay: '微信支付', admin: '后台确认收款' };
+
+    let currentPage = 1;
+    let totalItems = 0;
+    let currentId = null;
+    let currentList = [];
+
+    function fen2yuan(fen) {
+      return (Number(fen || 0) / 100).toFixed(2);
+    }
+
+    function statusTag(status) {
+      const s = STATUS_STYLE[status] || STATUS_STYLE.pending;
+      return '<span class="status-tag ' + s.cls + '">' + s.text + '</span>';
+    }
+
+    function buildQuery(page) {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filterStatus').value;
+      const type = document.getElementById('filterType').value;
+      const keyword = document.getElementById('filterKeyword').value.trim();
+      const startDate = document.getElementById('filterStart').value;
+      const endDate = document.getElementById('filterEnd').value;
+      if (status) params.set('status', status);
+      if (type) params.set('type', type);
+      if (keyword) params.set('keyword', keyword);
+      if (startDate) params.set('startDate', startDate);
+      if (endDate) params.set('endDate', endDate);
+      params.set('page', String(page || 1));
+      params.set('pageSize', String(PAGE_SIZE));
+      return params.toString();
+    }
+
+    function applyFilter() {
+      currentPage = 1;
+      loadOrders();
+    }
+
+    function resetFilter() {
+      ['filterStatus', 'filterType', 'filterKeyword', 'filterStart', 'filterEnd']
+        .forEach((id) => { document.getElementById(id).value = ''; });
+      document.querySelectorAll('.stat-card').forEach((c) => c.classList.remove('selected'));
+      currentPage = 1;
+      loadOrders();
+    }
+
+    function filterByStatus(status) {
+      document.getElementById('filterStatus').value = status;
+      document.querySelectorAll('.stat-card').forEach((c) => c.classList.remove('selected'));
+      currentPage = 1;
+      loadOrders();
+    }
+
+    function changePage(delta) {
+      const next = currentPage + delta;
+      const totalPages = Math.max(Math.ceil(totalItems / PAGE_SIZE), 1);
+      if (next < 1 || next > totalPages) return;
+      currentPage = next;
+      loadOrders();
+    }
+
+    async function loadOrders() {
+      try {
+        const data = await get('/api/admin/orders?' + buildQuery(currentPage));
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+
+        const payload = data.data || {};
+        currentList = payload.list || [];
+        totalItems = payload.total || 0;
+
+        const stats = payload.stats || {};
+        document.getElementById('statAll').textContent = stats.all || 0;
+        document.getElementById('statPending').textContent = stats.pending || 0;
+        document.getElementById('statPaid').textContent = stats.paid || 0;
+        document.getElementById('statCompleted').textContent = stats.completed || 0;
+        document.getElementById('statCancelled').textContent = stats.cancelled || 0;
+
+        renderList(currentList);
+        renderPaging(payload);
+      } catch (err) {
+        renderError('orderTableBody', err, 7);
+      }
+    }
+
+    function renderList(items) {
+      const tbody = document.getElementById('orderTableBody');
+      if (!items || items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">暂无订单</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map((o, i) => {
+        const itemText = (o.items || []).length > 1
+          ? `${escapeHtml((o.items || [])[0].name)} 等 ${o.items.length} 种商品`
+          : escapeHtml(o.title || (o.items && o.items[0] ? o.items[0].name : '订单'));
+        const coupon = o.discount > 0 ? `<div class="text-xs text-green-600 mt-1">已优惠 ¥${fen2yuan(o.discount)}${o.couponLabel ? ' · ' + escapeHtml(o.couponLabel) : ''}</div>` : '';
+
+        return `
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-4">
+            <p class="text-xs text-gray-800 font-mono">${escapeHtml(o.orderSn || '-')}</p>
+            <p class="text-xs text-gray-400 mt-1">${escapeHtml(o.typeText || '')}</p>
+          </td>
+          <td class="px-4 py-4">
+            <p class="text-sm text-gray-800">${escapeHtml(o.userName || '微信用户')}</p>
+            <p class="text-xs text-gray-400 font-mono">${escapeHtml(String(o.openid || '').slice(-8) || '-')}</p>
+          </td>
+          <td class="px-4 py-4">
+            <p class="text-sm text-gray-800">${itemText}</p>
+            <p class="text-xs text-gray-400 mt-1">共 ${o.itemCount || 0} 件</p>
+          </td>
+          <td class="px-4 py-4 text-right">
+            <p class="text-sm font-bold text-red-600">¥${fen2yuan(o.payable)}</p>
+            ${coupon}
+          </td>
+          <td class="px-4 py-4">${statusTag(o.status)}</td>
+          <td class="px-4 py-4 text-sm text-gray-500">${formatDateTime(o.createTime)}</td>
+          <td class="px-4 py-4 whitespace-nowrap">
+            <button onclick="openDetail(${i})" class="text-green-600 hover:text-green-700 text-sm font-medium">查看</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderPaging(payload) {
+      const totalPages = Math.max(Math.ceil(totalItems / PAGE_SIZE), 1);
+      const hasFilter = ['filterStatus', 'filterType', 'filterKeyword', 'filterStart', 'filterEnd']
+        .some((id) => document.getElementById(id).value);
+      document.getElementById('pageInfo').textContent =
+        `共 ${totalItems} 条 · 第 ${currentPage}/${totalPages} 页`
+        + ` · 本页金额合计 ¥${fen2yuan(payload.pagePayableSum)}（其中已付款/完成 ¥${fen2yuan(payload.pagePaidSum)}）`
+        + (hasFilter ? ' · 已筛选' : '');
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    }
+
+    function showDetailError(msg) {
+      const el = document.getElementById('detailError');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideDetailError() {
+      document.getElementById('detailError').classList.add('hidden');
+    }
+
+    /** 打开订单详情：展示商品明细、金额明细、支付与时间线信息 */
+    async function openDetail(index) {
+      const row = currentList[index];
+      if (!row) return;
+      currentId = row._id;
+      hideDetailError();
+
+      const modal = document.getElementById('detailModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      const tag = document.getElementById('detailStatusTag');
+      const style = STATUS_STYLE[row.status] || STATUS_STYLE.pending;
+      tag.className = 'status-tag ' + style.cls;
+      tag.textContent = style.text;
+      document.getElementById('detailMeta').textContent = `${row.typeText || ''} · 下单于 ${formatDateTime(row.createTime)}`;
+      document.getElementById('detailBody').innerHTML = '<p class="text-gray-500 text-sm">加载详情中...</p>';
+      updateActions(row);
+
+      try {
+        const data = await get('/api/admin/orders/' + row._id);
+        if (!data || !data.success) throw new Error((data && data.message) || '加载失败');
+
+        const o = data.data.order || {};
+        const user = data.data.user;
+        const itemRows = (o.items || []).map((it) => `
+          <tr class="border-b border-gray-100">
+            <td class="py-2 text-sm text-gray-800">${escapeHtml(it.name || '-')}</td>
+            <td class="py-2 text-sm text-gray-500 text-right">¥${fen2yuan(it.price)}</td>
+            <td class="py-2 text-sm text-gray-500 text-right">×${it.qty || 0}</td>
+            <td class="py-2 text-sm text-gray-800 text-right">¥${fen2yuan(it.amount)}</td>
+          </tr>`).join('');
+
+        document.getElementById('detailBody').innerHTML = `
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-500">订单编号</span><span class="text-gray-800 font-mono text-xs">${escapeHtml(o.orderSn || '-')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">订单类型</span><span class="text-gray-800">${escapeHtml(o.typeText || '-')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">下单时间</span><span class="text-gray-800">${formatDateTime(o.createTime)}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">最近更新</span><span class="text-gray-800">${formatDateTime(o.updateTime)}</span></div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-500">下单用户</span><span class="text-gray-800">${escapeHtml(user ? user.nickName : '未注册用户')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">OpenID</span><span class="text-gray-800 font-mono text-xs">${escapeHtml(o.openid || '-')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">支付方式</span><span class="text-gray-800">${escapeHtml(PAY_CHANNEL_TEXT[o.payChannel] || (o.status === 'pending' ? '未支付' : '-'))}</span></div>
+              <div class="flex justify-between"><span class="text-gray-500">履约方式</span><span class="text-gray-800">${o.fulfillment === 'device' ? '取纸机出纸' : '到服务台自提'}</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-sm text-gray-500 mb-2">商品明细</p>
+            <table class="w-full">
+              <thead>
+                <tr class="text-xs text-gray-400">
+                  <th class="text-left pb-2 font-medium">商品</th>
+                  <th class="text-right pb-2 font-medium">单价</th>
+                  <th class="text-right pb-2 font-medium">数量</th>
+                  <th class="text-right pb-2 font-medium">小计</th>
+                </tr>
+              </thead>
+              <tbody>${itemRows || '<tr><td colspan="4" class="py-3 text-sm text-gray-400">无商品明细</td></tr>'}</tbody>
+            </table>
+          </div>
+
+          <div class="bg-green-50 rounded-xl p-4 space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-gray-500">商品合计</span><span class="text-gray-800">¥${fen2yuan(o.subtotal)}</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">优惠减免${o.couponLabel ? '（' + escapeHtml(o.couponLabel) + '）' : ''}</span><span class="text-green-700">−¥${fen2yuan(o.discount)}</span></div>
+            <div class="flex justify-between font-bold"><span>应付金额</span><span class="text-red-600 text-lg">¥${fen2yuan(o.payable)}</span></div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="space-y-2">
+              <p class="text-sm text-gray-500">时间线</p>
+              <p class="text-gray-700">下单：${formatDateTime(o.createTime)}</p>
+              ${o.paidAt ? `<p class="text-gray-700">付款：${formatDateTime(o.paidAt)}</p>` : ''}
+              ${o.completedAt ? `<p class="text-gray-700">完成：${formatDateTime(o.completedAt)}</p>` : ''}
+              ${o.cancelledAt ? `<p class="text-gray-700">取消：${formatDateTime(o.cancelledAt)}</p>` : ''}
+            </div>
+            ${o.failReason ? `<div class="space-y-2"><p class="text-sm text-gray-500">失败原因</p><p class="text-red-600">${escapeHtml(o.failReason)}</p></div>` : ''}
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById('detailBody').innerHTML =
+          `<p class="text-red-600 text-sm">详情加载失败：${escapeHtml(err && err.message ? err.message : err)}</p>`;
+      }
+    }
+
+    /** 按当前状态显示可用操作（与订单状态机一致：待付款可收款/取消；已付款可完成） */
+    function updateActions(order) {
+      const status = order.status || 'pending';
+      document.getElementById('btnPaid').classList.toggle('hidden', status !== 'pending');
+      document.getElementById('btnCancelled').classList.toggle('hidden', status !== 'pending');
+      document.getElementById('btnCompleted').classList.toggle('hidden', status !== 'paid');
+    }
+
+    const ACTION_TEXT = { paid: '确认收款', completed: '标记完成', cancelled: '取消订单' };
+
+    async function actOnOrder(target) {
+      if (!currentId) return;
+      hideDetailError();
+
+      const label = ACTION_TEXT[target] || '操作';
+      const extra = target === 'cancelled' ? '如订单使用过优惠券，将一并退回。' : '';
+      if (!confirm(`确定要「${label}」吗？${extra}`)) return;
+
+      try {
+        const res = await put('/api/admin/orders/' + currentId, { status: target });
+        if (!res) return;
+        if (!res.success) { showDetailError(res.message || '操作失败'); return; }
+
+        closeDetail();
+        await loadOrders();
+        alert(res.message || '操作成功');
+      } catch (err) {
+        showDetailError(err && err.message ? err.message : String(err));
+      }
+    }
+
+    function closeDetail() {
+      const modal = document.getElementById('detailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      currentId = null;
+    }
+
+    const username = sessionStorage.getItem('adminUsername');
+    if (username) document.getElementById('adminName').textContent = username;
+
+    loadOrders();
+    </script>
+</body>
+</html>

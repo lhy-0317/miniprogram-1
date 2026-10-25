@@ -22,10 +22,15 @@
     ]
   },
   "include": [
-    "./**/*.ts"
+    "./miniprogram/**/*.ts",
+    "./typings/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "back",
+    "cloudbase",
+    "miniprogram/miniprogram_npm",
+    "miniprogram/pages/logs"
   ],
   "paths": {
     "tdesign-miniprogram/*":["./miniprogram/miniprogram_npm/tdesign-miniprogram/*"]

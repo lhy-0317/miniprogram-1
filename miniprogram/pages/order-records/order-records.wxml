@@ -1,0 +1,163 @@
+<view class="orders-container">
+  <!-- 状态统计（点击筛选） -->
+  <view class="stats-header">
+    <view class="stat-item {{filterStatus === '' ? 'active' : ''}}" data-status="" bind:tap="switchFilter">
+      <text class="stat-value">{{stats.all}}</text>
+      <text class="stat-label">全部订单</text>
+    </view>
+    <view class="stat-item {{filterStatus === 'pending' ? 'active' : ''}}" data-status="pending" bind:tap="switchFilter">
+      <text class="stat-value warn">{{stats.pending}}</text>
+      <text class="stat-label">待付款</text>
+    </view>
+    <view class="stat-item {{filterStatus === 'paid' ? 'active' : ''}}" data-status="paid" bind:tap="switchFilter">
+      <text class="stat-value info">{{stats.paid}}</text>
+      <text class="stat-label">已付款</text>
+    </view>
+    <view class="stat-item {{filterStatus === 'completed' ? 'active' : ''}}" data-status="completed" bind:tap="switchFilter">
+      <text class="stat-value done">{{stats.completed}}</text>
+      <text class="stat-label">已完成</text>
+    </view>
+  </view>
+
+  <view class="pay-notice" wx:if="{{!paymentEnabled}}">
+    <t-icon name="info-circle" size="28" color="#b45309"></t-icon>
+    <text>当前为体验版：支付为模拟流程，不会真实扣款</text>
+  </view>
+
+  <!-- 加载 / 错误 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40px" text="加载中..." />
+  </view>
+
+  <view class="error-state" wx:elif="{{loadError}}">
+    <text class="error-text">{{loadError}}</text>
+    <t-button theme="primary" size="medium" bind:tap="retry">重新加载</t-button>
+  </view>
+
+  <block wx:else>
+    <!-- 订单列表 -->
+    <view class="order-list" wx:if="{{orders.length > 0}}">
+      <view class="order-card" wx:for="{{orders}}" wx:key="_id" bind:tap="openDetail" data-id="{{item._id}}">
+        <view class="order-top">
+          <view class="order-type">
+            <t-icon name="{{item.type === 'shop' ? 'shop' : 'file-text'}}" size="30" color="#2e7d32"></t-icon>
+            <text>{{item.typeText}}</text>
+          </view>
+          <text class="order-status {{item.statusCls}}">{{item.statusText}}</text>
+        </view>
+
+        <view class="order-title">{{item.title}}</view>
+        <view class="order-items">{{item.itemsText}}</view>
+
+        <view class="order-meta">
+          <text class="order-sn">单号 {{item.orderSn}}</text>
+          <text class="order-time">{{item.createTimeText}}</text>
+        </view>
+
+        <view class="order-bottom">
+          <view class="order-amount">
+            <text class="amount-label">应付</text>
+            <text class="amount-value">¥{{item.payableText}}</text>
+            <text class="amount-origin" wx:if="{{item.discount > 0}}">已优惠 ¥{{item.discountText}}</text>
+          </view>
+
+          <view class="order-actions">
+            <view class="action-btn ghost" wx:if="{{item.canCancel}}"
+                  catch:tap="cancelOrder" data-id="{{item._id}}">取消订单</view>
+            <view class="action-btn primary" wx:if="{{item.canPay}}"
+                  catch:tap="payOrder" data-id="{{item._id}}">去支付</view>
+            <view class="action-btn primary" wx:if="{{item.canConfirm}}"
+                  catch:tap="confirmOrder" data-id="{{item._id}}">确认取货</view>
+            <view class="action-btn ghost" wx:if="{{!item.canPay && !item.canConfirm}}"
+                  catch:tap="openDetail" data-id="{{item._id}}">查看详情</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="load-more" wx:if="{{hasMore}}">
+        <text wx:if="{{loadingMore}}">加载中...</text>
+        <text wx:else>上拉加载更多</text>
+      </view>
+      <view class="load-end" wx:else>已显示全部 {{total}} 条订单</view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <t-empty description="{{filterStatus ? '该状态下暂无订单' : '暂无订单记录'}}" />
+      <t-button theme="primary" size="medium" t-class="empty-btn" bind:tap="goShop">去商店看看</t-button>
+    </view>
+  </block>
+
+  <!-- 订单详情 -->
+  <t-popup visible="{{detailVisible}}" placement="center" show-overlay t-class="detail-popup">
+    <view class="detail-card" catch:tap="noop" wx:if="{{detail}}">
+      <view class="detail-head">
+        <text class="detail-title">订单详情</text>
+        <text class="order-status {{detail.statusCls}}">{{detail.statusText}}</text>
+      </view>
+
+      <scroll-view class="detail-body" scroll-y>
+        <view class="detail-row">
+          <text class="detail-label">订单号</text>
+          <text class="detail-value mono">{{detail.orderSn}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">订单类型</text>
+          <text class="detail-value">{{detail.typeText}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">下单时间</text>
+          <text class="detail-value">{{detail.createTimeText}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{detail.paidAtText}}">
+          <text class="detail-label">付款时间</text>
+          <text class="detail-value">{{detail.paidAtText}}</text>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-section-title">商品明细</text>
+          <view class="detail-item" wx:for="{{detail.itemLines}}" wx:key="name">
+            <text class="item-name">{{item.name}}</text>
+            <text class="item-qty">×{{item.qty}}</text>
+            <text class="item-amount">¥{{item.amountText}}</text>
+          </view>
+        </view>
+
+        <view class="detail-section">
+          <text class="detail-section-title">金额明细</text>
+          <view class="detail-row small">
+            <text class="detail-label">商品合计</text>
+            <text class="detail-value">¥{{detail.subtotalText}}</text>
+          </view>
+          <view class="detail-row small" wx:if="{{detail.discount > 0}}">
+            <text class="detail-label">优惠{{detail.couponLabel ? '（' + detail.couponLabel + '）' : ''}}</text>
+            <text class="detail-value discount">−¥{{detail.discountText}}</text>
+          </view>
+          <view class="detail-row small total">
+            <text class="detail-label">应付</text>
+            <text class="detail-value payable">¥{{detail.payableText}}</text>
+          </view>
+        </view>
+
+        <view class="detail-section" wx:if="{{detail.failReason}}">
+          <text class="detail-section-title">失败原因</text>
+          <text class="detail-fail">{{detail.failReason}}</text>
+        </view>
+
+        <view class="detail-tip" wx:if="{{detail.status === 'pending'}}">
+          <t-icon name="info-circle" size="26" color="#b45309"></t-icon>
+          <text>待付款订单请完成支付；支付后请凭订单号到服务台取货。</text>
+        </view>
+      </scroll-view>
+
+      <view class="detail-actions">
+        <view class="action-btn ghost wide" wx:if="{{detail.canCancel}}"
+              catch:tap="cancelOrder" data-id="{{detail._id}}">取消订单</view>
+        <view class="action-btn primary wide" wx:if="{{detail.canPay}}"
+              catch:tap="payOrder" data-id="{{detail._id}}">去支付</view>
+        <view class="action-btn primary wide" wx:if="{{detail.canConfirm}}"
+              catch:tap="confirmOrder" data-id="{{detail._id}}">确认取货</view>
+        <t-button theme="light" size="large" t-class="detail-close" bind:tap="closeDetail">关闭</t-button>
+      </view>
+    </view>
+  </t-popup>
+</view>

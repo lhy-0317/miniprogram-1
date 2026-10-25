@@ -15,6 +15,12 @@
   border-radius: 24rpx;
   padding: 32rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.history-item-hover {
+  transform: scale(0.985);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .history-header {
@@ -93,4 +99,246 @@
 
 .empty-container {
   padding-top: 200rpx;
+}
+
+/* ===== 列表底部：标签 + 查看详情 ===== */
+.history-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.history-chips,
+.detail-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.chip {
+  font-size: 22rpx;
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.08);
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.chip-diff-easy {
+  color: #00a870;
+  background: rgba(0, 168, 112, 0.1);
+}
+
+.chip-diff-medium {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.chip-diff-hard {
+  color: #d54941;
+  background: rgba(213, 73, 65, 0.1);
+}
+
+.history-more {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  flex-shrink: 0;
+}
+
+.history-more text {
+  font-size: 24rpx;
+  color: #2e7d32;
+}
+
+/* ===== 详情卡片 ===== */
+.detail-popup {
+  background: transparent !important;
+}
+
+.detail-card {
+  width: 640rpx;
+  max-height: 82vh;
+  background: white;
+  border-radius: 32rpx;
+  padding: 40rpx 36rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.detail-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.detail-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.detail-body {
+  max-height: 56vh;
+  margin-top: 24rpx;
+}
+
+.detail-section {
+  margin-bottom: 32rpx;
+}
+
+.detail-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.detail-question {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.6;
+}
+
+.detail-option {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  border: 2rpx solid #eee;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  background: #fafafa;
+}
+
+.detail-option.correct {
+  border-color: #00a870;
+  background: rgba(0, 168, 112, 0.06);
+}
+
+.detail-option.wrong {
+  border-color: #e34d59;
+  background: rgba(227, 77, 89, 0.06);
+}
+
+.detail-option-letter {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: white;
+  border: 2rpx solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.detail-option.correct .detail-option-letter {
+  border-color: #00a870;
+  color: #00a870;
+}
+
+.detail-option.wrong .detail-option-letter {
+  border-color: #e34d59;
+  color: #e34d59;
+}
+
+.detail-option-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+}
+
+.detail-option-flags {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.flag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 999rpx;
+}
+
+.flag-picked {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.1);
+}
+
+.detail-answers {
+  padding: 24rpx;
+  background: #f7f8f7;
+  border-radius: 16rpx;
+}
+
+.detail-answer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.detail-answer-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-answer-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.detail-answer-value.ok {
+  color: #00a870;
+}
+
+.detail-answer-value.bad {
+  color: #e34d59;
+  text-decoration: line-through;
+}
+
+.detail-explanation {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 24rpx;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 16rpx;
+}
+
+.detail-explanation text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #8a5a12;
+  line-height: 1.6;
+}
+
+.detail-actions {
+  padding-top: 24rpx;
+}
+
+.detail-close-btn {
+  width: 100%;
 }

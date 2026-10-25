@@ -57,11 +57,6 @@
       </view>
       
       <view class="login-form">
-        <button class="login-btn {{!agreedToPrivacy ? 'disabled' : ''}}" bindtap="handleLogin" disabled="{{!agreedToPrivacy}}">
-          <t-icon name="wechat" size="32" color="white"></t-icon>
-          <text style="margin-left: 12rpx;">微信一键登录</text>
-        </button>
-        
         <view class="privacy-checkbox">
           <view class="checkbox {{agreedToPrivacy ? 'checked' : ''}}" bindtap="toggleAgreement">
             <t-icon wx:if="{{agreedToPrivacy}}" name="check" size="20" color="white"></t-icon>
@@ -71,6 +66,31 @@
           <text class="checkbox-text">和</text>
           <view class="login-link" bindtap="showPrivacyPolicy">《隐私政策》</view>
         </view>
+
+        <!-- 头像昵称填写（官方 open-type=chooseAvatar + type=nickname，二者独立选择） -->
+        <view class="profile-fill">
+          <button class="avatar-choose" open-type="chooseAvatar" bindchooseavatar="onChooseWxAvatar">
+            <image wx:if="{{wxProfileAvatar}}" class="avatar-choose-img" src="{{wxProfileAvatar}}" mode="aspectFill"></image>
+            <image wx:else class="avatar-choose-img" src="/assets/icons/touxiang.png" mode="aspectFill"></image>
+            <view class="avatar-choose-badge">+</view>
+          </button>
+          <view class="nickname-fill">
+            <text class="nickname-label">昵称</text>
+            <input
+              class="nickname-input"
+              type="nickname"
+              value="{{wxProfileNickname}}"
+              placeholder="点击选择微信昵称"
+              placeholder-class="nickname-placeholder"
+              bindblur="onWxNicknameBlur"
+            />
+          </view>
+        </view>
+
+        <button class="login-btn {{!agreedToPrivacy ? 'disabled' : ''}}" bindtap="handleLogin" disabled="{{!agreedToPrivacy}}">
+          <t-icon name="wechat" size="32" color="white"></t-icon>
+          <text style="margin-left: 12rpx;">微信一键登录</text>
+        </button>
       </view>
     </view>
   </view>
@@ -102,7 +122,7 @@
       </view>
       
       <view class="coupon-list">
-        <view wx:for="{{filteredCoupons}}" wx:key="id" class="coupon-item {{item.type === '领纸券' ? 'green' : (item.type === '购物券' ? 'purple' : '')}}">
+        <view wx:for="{{filteredCoupons}}" wx:key="id" class="coupon-item {{item.type === '领纸券' ? 'green' : (item.type === '购物券' ? 'purple' : (item.type === '优惠券' ? 'orange' : ''))}}">
           <view class="coupon-left">
             <view class="coupon-amount">{{item.amount}}</view>
             <view class="coupon-type">{{item.type}}</view>
@@ -127,7 +147,7 @@
     
     <view class="menu-section">
       <t-cell-group>
-        <t-cell title="使用记录" hover note-icon="chevron-right" bindtap="goToUsageRecords">
+        <t-cell title="订单记录" hover note-icon="chevron-right" bindtap="goToOrderRecords">
           <t-icon slot="left-icon" name="time" size="40" color="#1976d2"></t-icon>
         </t-cell>
         <t-cell title="答题历史" hover note-icon="chevron-right" bindtap="goToQuizHistory">

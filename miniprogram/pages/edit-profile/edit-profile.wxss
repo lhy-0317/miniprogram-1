@@ -2,11 +2,11 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: var(--bg-page);
 }
 
 .header {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   padding: 80rpx 32rpx 32rpx;
   display: flex;
   justify-content: space-between;
@@ -54,7 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-elevated);
 }
 
 .avatar-image {
@@ -81,12 +81,12 @@
   align-items: center;
   justify-content: center;
   border: 6rpx solid white;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-card);
 }
 
 .avatar-hint {
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
 }
 
 .form-section {
@@ -94,7 +94,7 @@
   border-radius: 32rpx;
   padding: 48rpx;
   margin-bottom: 48rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
 }
 
 .form-item {
@@ -106,7 +106,7 @@
 .form-label {
   font-size: 32rpx;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-secondary);
   margin-right: 32rpx;
   width: 120rpx;
 }
@@ -120,7 +120,7 @@
 }
 
 .save-bottom-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 32rpx;
   font-size: 36rpx;
   font-weight: bold;
@@ -158,7 +158,7 @@
 .save-popup-icon {
   width: 160rpx;
   height: 160rpx;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -169,11 +169,11 @@
 .save-popup-title {
   font-size: 44rpx;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 16rpx;
 }
 
 .save-popup-sub {
   font-size: 28rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
 }

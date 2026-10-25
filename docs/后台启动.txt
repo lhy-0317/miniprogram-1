@@ -1,3 +1,0 @@
-cd e:\CTL\miniprogram-1\admin && python -m http.server 8080
-腾讯云开发平台
-https://tcb.cloud.tencent.com/dev?envId=cloud1-d7geimrfs008f978c#/overview

@@ -1,13 +1,13 @@
 {
   "pages": [
     "pages/splash/splash",
-    "pages/home/home",
+    "pages/shop/shop",
     "pages/quiz/quiz",
     "pages/ar/ar",
     "pages/profile/profile",
     "pages/edit-profile/edit-profile",
     "pages/quiz-history/quiz-history",
-    "pages/usage-records/usage-records",
+    "pages/order-records/order-records",
     "pages/ar-records/ar-records",
     "pages/settings/settings",
     "pages/feedback/feedback"
@@ -24,28 +24,28 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/home/home",
-        "text": "首页",
-        "iconPath": "assets/icons/home.png",
-        "selectedIconPath": "assets/icons/home-active.png"
+        "pagePath": "pages/shop/shop",
+        "text": "商店",
+        "iconPath": "/assets/icons/home.png",
+        "selectedIconPath": "/assets/icons/home-active.png"
       },
       {
         "pagePath": "pages/quiz/quiz",
         "text": "答题",
-        "iconPath": "assets/icons/quiz.png",
-        "selectedIconPath": "assets/icons/quiz-active.png"
+        "iconPath": "/assets/icons/quiz.png",
+        "selectedIconPath": "/assets/icons/quiz-active.png"
       },
       {
         "pagePath": "pages/ar/ar",
         "text": "AR识别",
-        "iconPath": "assets/icons/ar.png",
-        "selectedIconPath": "assets/icons/ar-active.png"
+        "iconPath": "/assets/icons/ar.png",
+        "selectedIconPath": "/assets/icons/ar-active.png"
       },
       {
         "pagePath": "pages/profile/profile",
         "text": "我的",
-        "iconPath": "assets/icons/profile.png",
-        "selectedIconPath": "assets/icons/profile-active.png"
+        "iconPath": "/assets/icons/profile.png",
+        "selectedIconPath": "/assets/icons/profile-active.png"
       }
     ]
   },
@@ -69,5 +69,7 @@
     "t-collapse-panel": "tdesign-miniprogram/collapse-panel/collapse-panel"
   },
   "componentFramework": "glass-easel",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json",
+  "__usePrivacyCheck__": true
 }

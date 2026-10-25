@@ -1,9 +1,0 @@
-{
-  "name": "submitQuizRecord",
-  "version": "1.0.0",
-  "description": "提交答题记录",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
-}

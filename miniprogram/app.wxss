@@ -1,4 +1,81 @@
-/**app.wxss**/
+/**
+ * 智惠本草 · 全局设计令牌
+ *
+ * 所有页面 WXSS 统一从这里取色/取字号/取圆角/取阴影。
+ * 新增样式一律使用 var(--token)，禁止再硬编码色值与渐变。
+ *
+ * 色彩系统（对应 PRD「草本绿 + 数智蓝」双色系）：
+ *   本草绿 —— 品牌标识、主操作按钮、答对反馈
+ *   数智蓝 —— 数据展示、AR 页、信息提示
+ *   激励金 —— 仅发券/奖励时刻
+ */
+
+page {
+  /* ===== 品牌色 ===== */
+  --brand: #2e7d32;
+  --brand-light: #4caf50;
+  --brand-lightest: #81c784;
+  --brand-bg: #f0fdf4;
+  --brand-border: #a5d6a7;
+  --brand-ink: #16a34a;
+
+  --digital-blue: #1565c0;
+  --digital-blue-bright: #64b5f6;
+  --digital-blue-bg: #e3f2fd;
+
+  --reward: #fbbf24;
+  --reward-deep: #ea580c;
+  --reward-bg: #fef3c7;
+  --reward-ink: #92400e;
+
+  /* ===== 语义色 ===== */
+  --success: #22c55e;
+  --success-bg: #f0fdf4;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --danger-ink: #dc2626;
+  --warning: #f59e0b;
+
+  /* ===== 文字（Tailwind gray 系，全项目统一） ===== */
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  --text-hint: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* ===== 表面 ===== */
+  --bg-page: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-ghost: #f3f4f6;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+
+  /* ===== 字号（rpx，五档 + 两个展示档） ===== */
+  --fs-caption: 24rpx;
+  --fs-small: 26rpx;
+  --fs-body: 28rpx;
+  --fs-subtitle: 32rpx;
+  --fs-title: 36rpx;
+  --fs-display: 40rpx;
+  --fs-hero: 56rpx;
+
+  /* ===== 圆角（三档） ===== */
+  --radius-sm: 16rpx;
+  --radius-md: 24rpx;
+  --radius-lg: 32rpx;
+
+  /* ===== 阴影（三档） ===== */
+  --shadow-card: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+  --shadow-brand: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+
+  /* ===== 渐变（仅限主按钮与品牌标识，其余一律纯色） ===== */
+  --brand-gradient: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+
+  /* ===== 字体 ===== */
+  --font-serif: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
+}
+
 .container {
   height: 100%;
   display: flex;
@@ -7,4 +84,4 @@
   justify-content: space-between;
   padding: 200rpx 0;
   box-sizing: border-box;
-} 
+}

@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+  background: var(--brand-gradient);
   padding: 40rpx 32rpx;
   margin-bottom: 24rpx;
 }
@@ -46,7 +46,7 @@
   border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
 }
 
 .card-header {
@@ -110,7 +110,7 @@
 }
 
 .action-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+  background: var(--brand-gradient);
   color: white;
   font-size: 28rpx;
   padding: 16rpx 48rpx;

@@ -1,0 +1,9 @@
+{
+  "desc": "智惠本草小程序页面收录配置。update 上线后如需限制特定页面被搜索，将 action 改为 disallow 并逐条列出。",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

@@ -1,5 +1,3 @@
-const app = getApp<IAppOption>()
-
 Page({
   data: {
     notificationEnabled: true,
@@ -23,8 +21,8 @@ Page({
 二、用户信息
 为了提供更好的服务，我们会收集必要的用户信息，包括但不限于：
 1. 微信昵称和头像（可选）
-2. 答题记录和使用记录
-3. 优惠券领取和使用记录
+2. 答题记录和订单记录
+3. 优惠券领取和订单记录
 
 三、用户责任
 用户在使用本小程序时，应当遵守相关法律法规，不得从事违法活动。
@@ -123,7 +121,7 @@ Page({
         sizeStr = (sizeKB / 1024).toFixed(2) + 'MB'
       }
       this.setData({ cacheSize: sizeStr })
-    } catch (e) {
+    } catch {
       this.setData({ cacheSize: '未知' })
     }
   },
@@ -228,7 +226,7 @@ Page({
           title: '清除成功',
           icon: 'success'
         })
-      } catch (e) {
+      } catch {
         wx.showToast({
           title: '清除失败',
           icon: 'error'
@@ -236,11 +234,6 @@ Page({
       }
     } else if (this.data.dialogType === 'logout') {
       wx.clearStorageSync()
-      
-      if (app && app.globalData) {
-        app.globalData.openid = null
-        app.globalData.userInfo = null
-      }
 
       wx.showToast({
         title: '已退出登录',
@@ -249,7 +242,7 @@ Page({
 
       setTimeout(() => {
         wx.switchTab({
-          url: '/pages/home/home'
+          url: '/pages/shop/shop'
         })
       }, 1500)
     }

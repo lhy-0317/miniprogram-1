@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>优惠券管理 - 智惠本草管理后台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <script src="js/admin-api.js"></script>
     <style>
         .sidebar-item.active {
             background: linear-gradient(90deg, rgba(46, 125, 50, 0.2) 0%, transparent 100%);
@@ -60,6 +60,24 @@
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
                     </svg>
                     <span>题库管理</span>
+                </a>
+                            <a href="products.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12z"/>
+                    </svg>
+                    <span>商品管理</span>
+                </a>
+                <a href="orders.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 12H8v-1c0-1.33 2.67-2 4-2s4 .67 4 2v1z"/>
+                    </svg>
+                    <span>订单管理</span>
+                </a>
+                <a href="feedback.html" class="sidebar-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 9h10v2H7V9zm6 5H7v-2h6v2zm4-6H7V6h10v2z"/>
+                    </svg>
+                    <span>问题反馈</span>
                 </a>
             </nav>
         </aside>
@@ -133,7 +151,7 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">发放给用户（OpenID后8位，留空则发放给所有用户）</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">发放给用户（填 OpenID 或其末 8 位；留空 = 发放给所有用户，上限 200 人）</label>
                     <input type="text" id="targetUser" placeholder="可选"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                 </div>
@@ -146,214 +164,135 @@
     </div>
     
     <script>
-        const app = cloudbase.init({
-            env: 'cloud1-d7geimrfs008f978c'
-        })
-        
-        const db = app.database()
-        const auth = app.auth()
-        
-        async function initCloudBase() {
-            try {
-                const loginState = await auth.getLoginState()
-                if (!loginState) {
-                    await auth.signInAnonymously()
-                    console.log('匿名登录成功')
-                }
-            } catch (err) {
-                console.error('云开发初始化失败', err)
-            }
-        }
-        
-        function checkLogin() {
-            if (!sessionStorage.getItem('adminLoggedIn')) {
-                window.location.href = 'login.html'
-            }
-        }
-        
-        async function loadCoupons() {
-            try {
-                const result = await db.collection('coupons')
-                    .orderBy('createTime', 'desc')
-                    .limit(100)
-                    .get()
-                
-                const coupons = result && result.data ? result.data : []
-                renderCoupons(coupons)
-                updateStats(coupons)
-            } catch (err) {
-                console.error('加载优惠券失败', err)
-                document.getElementById('couponTableBody').innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">加载失败，请检查云开发配置</td></tr>'
-            }
-        }
-        
-        function updateStats(coupons) {
-            if (!coupons) coupons = []
-            const total = coupons.length
-            const unused = coupons.filter(c => c.status === 'unused').length
-            const used = coupons.filter(c => c.status === 'used').length
-            const expired = coupons.filter(c => c.status === 'expired').length
-            
-            document.getElementById('statTotal').textContent = total
-            document.getElementById('statUnused').textContent = unused
-            document.getElementById('statUsed').textContent = used
-            document.getElementById('statExpired').textContent = expired
-        }
-        
-        function renderCoupons(coupons) {
-            const tbody = document.getElementById('couponTableBody')
-            
-            if (!coupons || coupons.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">暂无优惠券</td></tr>'
-                return
-            }
-            
-            tbody.innerHTML = coupons.map(coupon => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 ${getCouponBgClass(coupon.type)} rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 ${getCouponTextClass(coupon.type)}" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold ${getCouponTextClass(coupon.type)}">${coupon.amount}</p>
-                                <p class="text-sm text-gray-500">${coupon.type}</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500 font-mono">${(coupon._openid || '').slice(-8)}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">${coupon.expireDate}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(coupon.status)}">
-                            ${getStatusText(coupon.status)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500">${formatDate(coupon.createTime)}</td>
-                    <td class="px-6 py-4">
-                        <button onclick="deleteCoupon('${coupon._id}')" class="text-red-600 hover:text-red-700 text-sm font-medium">删除</button>
-                    </td>
-                </tr>
-            `).join('')
-        }
-        
-        function getCouponBgClass(type) {
-            if (type === '领纸券') return 'bg-green-100'
-            if (type === '购物券') return 'bg-purple-100'
-            return 'bg-orange-100'
-        }
-        
-        function getCouponTextClass(type) {
-            if (type === '领纸券') return 'text-green-600'
-            if (type === '购物券') return 'text-purple-600'
-            return 'text-orange-600'
-        }
-        
-        function getStatusClass(status) {
-            if (status === 'unused') return 'bg-green-100 text-green-700'
-            if (status === 'used') return 'bg-blue-100 text-blue-700'
-            return 'bg-gray-100 text-gray-700'
-        }
-        
-        function getStatusText(status) {
-            if (status === 'unused') return '未使用'
-            if (status === 'used') return '已使用'
-            return '已过期'
-        }
-        
-        function showAddModal() {
-            document.getElementById('addModal').classList.remove('hidden')
-            document.getElementById('addModal').classList.add('flex')
-        }
-        
-        function closeAddModal() {
-            document.getElementById('addModal').classList.add('hidden')
-            document.getElementById('addModal').classList.remove('flex')
-        }
-        
-        document.getElementById('addForm').addEventListener('submit', async (e) => {
-            e.preventDefault()
-            
-            const type = document.getElementById('couponType').value
-            const expireDays = parseInt(document.getElementById('expireDays').value)
-            const targetUser = document.getElementById('targetUser').value.trim()
-            
-            let amount = ''
-            if (type === '免费领纸券') amount = '免费'
-            else if (type === '买2送1优惠券') amount = '买2送1'
-            else amount = '8折'
-            
-            const expireDate = new Date()
-            expireDate.setDate(expireDate.getDate() + expireDays)
-            const formattedExpireDate = `${expireDate.getFullYear()}-${String(expireDate.getMonth() + 1).padStart(2, '0')}-${String(expireDate.getDate()).padStart(2, '0')}`
-            
-            try {
-                if (targetUser) {
-                    const userResult = await db.collection('users').where({
-                        _openid: db.RegExp({
-                            regexp: targetUser + '$',
-                            options: 'i'
-                        })
-                    }).get()
-                    
-                    if (userResult.data.length > 0) {
-                        await db.collection('coupons').add({
-                            amount,
-                            type,
-                            expireDate: formattedExpireDate,
-                            status: 'unused',
-                            createTime: new Date(),
-                            _openid: userResult.data[0]._openid
-                        })
-                    }
-                } else {
-                    const usersResult = await db.collection('users').limit(100).get()
-                    for (const user of usersResult.data) {
-                        await db.collection('coupons').add({
-                            amount,
-                            type,
-                            expireDate: formattedExpireDate,
-                            status: 'unused',
-                            createTime: new Date(),
-                            _openid: user._openid
-                        })
-                    }
-                }
-                
-                closeAddModal()
-                loadCoupons()
-                alert('优惠券发放成功！')
-            } catch (err) {
-                console.error('发放优惠券失败', err)
-                alert('发放失败：' + err.message)
-            }
-        })
-        
-        async function deleteCoupon(couponId) {
-            if (!confirm('确定要删除这张优惠券吗？')) return
-            
-            try {
-                await db.collection('coupons').doc(couponId).remove()
-                loadCoupons()
-            } catch (err) {
-                console.error('删除失败', err)
-                alert('删除失败')
-            }
-        }
-        
-        function formatDate(date) {
-            if (!date) return '-'
-            const d = new Date(date)
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-        }
-        
-        async function init() {
-            checkLogin()
-            await initCloudBase()
-            await loadCoupons()
-        }
-        init()
+    // 依赖 js/admin-api.js（本页不声明 API_BASE，避免全局重复声明导致脚本解析失败）
+    const { get, post, del, escapeHtml, formatDate, renderError } = window.AdminAPI;
+
+    async function loadCoupons() {
+      try {
+        const data = await get('/api/admin/coupons?pageSize=100');
+        if (!data || !data.success) throw new Error((data && data.message) || '服务端返回失败');
+        const coupons = data.data.list || [];
+        renderCoupons(coupons);
+        updateStats(coupons, data.data.total || coupons.length);
+      } catch (err) {
+        renderError('couponTableBody', err, 6);
+      }
+    }
+
+    function updateStats(coupons, total) {
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statUnused').textContent = coupons.filter(c => c.status === 'unused').length;
+      document.getElementById('statUsed').textContent = coupons.filter(c => c.status === 'used').length;
+      document.getElementById('statExpired').textContent = coupons.filter(c => c.status === 'expired').length;
+    }
+
+    function renderCoupons(coupons) {
+      const tbody = document.getElementById('couponTableBody');
+      if (!coupons || coupons.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">暂无优惠券</td></tr>';
+        return;
+      }
+      tbody.innerHTML = coupons.map(coupon => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 ${getCouponBgClass(coupon.type)} rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 ${getCouponTextClass(coupon.type)}" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42z"/>
+                </svg>
+              </div>
+              <div>
+                <p class="font-bold ${getCouponTextClass(coupon.type)}">${escapeHtml(coupon.amount)}</p>
+                <p class="text-sm text-gray-500">${escapeHtml(coupon.type)}</p>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-500 font-mono">${escapeHtml(String(coupon.openid || '').slice(-8) || '未绑定')}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">${escapeHtml(coupon.expireDate || '-')}</td>
+          <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(coupon.status)}">${getStatusText(coupon.status)}</span></td>
+          <td class="px-6 py-4 text-sm text-gray-500">${formatDate(coupon.createTime)}</td>
+          <td class="px-6 py-4">
+            <button onclick="deleteCoupon('${coupon._id || coupon.id}')" class="text-red-600 hover:text-red-700 text-sm font-medium">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function getCouponBgClass(t) {
+      if (t === '领纸券') return 'bg-green-100';
+      if (t === '购物券') return 'bg-purple-100';
+      return 'bg-orange-100';
+    }
+    function getCouponTextClass(t) {
+      if (t === '领纸券') return 'text-green-600';
+      if (t === '购物券') return 'text-purple-600';
+      return 'text-orange-600';
+    }
+    function getStatusClass(s) {
+      if (s === 'unused') return 'bg-green-100 text-green-700';
+      if (s === 'used') return 'bg-blue-100 text-blue-700';
+      return 'bg-gray-100 text-gray-700';
+    }
+    function getStatusText(s) {
+      if (s === 'unused') return '未使用';
+      if (s === 'used') return '已使用';
+      return '已过期';
+    }
+
+    function showAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
+    function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
+
+    document.getElementById('addForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('couponType').value;
+      const expireDays = parseInt(document.getElementById('expireDays').value, 10) || 30;
+      const targetUser = document.getElementById('targetUser').value.trim();
+
+      let amount = '';
+      if (type === '免费领纸券') amount = '免费';
+      else if (type === '买2送1优惠券') amount = '买2送1';
+      else amount = '8折';
+      const typeMap = { '免费领纸券': '领纸券', '买2送1优惠券': '优惠券', '8折购物券': '购物券' };
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '发放中...';
+
+      try {
+        // 留空 = 发放给所有用户（后端 all 模式）；否则按 OpenID 或其后 8 位定位单个用户
+        const payload = { amount, type: typeMap[type] || '领纸券', expireDays };
+        if (targetUser) payload.openid = targetUser; else payload.all = true;
+
+        const res = await post('/api/admin/coupons', payload);
+        if (!res) return;
+        // 旧实现在此处不检查返回值，后端拒绝了也提示"发放成功"
+        if (!res.success) { alert('发放失败：' + (res.message || '未知错误')); return; }
+
+        closeAddModal();
+        document.getElementById('addForm').reset();
+        await loadCoupons();
+        alert(res.message || '发放成功');
+      } catch (err) {
+        alert('发放失败：' + (err && err.message ? err.message : err));
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '发放';
+      }
+    });
+
+    async function deleteCoupon(couponId) {
+      if (!confirm('确定要删除这张优惠券吗？')) return;
+      try {
+        const res = await del('/api/admin/coupons/' + couponId);
+        if (!res) return;
+        if (!res.success) { alert('删除失败：' + (res.message || '未知错误')); return; }
+        await loadCoupons();
+      } catch (err) {
+        alert('删除失败：' + (err && err.message ? err.message : err));
+      }
+    }
+
+    loadCoupons();
     </script>
 </body>
 </html>

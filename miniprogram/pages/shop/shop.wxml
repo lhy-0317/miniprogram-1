@@ -1,0 +1,176 @@
+<view class="shop-container">
+  <!-- 顶部横幅 -->
+  <view class="shop-hero">
+    <view class="hero-left">
+      <text class="hero-title">智惠本草 · 自助购纸</text>
+      <text class="hero-sub">{{fulfillmentTip}}</text>
+    </view>
+    <view class="hero-orders" bind:tap="openOrders">
+      <t-icon name="file-paste" size="30" color="#ffffff"></t-icon>
+      <text>我的订单</text>
+    </view>
+  </view>
+
+  <view class="shop-body">
+    <view class="loading-container" wx:if="{{loading}}">
+      <t-icon name="loading" size="56" color="#2e7d32"></t-icon>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view class="error-box" wx:elif="{{loadError}}">
+      <t-icon name="error-circle" size="56" color="#e34d59"></t-icon>
+      <text class="error-text">{{loadError}}</text>
+      <t-button theme="primary" size="medium" t-class="retry-btn" bind:tap="loadProducts">重新加载</t-button>
+    </view>
+
+    <block wx:else>
+      <!-- 商品列表 -->
+      <view class="product-list">
+        <view class="product-card" wx:for="{{products}}" wx:key="id">
+          <view class="product-thumb">
+            <t-icon name="shop" size="52" color="#2e7d32"></t-icon>
+          </view>
+
+          <view class="product-main">
+            <view class="product-title-row">
+              <text class="product-name">{{item.name}}</text>
+              <text wx:if="{{item.tag}}" class="product-tag">{{item.tag}}</text>
+              <text wx:if="{{item.soldOut}}" class="product-soldout">已售罄</text>
+            </view>
+            <text class="product-desc">{{item.desc}}</text>
+            <text wx:if="{{!item.soldOut && item.stockText}}" class="product-stock">{{item.stockText}}</text>
+
+            <view class="product-bottom">
+              <view class="product-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-num">{{item.priceText}}</text>
+                <text class="price-unit">/{{item.unit}}</text>
+              </view>
+
+              <view class="stepper">
+                <view class="step-btn {{qtyMap[item.id] > 0 ? '' : 'disabled'}}"
+                      bind:tap="changeQty" data-id="{{item.id}}" data-delta="-1">−</view>
+                <text class="step-num">{{qtyMap[item.id] || 0}}</text>
+                <view class="step-btn {{item.soldOut ? 'disabled' : ''}}"
+                      bind:tap="changeQty" data-id="{{item.id}}" data-delta="1">+</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 优惠券入口 -->
+      <view class="coupon-bar" bind:tap="openCoupons">
+        <view class="coupon-bar-left">
+          <t-icon name="ticket" size="34" color="#b45309"></t-icon>
+          <text class="coupon-bar-text">
+            {{selectedCouponId ? '已选：' + selectedCouponDesc : '可用优惠券 ' + couponList.length + ' 张'}}
+          </text>
+        </view>
+        <view class="coupon-bar-right">
+          <text wx:if="{{selectedCouponId}}" class="coupon-clear" catch:tap="clearCoupon">不使用</text>
+          <t-icon name="chevron-right" size="30" color="#999999"></t-icon>
+        </view>
+      </view>
+
+      <!-- 结算明细 -->
+      <view class="summary-box" wx:if="{{totalQty > 0}}">
+        <view class="summary-row">
+          <text class="summary-label">商品合计</text>
+          <text class="summary-value">¥{{subtotalText}}</text>
+        </view>
+        <view class="summary-row" wx:if="{{discountText !== '0.00'}}">
+          <text class="summary-label">优惠减免{{freeQty > 0 ? '（赠 ' + freeQty + ' 件）' : ''}}</text>
+          <text class="summary-value discount">−¥{{discountText}}</text>
+        </view>
+        <view class="summary-row total">
+          <text class="summary-label">应付</text>
+          <text class="summary-payable">¥{{payableText}}</text>
+        </view>
+      </view>
+
+      <view class="shop-note">
+        <t-icon name="info-circle" size="28" color="#999999"></t-icon>
+        <text>每轮答题答对 5 道可获得随机优惠券，可在此抵扣；券下单即核销。</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view class="checkout-bar" wx:if="{{!loading && !loadError}}">
+    <view class="checkout-left">
+      <view class="checkout-total">
+        <text class="checkout-label">应付</text>
+        <text class="checkout-amount">¥{{payableText}}</text>
+      </view>
+      <text class="checkout-sub">共 {{totalQty}} 件</text>
+    </view>
+    <t-button theme="primary" size="large" t-class="checkout-btn"
+              disabled="{{totalQty === 0 || placing}}" bind:tap="submitOrder">
+      {{placing ? '提交中...' : '提交订单'}}
+    </t-button>
+  </view>
+
+  <!-- 优惠券选择 -->
+  <t-popup visible="{{couponVisible}}" placement="bottom" show-overlay bind:visible-change="closeCoupons">
+    <view class="sheet">
+      <view class="sheet-head">
+        <text class="sheet-title">选择优惠券</text>
+        <text class="sheet-close" bind:tap="closeCoupons">关闭</text>
+      </view>
+
+      <scroll-view class="sheet-body" scroll-y>
+        <view class="coupon-item {{selectedCouponId === item.id ? 'selected' : ''}}"
+              wx:for="{{couponList}}" wx:key="id"
+              bind:tap="chooseCoupon" data-id="{{item.id}}">
+          <view class="coupon-left">
+            <text class="coupon-amount">{{item.amount}}</text>
+            <text class="coupon-type">{{item.type}}</text>
+          </view>
+          <view class="coupon-right">
+            <text class="coupon-desc">{{item.desc}}</text>
+            <text class="coupon-expire">有效期至 {{item.expireDate}}</text>
+          </view>
+          <t-icon wx:if="{{selectedCouponId === item.id}}" name="check-circle-filled" size="40" color="#2e7d32"></t-icon>
+        </view>
+      </scroll-view>
+
+      <view class="sheet-actions">
+        <t-button theme="light" size="large" block bind:tap="clearCoupon">不使用优惠券</t-button>
+      </view>
+    </view>
+  </t-popup>
+
+  <!-- 我的订单 -->
+  <t-popup visible="{{ordersVisible}}" placement="bottom" show-overlay bind:visible-change="closeOrders">
+    <view class="sheet">
+      <view class="sheet-head">
+        <text class="sheet-title">我的订单</text>
+        <text class="sheet-close" bind:tap="closeOrders">关闭</text>
+      </view>
+
+      <scroll-view class="sheet-body" scroll-y>
+        <view class="order-loading" wx:if="{{ordersLoading}}">
+          <t-icon name="loading" size="44" color="#2e7d32"></t-icon>
+        </view>
+
+        <t-empty wx:elif="{{orders.length === 0}}" description="暂无订单"></t-empty>
+
+        <!-- 注意：wx:else 不能与 wx:for 同标签，否则 wx:else 找不到配对的 wx:if -->
+        <block wx:else>
+          <view class="order-item" wx:for="{{orders}}" wx:key="_id">
+            <view class="order-head">
+              <text class="order-sn">{{item.orderSn}}</text>
+              <text class="order-status {{item.status}}">{{item.statusText}}</text>
+            </view>
+            <text class="order-items">{{item.itemsText}}</text>
+            <view class="order-foot">
+              <text class="order-time">{{item.createTimeText}}</text>
+              <text class="order-pay">¥{{item.payableText}}</text>
+            </view>
+          </view>
+        </block>
+      </scroll-view>
+    </view>
+  </t-popup>
+</view>

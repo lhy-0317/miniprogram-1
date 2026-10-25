@@ -2,12 +2,13 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: var(--bg-page);
 }
 
 .header {
   position: relative;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  /* header 纯色品牌带；其上毛玻璃卡片与装饰圆维持层次 */
+  background: var(--brand);
   padding: 80rpx 48rpx 80rpx;
   overflow: hidden;
 }
@@ -56,13 +57,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-elevated);
 }
 
 .avatar text {
   font-size: 56rpx;
   font-weight: bold;
-  color: #2e7d32;
+  color: var(--brand);
 }
 
 .edit-badge {
@@ -77,7 +78,7 @@
   align-items: center;
   justify-content: center;
   border: 4rpx solid white;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-card);
 }
 
 .user-detail {
@@ -159,7 +160,7 @@
   border-radius: 32rpx;
   padding: 40rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
 }
 
 .section-header {
@@ -172,7 +173,7 @@
 .section-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .filter-tabs {
@@ -182,14 +183,14 @@
 
 .filter-tab {
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
   padding: 8rpx 20rpx;
   border-radius: 48rpx;
   transition: all 0.3s ease;
 }
 
 .filter-tab.active {
-  color: #2e7d32;
+  color: var(--brand);
   font-weight: 500;
   background-color: #f0fdf4;
 }
@@ -218,6 +219,20 @@
 .coupon-item.purple {
   background: linear-gradient(to right, #f3e8ff, #e9d5ff);
   border-color: #c084fc;
+}
+
+/* 买2送1 等优惠券 */
+.coupon-item.orange {
+  background: linear-gradient(to right, #fff7ed, #fed7aa);
+  border-color: #fdba74;
+}
+
+.coupon-item.orange .coupon-amount {
+  color: #ea580c;
+}
+
+.coupon-item.orange .use-btn {
+  background-color: #ea580c !important;
 }
 
 .coupon-item.green .coupon-amount {
@@ -252,13 +267,13 @@
 
 .coupon-type {
   font-size: 28rpx;
-  color: #4b5563;
+  color: var(--text-secondary);
   margin-bottom: 8rpx;
 }
 
 .coupon-expire {
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
 }
 
 .coupon-right {
@@ -280,12 +295,12 @@
   background-color: white;
   border-radius: 32rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-card);
 }
 
 .login-section {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #2e7d32 0%, #4caf50 100%);
+  background: var(--brand-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -298,7 +313,7 @@
   padding: 80rpx 64rpx;
   width: 100%;
   max-width: 600rpx;
-  box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-elevated);
 }
 
 .login-logo {
@@ -309,13 +324,13 @@
 .login-logo .logo {
   width: 160rpx;
   height: 160rpx;
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%);
+  background: var(--brand-gradient);
   border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+  box-shadow: var(--shadow-brand);
 }
 
 .logo-image {
@@ -328,14 +343,95 @@
   display: block;
   font-size: 40rpx;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
 .login-logo .app-slogan {
   display: block;
   font-size: 26rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
+}
+
+/* 头像昵称填写区（官方 chooseAvatar + nickname input，二者独立选择） */
+.profile-fill {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40rpx;
+  padding: 28rpx 32rpx;
+  background: #f5f8f6;
+  border-radius: 32rpx;
+  gap: 32rpx;
+}
+
+.avatar-choose {
+  position: relative;
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  background: var(--brand-gradient);
+  flex-shrink: 0;
+  line-height: normal;
+  border: none;
+}
+
+.avatar-choose::after {
+  border: none;
+}
+
+.avatar-choose-img {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  display: block;
+}
+
+.avatar-choose-badge {
+  position: absolute;
+  right: -6rpx;
+  bottom: -6rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: var(--brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4rpx solid white;
+  box-sizing: border-box;
+  color: white;
+  font-size: 32rpx;
+  line-height: 36rpx;
+  font-weight: bold;
+}
+
+.nickname-fill {
+  flex: 1;
+  min-width: 0;
+}
+
+.nickname-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-tertiary);
+  margin-bottom: 8rpx;
+}
+
+.nickname-input {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: var(--text-primary);
+  height: 64rpx;
+  line-height: 64rpx;
+  width: 100%;
+}
+
+.nickname-placeholder {
+  font-size: 30rpx;
+  font-weight: normal;
+  color: var(--text-hint);
 }
 
 .login-form {
@@ -343,7 +439,7 @@
 }
 
 .login-btn {
-  background: linear-gradient(135deg, #2e7d32 0%, #4caf50 50%, #81c784 100%) !important;
+  background: var(--brand-gradient) !important;
   border-radius: 32rpx !important;
   font-size: 36rpx !important;
   font-weight: bold !important;
@@ -364,7 +460,7 @@
 
 .login-btn.disabled {
   background: #d1d5db !important;
-  color: #9ca3af !important;
+  color: var(--text-hint) !important;
 }
 
 .privacy-checkbox {
@@ -373,7 +469,7 @@
   justify-content: center;
   flex-wrap: wrap;
   font-size: 24rpx;
-  color: #6b7280;
+  color: var(--text-tertiary);
 }
 
 .checkbox {
@@ -390,17 +486,17 @@
 }
 
 .checkbox.checked {
-  background-color: #2e7d32;
-  border-color: #2e7d32;
+  background-color: var(--brand);
+  border-color: var(--brand);
 }
 
 .checkbox-text {
-  color: #6b7280;
+  color: var(--text-tertiary);
   font-size: 24rpx;
 }
 
 .login-link {
-  color: #4caf50;
+  color: var(--brand-light);
   margin: 0 4rpx;
 }
 
@@ -426,7 +522,7 @@
 .privacy-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--text-primary);
   display: block;
   text-align: center;
 }
@@ -440,7 +536,7 @@
 
 .privacy-text {
   font-size: 28rpx;
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.8;
   white-space: pre-wrap;
 }

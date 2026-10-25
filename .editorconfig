@@ -1,0 +1,15 @@
+# 编辑器统一规范
+# 统一换行符与缩进，避免历史上出现过的 CRLF/LF 混乱导致 git diff 全文变更
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

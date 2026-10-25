@@ -1,5 +1,5 @@
 <view class="splash-container">
-  <image class="bg-image" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=chinese%20traditional%20medicine%20herbs%20ginseng%20artistic%20elegant%20green%20and%20blue%20aesthetic&image_size=portrait_4_3" mode="aspectFill"></image>
+  <image class="bg-image" src="/assets/images/splash-bg.jpg" mode="aspectFill"></image>
   <view class="overlay"></view>
   
   <view class="countdown">

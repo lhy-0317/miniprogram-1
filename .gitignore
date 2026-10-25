@@ -1,17 +1,64 @@
-node_modules
+# 本地开发笔记；公开项目说明维护在根目录 README.md
+/docs/
+
+# ===== 依赖 =====
+node_modules/
+
+# ===== 环境变量与密钥（.env 含真实密钥，永不入库；.example 模板除外）=====
 .env
-.env.test.local
-.enc.local
-.env.development.local
-.env.production.local
-miniprogram_npm
-dist
-.DS_store
-.idea
-.vscode
-.wxml
-.agents
-.trae
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.keystore
+
+# ===== 构建产物 =====
+miniprogram_npm/
+dist/
+coverage/
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# ===== 日志 =====
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===== 编辑器 / IDE =====
+.idea/
+.vscode/
+/project.private.config.json
+
+# ===== AI 工具与本地工作区 =====
+.agents/
+.trae/
+.claude/
+.workbuddy/
+.codex/
+.aws/
 skills-lock.json
-.claude
-questions.json
+/questions.json
+
+# ===== 云开发本地配置（cloudbase/ 指向已过期旧环境）=====
+/.cloudbase/
+/cloudbase/
+
+# ===== 已废弃的本地后端（预留 MQTT 网关，暂不入库；复活时删掉本行）=====
+# 注意：整个目录忽略后其中任何文件都无法用 ! 例外救回（git 不进入被忽略的目录），
+# 若将来要提交 back/.env.example，需改为逐项忽略（见下）。
+/back/
+
+# 已完成的一次性代码改写工具；保留本地，避免误运行
+/scripts/fix-sdk-writes.js

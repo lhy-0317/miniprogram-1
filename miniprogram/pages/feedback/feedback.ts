@@ -1,3 +1,5 @@
+import { api } from '../../utils/api';
+
 Page({
   data: {
     activeTab: 'help',
@@ -118,11 +120,13 @@ Page({
 
     try {
       let uploadedUrls: string[] = []
-      
+
+      // 图片先传云存储（客户端上传是标准做法），拿到 fileID
       if (this.data.images.length > 0) {
         const uploadPromises = this.data.images.map((filePath, index) => {
           return new Promise((resolve, reject) => {
-            const cloudPath = `feedback/${Date.now()}_${index}.jpg`
+            const rand = Math.random().toString(36).slice(2, 8)
+            const cloudPath = `feedback/${Date.now()}_${index}_${rand}.jpg`
             wx.cloud.uploadFile({
               cloudPath,
               filePath,
@@ -131,20 +135,21 @@ Page({
             })
           })
         })
-        
+
         uploadedUrls = await Promise.all(uploadPromises) as string[]
       }
 
-      const db = wx.cloud.database()
-      await db.collection('feedback').add({
-        data: {
-          type: this.data.feedbackType,
-          content: this.data.feedbackContent,
-          images: uploadedUrls,
-          contact: this.data.contactInfo,
-          status: 'pending',
-          createTime: new Date()
-        }
+      /**
+       * 修复：原实现用 wx.cloud.database() 直写 feedback 集合，
+       * 绕过了云函数 —— 记录没有 _openid，管理端无法识别提交者，
+       * 且无长度校验。现统一走 feedbackService.submit，
+       * 由云函数以 getWXContext().OPENID 写入归属与校验。
+       */
+      await api.post('/api/feedback/submit', {
+        type: this.data.feedbackType,
+        content: this.data.feedbackContent,
+        images: uploadedUrls,
+        contact: this.data.contactInfo,
       })
 
       wx.hideLoading()
